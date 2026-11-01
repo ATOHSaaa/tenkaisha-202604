@@ -1,0 +1,16 @@
+.section {
+    padding-bottom: clamp(40px, 8vw, 96px);
+  }
+  .card__more {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg);
+  }

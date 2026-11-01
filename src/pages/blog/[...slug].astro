@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getEntry, render } from 'astro:content';
+
+const slugParam = Astro.params.slug;
+const slug = Array.isArray(slugParam) ? slugParam.join('/') : slugParam;
+
+if (!slug) {
+  return Astro.redirect('/404');
+}
+
+const entry = await getEntry('blog', slug);
+
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const { Content } = await render(entry);
+
+const fmtDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<Base title={entry.data.title} description={entry.data.excerpt}>
+  <article class="post">
+    {
+      entry.data.cover && (
+        <div class="post__cover">
+          <img src={entry.data.cover} alt="" />
+        </div>
+      )
+    }
+    <div class="container">
+      <p class="post__meta">
+        <span class="post__category">{entry.data.category}</span>
+        <time class="post__date" datetime={entry.data.date.toISOString()}>
+          {fmtDate(entry.data.date)}
+        </time>
+        <span class="post__author">by {entry.data.author}</span>
+      </p>
+      <h1 class="post__title heading-section">{entry.data.title}</h1>
+      <div class="prose">
+        <Content />
+      </div>
+      <div class="post__actions">
+        <a class="link-arrow" href="/blog/">← ブログ一覧へ</a>
+      </div>
+    </div>
+  </article>
+</Base>

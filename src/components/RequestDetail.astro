@@ -1,0 +1,55 @@
+---
+import type { RequestInfo } from '../data/site';
+
+interface Props {
+  info: RequestInfo;
+  description: string;
+  points?: string[];
+  backHref?: string;
+  backLabel?: string;
+}
+
+const { info, description, points = [], backHref = '/requests/', backLabel = '依頼窓口へ戻る' } = Astro.props;
+---
+
+<section class="rd__hero">
+  <div class="container rd__hero-inner">
+    <h1 class="rd__jp heading-section">{info.name}</h1>
+    <p class="rd__lead">{info.summary}</p>
+  </div>
+</section>
+
+<section class="rd__body container">
+  <div class="rd__grid">
+    <div class="prose">
+      <h2>ご依頼について</h2>
+      <p>{description}</p>
+      {
+        points.length > 0 && (
+          <>
+            <h2>ご提供できること</h2>
+            <ul>
+              {points.map((p) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+      <h2>お問い合わせ</h2>
+      <p>
+        ご依頼・ご相談は <a href="/contact/">お問い合わせフォーム</a> よりお気軽にどうぞ。
+        ご予算・ご希望の内容・対象人数等をお聞かせいただければ、詳しくご案内いたします。
+      </p>
+    </div>
+
+    <aside class="rd__side">
+      <img class="rd__cover" src={info.image} alt="" />
+      <a class="btn" href="/contact/">お問い合わせへ <span class="btn__arrow">→</span></a>
+    </aside>
+  </div>
+
+  <div class="rd__back">
+    <a class="link-arrow" href={backHref}>← {backLabel}</a>
+  </div>
+</section>

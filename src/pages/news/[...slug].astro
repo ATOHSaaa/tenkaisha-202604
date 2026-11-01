@@ -1,0 +1,54 @@
+---
+export const prerender = false;
+
+import Base from '../../layouts/Base.astro';
+import { PortableText } from 'emdash/ui';
+import { getPublishedNewsEntry } from '../../utils/emdash-news';
+
+const slugParam = Astro.params.slug;
+const slug = Array.isArray(slugParam) ? slugParam.join('/') : slugParam;
+
+if (!slug) {
+  return Astro.redirect('/404');
+}
+
+const { entry, isPreview } = await getPublishedNewsEntry(slug);
+
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const { title, date: rawDate, link, content } = entry.data;
+
+if (link) {
+  return Astro.redirect(link);
+}
+
+const date = rawDate instanceof Date ? rawDate : new Date(rawDate);
+const fmtDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<Base title={title} description={title}>
+  <article class="news-detail">
+    <div class="container">
+      {
+        isPreview && (
+          <p class="news-detail__preview">プレビュー表示中です（未公開の内容を含む場合があります）。</p>
+        )
+      }
+      <p class="news-detail__meta">
+        <time class="news-detail__date" datetime={date.toISOString()}>
+          {fmtDate(date)}
+        </time>
+      </p>
+      <h1 class="news-detail__title heading-section">{title}</h1>
+      <div class="prose">
+        {content && <PortableText value={content} />}
+      </div>
+      <div class="news-detail__actions">
+        <a class="link-arrow" href="/news/">← おしらせ一覧へ</a>
+      </div>
+    </div>
+  </article>
+</Base>

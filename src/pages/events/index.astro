@@ -1,0 +1,88 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Card from '../../components/Card.astro';
+import { getCollection } from 'astro:content';
+import {
+  eventEntryCardProps,
+  partitionEventList,
+} from '../../utils/event-content';
+
+const all = await getCollection('events');
+const { currentPerformances, currentEvents, archivePerformances, archiveEvents } =
+  partitionEventList(all);
+
+const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
+const hasArchive = archivePerformances.length > 0 || archiveEvents.length > 0;
+---
+
+<Base title="公演・イベント" description="転回社の公演・イベント一覧。これからの公演・イベントと、これまでの記録。">
+  <div class="events-page">
+  <PageHeader jp="公演・イベント" />
+
+  {
+    hasCurrent && (
+      <section class="section">
+        <div class="container">
+          <h2 class="section-title">これから</h2>
+          {
+            (currentPerformances.length > 0 || currentEvents.length > 0) && (
+              <div class="subsection">
+                <div class="grid-events grid-long-run">
+                  {currentPerformances.map((p) => (
+                    <Card
+                      href={`/events/${p.id}/`}
+                      image={p.data.cover}
+                      title={p.data.title}
+                      {...eventEntryCardProps(p.data)}
+                    />
+                  ))}
+                  {currentEvents.map((e) => (
+                    <Card
+                      href={`/events/${e.id}/`}
+                      image={e.data.cover}
+                      title={e.data.title}
+                      {...eventEntryCardProps(e.data)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )
+          }
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">これまで</h2>
+      {
+        !hasArchive ? (
+          <p class="empty">これまでの情報はまだありません。</p>
+        ) : (
+          <div class="subsection">
+            <div class="grid-events grid-long-run">
+              {archivePerformances.map((p) => (
+                <Card
+                  href={`/events/${p.id}/`}
+                  image={p.data.cover}
+                  title={p.data.title}
+                />
+              ))}
+              {archiveEvents.map((e) => (
+                <Card
+                  href={`/events/${e.id}/`}
+                  image={e.data.cover}
+                  title={e.data.title}
+                  {...eventEntryCardProps(e.data)}
+                />
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </section>
+  </div>
+</Base>

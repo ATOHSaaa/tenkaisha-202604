@@ -1,0 +1,33 @@
+---
+interface Props {
+  jp: string;
+  lead?: string;
+  /** タイトルのみの詳細ページ向け（h1下の余白を詰める） */
+  compact?: boolean;
+  /** 旧API互換のため受け取るが、表示には使わない */
+  en?: string;
+}
+
+const { jp, lead, compact = false } = Astro.props;
+const hasBody = Astro.slots.has('default');
+---
+
+<section
+  class:list={[
+    'page-header',
+    compact && 'page-header--compact',
+    hasBody && 'page-header--with-body',
+  ]}
+>
+  <div class="container page-header__inner">
+    <h1 class="page-header__jp heading-section">{jp}</h1>
+    {lead && <p class="page-header__lead">{lead}</p>}
+    {
+      hasBody && (
+        <div class="page-header__body">
+          <slot />
+        </div>
+      )
+    }
+  </div>
+</section>

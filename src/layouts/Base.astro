@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+import '../styles/_imports.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  /** false のとき h2・カードのスクロール表示アニメーションを無効化 */
+  scrollReveal?: boolean;
+}
+
+const {
+  title,
+  description = '熊本を拠点に活動する劇団「転回社」の公式サイト。公演情報、稽古クラス、依頼窓口、スタジオ情報をご案内します。',
+  ogImage = '/images/ogp.png',
+  noindex = false,
+  scrollReveal = true,
+} = Astro.props;
+
+const siteName = '転回社';
+const pageTitle = title ? `${title} | ${siteName}` : `${siteName} | 熊本の劇団`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjTHNB6z8Enl0lSDu9YwOAn/nbZ0nFzZ6A/rJVSXU3iaPPow=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body data-scroll-reveal={scrollReveal ? 'on' : 'off'}>
+    <a class="skip-link" href="#main">本文へスキップ</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import { initScrollReveal } from '../scripts/scroll-reveal';
+
+      initScrollReveal();
+      document.addEventListener('astro:page-load', initScrollReveal);
+    </script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+  <rect width="400" height="500" fill="#0a0a0a"/>
+  <g fill="none" stroke="#f6f5f2" stroke-width="1.5" opacity="0.7">
+    <path d="M0 120 Q100 90 200 120 T 400 120"/>
+    <path d="M0 160 Q100 130 200 160 T 400 160"/>
+    <path d="M0 200 Q100 170 200 200 T 400 200"/>
+    <path d="M0 240 Q100 210 200 240 T 400 240"/>
+    <path d="M0 280 Q100 250 200 280 T 400 280"/>
+    <path d="M0 320 Q100 290 200 320 T 400 320"/>
+    <path d="M0 360 Q100 330 200 360 T 400 360"/>
+    <path d="M0 400 Q100 370 200 400 T 400 400"/>
+  </g>
+  <circle cx="200" cy="250" r="70" fill="#f2cf1a"/>
+  <text x="40" y="70" fill="#f6f5f2" font-family="'Archivo',sans-serif" font-weight="900" font-size="18" letter-spacing="6">CAPPA</text>
+  <text x="40" y="95" fill="#f2cf1a" font-family="'Archivo',sans-serif" font-weight="500" font-size="10" letter-spacing="4">TENKAISHA MUSICAL 2026</text>
+  <text x="200" y="260" fill="#0a0a0a" font-family="'Noto Sans JP',sans-serif" font-weight="900" font-size="44" text-anchor="middle">��</text>
+  <text x="40" y="470" fill="#f6f5f2" font-family="'Noto Sans JP',sans-serif" font-weight="700" font-size="14">4�ni�</text>
+</svg>

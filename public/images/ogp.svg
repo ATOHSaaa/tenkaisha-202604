@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <rect x="60" y="60" width="1080" height="510" fill="none" stroke="#f6f5f2" stroke-width="2"/>
+  <text x="100" y="200" fill="#f6f5f2" font-family="'Noto Sans JP',sans-serif" font-weight="900" font-size="120">��></text>
+  <text x="100" y="300" fill="#f2cf1a" font-family="'Archivo',sans-serif" font-weight="700" font-size="40" letter-spacing="8">TENKAISHA</text>
+  <text x="100" y="440" fill="#f6f5f2" font-family="'Noto Sans JP',sans-serif" font-weight="400" font-size="28">�,�-�k;�Y���</text>
+  <text x="100" y="500" fill="#6b6b6b" font-family="'Archivo',sans-serif" font-weight="500" font-size="16" letter-spacing="4">KUMAMOTO THEATER COMPANY / EST. 2001</text>
+</svg>

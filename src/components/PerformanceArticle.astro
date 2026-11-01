@@ -1,0 +1,93 @@
+---
+import PageHeader from './PageHeader.astro';
+import PerformanceHistory from './PerformanceHistory.astro';
+import PerformanceTickets from './PerformanceTickets.astro';
+import { render } from 'astro:content';
+import type { PerformanceEntry } from '../utils/event-content';
+import { performancePeriodLabel, fmtDate } from '../utils/dates';
+import { pastPerformanceHistoryItems } from '../utils/performance-history';
+import { isPerformanceUpcoming, resolveNextPerformanceDate } from '../utils/schedule';
+import { formatShowTitle } from '../utils/titles';
+
+interface Props {
+  entry: PerformanceEntry;
+}
+
+const { entry } = Astro.props;
+
+const { Content } = await render(entry);
+
+const showTitle = formatShowTitle(entry.data.title);
+const performanceSchedule = {
+  performanceHistory: entry.data.performanceHistory,
+};
+const nextPerformanceDate = resolveNextPerformanceDate(performanceSchedule);
+const period = performancePeriodLabel(performanceSchedule);
+const pastHistory = pastPerformanceHistoryItems(entry.data.performanceHistory);
+const isLongRun = entry.data.type === 'long-run';
+
+const showUpcomingTag =
+  !isLongRun && isPerformanceUpcoming(performanceSchedule);
+---
+
+<article class="perf">
+  {
+    isLongRun ? (
+      <PageHeader jp={showTitle} compact />
+    ) : (
+      <div class="perf__hero">
+        <div class="container perf__hero-inner">
+          <div class="perf__meta">
+            {
+              showUpcomingTag && (
+                <span class="tag tag--accent">UPCOMING</span>
+              )
+            }
+            {
+              nextPerformanceDate ? (
+                <div class="perf__next">
+                  <p class="perf__next-label">次回公演</p>
+                  <p class="perf__next-date">{fmtDate(nextPerformanceDate)}</p>
+                </div>
+              ) : (
+                <span class="perf__period">{period}</span>
+              )
+            }
+          </div>
+            <h1 class="perf__title heading-section">{showTitle}</h1>
+            <PerformanceTickets tickets={entry.data.tickets} variant="hero" />
+        </div>
+      </div>
+    )
+  }
+
+  <section class="container perf__body">
+    <div class="perf__grid">
+      <div class="prose">
+        <Content />
+        {
+          pastHistory.length > 0 && (
+            <PerformanceHistory items={pastHistory} />
+          )
+        }
+      </div>
+      {
+        entry.data.cover && (
+          <aside class="perf__side">
+            <div class="perf__side-inner">
+              <img class="perf__cover" src={entry.data.cover} alt="" />
+              {isLongRun && <PerformanceTickets tickets={entry.data.tickets} variant="sidebar" />}
+            </div>
+          </aside>
+        )
+      }
+    </div>
+    {
+      !isLongRun && (
+        <div class="perf__back">
+          <a class="link-arrow" href="/events/">← 公演・イベントへ戻る</a>
+        </div>
+      )
+    }
+  </section>
+</article>

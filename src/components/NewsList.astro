@@ -1,0 +1,37 @@
+---
+interface NewsItem {
+  date: Date;
+  title: string;
+  href: string;
+}
+
+interface Props {
+  items: NewsItem[];
+}
+
+const { items } = Astro.props;
+
+const fmt = (d: Date) => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}.${m}.${day}`;
+};
+---
+
+<ul class="news-list">
+  {
+    items.map((item) => (
+      <li class="news-list__item">
+        <a class="news-list__link" href={item.href}>
+          <time class="news-list__date" datetime={item.date.toISOString()}>
+            {fmt(item.date)}
+          </time>
+          <div class="news-list__headline">
+            <span class="news-list__title">{item.title}</span>
+          </div>
+        </a>
+      </li>
+    ))
+  }
+</ul>

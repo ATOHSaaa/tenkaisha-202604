@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="ページが見つかりません" noindex>
+  <section class="nf">
+    <div class="container nf__inner">
+      <h1 class="nf__jp heading-section">ページが<br />見つかりません</h1>
+      <p class="nf__lead">
+        お探しのページは移動または削除された可能性があります。
+        お手数ですが、下記のボタンからトップページへお戻りください。
+      </p>
+      <div class="nf__actions">
+        <a class="btn" href="/">トップへ <span class="btn__arrow">→</span></a>
+        <a class="btn btn--ghost" href="/news/">おしらせを見る <span class="btn__arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+</Base>
+    --_fg: var(--fg);
+    --_bd: var(--bg);
+  }
+</style>

@@ -1,0 +1,65 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+
+const fanboxUrl = 'https://www.pixiv.net/fanbox/creator/38362401';
+---
+
+<Base
+  title="友の会のご案内"
+  description="転回社の活動を支えてくださる『友の会』のご案内。会員種別、特典、入会方法について。"
+>
+  <PageHeader
+    jp="友の会のご案内"
+    lead="転回社の活動を支えてくださる『友の会』の会員を募集しています。温かいご支援をお願いいたします。"
+  >
+    <div class="prose">
+      <p>
+        転回社では、公演や教育活動を支えてくださる『友の会』の会員を募集しております。
+        皆さまの応援をいただき、より充実した作品づくりと、熊本の文化の発展を目指してまいります。
+      </p>
+
+      <h2>会員の種類</h2>
+
+      <h3>一般会員（500円／月）</h3>
+      <ul>
+        <li>転回社主催の公演を、割引価格（500円引き）でご覧いただけます。</li>
+        <li>pixivFANBOXで公開される限定コンテンツをお楽しみいただけます。</li>
+      </ul>
+
+      <h3>賛助会員（1,000円／月）</h3>
+      <ul>
+        <li>転回社主催の公演を、割引価格（500円引き）でご覧いただけます。</li>
+        <li>ご希望の公演1本を無料でご覧いただけます。</li>
+        <li>pixivFANBOXの限定コンテンツに加え、賛助会員向けのコンテンツもお楽しみいただけます。</li>
+      </ul>
+
+      <h2>入会方法</h2>
+      <ol>
+        <li>
+          <a href={fanboxUrl} target="_blank" rel="noopener noreferrer">pixivFANBOX（転回社）</a>
+          にアクセスしてください。
+        </li>
+        <li>pixiv IDでログインしてください（未登録の方は新規登録が必要です）。</li>
+        <li>ご希望の会員プランを選び、お支払い方法をお選びください。</li>
+      </ol>
+      <p class="note">
+        クレジットカード払い、コンビニ払いなどがご利用いただけます。2018年3月より年会費制から月額制に移行し、入会の受付は
+        pixivFANBOXで行っています。
+      </p>
+
+      <h2>お問い合わせ</h2>
+      <p>
+        ご不明な点がございましたら、公演会場の受付スタッフにお気軽にお尋ねください。Webからのお問い合わせは
+        <a href="/contact/">お問い合わせフォーム</a>
+        もご利用いただけます。
+      </p>
+
+      <p class="supporter__actions">
+        <a class="btn" href={fanboxUrl} target="_blank" rel="noopener noreferrer">
+          pixivFANBOXで入会する <span class="btn__arrow">→</span>
+        </a>
+      </p>
+    </div>
+  </PageHeader>
+</Base>

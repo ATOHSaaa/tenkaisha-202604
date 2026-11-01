@@ -1,0 +1,91 @@
+---
+// フッター。SNSリンク先はダミー。後ほど URL 差し替えてください。
+const social: { label: string; url: string }[] = [
+  { label: 'X', url: 'https://x.com/' },
+  { label: 'Instagram', url: 'https://www.instagram.com/' },
+  { label: 'YouTube', url: 'https://www.youtube.com/' },
+  { label: 'Facebook', url: 'https://www.facebook.com/' },
+];
+
+const nav: { heading: string; items: { label: string; href: string }[] }[] = [
+  {
+    heading: '転回社について',
+    items: [
+      { label: '劇団員紹介', href: '/requests/members/' },
+      { label: 'スタジオ所在地', href: '/#studios' },
+    ],
+  },
+  {
+    heading: '活動',
+    items: [
+      { label: '公演・イベント', href: '/events/' },
+      { label: '稽古情報', href: '/classes/' },
+      { label: '刊行物', href: '/publications/' },
+      { label: '日々のこと', href: '/blog/' },
+      { label: 'おしらせ', href: '/news/' },
+    ],
+  },
+  {
+    heading: 'ご依頼',
+    items: [
+      { label: '学校公演', href: '/requests/school/' },
+      { label: 'ワークショップ', href: '/requests/workshop/' },
+      { label: 'お問い合わせ', href: '/contact/' },
+    ],
+  },
+];
+
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner container">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <p class="site-footer__name">一般社団法人 転回社</p>
+        <p class="site-footer__tagline">
+          熊本市を中心に活動する劇団・制作団体。<br />
+          2001年の旗揚げ以来、演劇の可能性を探る創作を続けています。
+        </p>
+        <address class="site-footer__addr">
+          <span>〒862-0950</span>
+          <span>熊本県熊本市中央区水前寺 1-32-28-202</span>
+          <span>TEL 080-1770-8318 / FAX 096-323-7267</span>
+          <span>
+            <a href="mailto:office@tenkai.org">office@tenkai.org</a>
+          </span>
+        </address>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="フッターメニュー">
+        {
+          nav.map((group) => (
+            <div class="site-footer__group">
+              <p class="site-footer__group-title">{group.heading}</p>
+              <ul>
+                {group.items.map((item) => (
+                  <li>
+                    <a href={item.href}>{item.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <div class="site-footer__bottom">
+      <ul class="site-footer__social" aria-label="SNS">
+        {
+          social.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener noreferrer">
+                {s.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Card from '../../components/Card.astro';
+import { classes } from '../../data/site';
+---
+
+<Base title="稽古情報" description="転回社が運営する3つのクラス（熊本ミュージカルクラブ・転回社ジュニアクラス・くまもと発声表現教室）の情報。">
+  <PageHeader jp="稽古情報" lead="転回社では、4つのクラスを常設で運営しています。見学・体験のご要望もお気軽にどうぞ。" />
+
+  <section class="classes">
+    <div class="container">
+      <div class="grid grid--2 classes__grid">
+        {
+          classes.map((c) => (
+            <Card
+              href={c.path}
+              image={c.image}
+              label={c.english}
+              title={c.name}
+              body={c.summary}
+              imageAspect="4/3"
+            >
+              <dl class="classes__meta">
+                {c.target && <div><dt>対象</dt><dd>{c.target}</dd></div>}
+                {c.schedule && <div><dt>稽古日</dt><dd>{c.schedule}</dd></div>}
+                {c.fee && <div><dt>月謝</dt><dd>{c.fee}</dd></div>}
+              </dl>
+            </Card>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+  <rect width="400" height="500" fill="#f2cf1a"/>
+  <g fill="#0a0a0a">
+    <circle cx="120" cy="200" r="40"/>
+    <circle cx="220" cy="240" r="40"/>
+    <circle cx="300" cy="180" r="30"/>
+  </g>
+  <g fill="none" stroke="#0a0a0a" stroke-width="3" stroke-linecap="round">
+    <path d="M100 320 Q 200 280 320 320"/>
+    <path d="M100 350 Q 200 310 320 350"/>
+  </g>
+  <text x="40" y="70" fill="#0a0a0a" font-family="'Archivo',sans-serif" font-weight="900" font-size="16" letter-spacing="4">KIDS WORKSHOP</text>
+  <text x="40" y="95" fill="#0a0a0a" font-family="'Archivo',sans-serif" font-weight="500" font-size="10" letter-spacing="4">KIKUTO CULTURE HALL 2026.02</text>
+  <text x="40" y="440" fill="#0a0a0a" font-family="'Noto Sans JP',sans-serif" font-weight="900" font-size="28">Si�n</text>
+  <text x="40" y="470" fill="#0a0a0a" font-family="'Noto Sans JP',sans-serif" font-weight="900" font-size="28">�</text>
+</svg>

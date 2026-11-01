@@ -1,0 +1,61 @@
+.perf-history {
+    --perf-history-marker: 2.4em;
+    margin-top: 2em;
+  }
+
+  .perf-history__title {
+    font-size: var(--text-h2);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .perf-history__groups {
+    margin-top: var(--space-3);
+  }
+
+  /* 左の縦線。日付の disc はその右側 */
+  .prose .perf-history__rail {
+    margin-left: 0.35em;
+    border-left: 1px solid var(--line);
+  }
+
+  .perf-history__group + .perf-history__group {
+    margin-top: 0.35em;
+  }
+
+  .prose .perf-history__year {
+    display: block;
+    margin: 0;
+    padding: 0.45em 0 0.15em 0.85em;
+    font-family: var(--font-en);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+  }
+
+  .prose .perf-history__list {
+    list-style: disc outside;
+    margin: 0.1em 0 0.35em 0.85em;
+    padding: 0 0 0 var(--perf-history-marker);
+    border-left: 1px solid var(--line);
+    font-size: 17px;
+  }
+
+  .prose .perf-history__item {
+    position: relative;
+    display: list-item;
+    margin: 0;
+    padding: 0.22em 0;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  .prose .perf-history__item::marker {
+    color: var(--fg);
+  }
+
+  .perf-history__date {
+    letter-spacing: 0.04em;
+  }

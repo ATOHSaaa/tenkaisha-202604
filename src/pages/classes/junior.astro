@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+import ClassDetail from '../../components/ClassDetail.astro';
+import { classes } from '../../data/site';
+
+const c = classes.find((x) => x.slug === 'junior')!;
+---
+
+<Base title={c.name}>
+  <ClassDetail
+    class={c}
+    description="転回社ジュニアクラスは、小学1年生〜中学3年生を対象とした、演劇を通じて自分の表現を育てるクラスです。身体を使った遊びや即興劇を通じて、言葉・身体・仲間とのコミュニケーションを豊かにします。"
+    highlights={[
+      '演劇を通じた自己表現トレーニング',
+      '即興劇・朗読・身体遊びの総合メニュー',
+      '年1回の発表会を実施',
+      '学校教員・表現教育経験者による指導',
+    ]}
+  />
+</Base>

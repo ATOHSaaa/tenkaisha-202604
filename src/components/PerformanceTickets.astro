@@ -1,0 +1,45 @@
+---
+export type PerformanceTicket = {
+  label: string;
+  url: string;
+};
+
+interface Props {
+  tickets?: PerformanceTicket[];
+  variant: 'hero' | 'sidebar';
+}
+
+const { tickets = [], variant } = Astro.props;
+
+const items = tickets.filter((t) => t.url && t.label);
+---
+
+{
+  items.length > 0 && variant === 'hero' && (
+    <div class="perf__actions">
+      {items.map((ticket) => (
+        <a class="btn" href={ticket.url} target="_blank" rel="noopener noreferrer">
+          {ticket.label} <span class="btn__arrow">→</span>
+        </a>
+      ))}
+    </div>
+  )
+}
+{
+  items.length > 0 && variant === 'sidebar' && (
+    <div class="perf__ticket">
+      {items.map((ticket) => (
+        <a
+          class="btn perf__ticket-btn"
+          href={ticket.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="fa-solid fa-ticket perf__ticket-icon" aria-hidden="true"></i>
+          <span class="perf__ticket-label">{ticket.label}</span>
+          <span class="btn__arrow">→</span>
+        </a>
+      ))}
+    </div>
+  )
+}

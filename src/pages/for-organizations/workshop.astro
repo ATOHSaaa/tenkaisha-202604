@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import RequestDetail from '../../components/RequestDetail.astro';
+import { organizationPrograms } from '../../data/site';
+
+const info = organizationPrograms.find((p) => p.slug === 'workshop')!;
+---
+
+<Base title={info.name} description={info.summary}>
+  <RequestDetail
+    info={{
+      slug: info.slug,
+      name: info.name,
+      english: 'WORKSHOP PROGRAM',
+      summary: info.summary,
+      image: info.image,
+      path: info.path,
+    }}
+    description="企業研修・チームビルディング・地域活性化・福祉施設向けなど、目的に応じた演劇ワークショッププログラムを設計・実施します。単発の体験から、複数日にわたる継続プログラムまで柔軟に対応いたします。"
+    points={[
+      'コミュニケーション・表現力の向上',
+      'チームの対話と協働を促すプログラム',
+      '1時間の体験会から年間契約まで対応',
+      '対象：企業・自治体・NPO・福祉施設・学校 など',
+    ]}
+    backHref="/for-organizations/"
+    backLabel="法人の方向けへ戻る"
+  />
+</Base>

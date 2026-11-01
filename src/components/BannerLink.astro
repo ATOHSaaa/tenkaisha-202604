@@ -1,0 +1,22 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  english?: string;
+  wide?: boolean;
+  /** 白背景・黒文字（トップ友の会バナーなど） */
+  light?: boolean;
+}
+
+const { href, title, english, wide = false, light = false } = Astro.props;
+---
+
+<a
+  class:list={['guide-link', wide && 'guide-link--wide', light && 'guide-link--light']}
+  href={href}
+>
+  <span class="guide-link__inner">
+    {english && <span class="guide-link__en">{english}</span>}
+    <span class="guide-link__jp">{title}</span>
+  </span>
+</a>

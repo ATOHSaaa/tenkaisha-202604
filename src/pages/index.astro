@@ -1,0 +1,162 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import NewsList from '../components/NewsList.astro';
+import Card from '../components/Card.astro';
+import BannerLink from '../components/BannerLink.astro';
+import StudioMapLink from '../components/StudioMapLink.astro';
+import { getPublishedNews } from '../utils/emdash-news';
+import { getCollection } from 'astro:content';
+import { studios, homeClasses, homeBanners, corporateBanner, friendsBanner } from '../data/site';
+import {
+  eventEntryCardProps,
+  partitionEventList,
+} from '../utils/event-content';
+
+// お知らせを EmDash から日付降順で取得（最新1件）
+const news = (await getPublishedNews()).slice(0, 1);
+
+const { currentPerformances, currentEvents } = partitionEventList(await getCollection('events'));
+const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
+---
+
+<Base>
+  <div class="home">
+  {/* 公演・イベント情報 */}
+  <section class="section section--first">
+    <div class="container">
+      <SectionHead jp="公演・イベント情報" />
+
+      <div class="subsection">
+        {
+          !hasCurrent ? (
+            <p class="empty">現在、公演・イベントの情報はありません。</p>
+          ) : (
+            <div class="grid-events grid-long-run">
+              {currentPerformances.map((p) => (
+                <Card
+                  href={`/events/${p.id}/`}
+                  image={p.data.cover}
+                  title={p.data.title}
+                  {...eventEntryCardProps(p.data)}
+                />
+              ))}
+              {currentEvents.map((e) => (
+                <Card
+                  href={`/events/${e.id}/`}
+                  image={e.data.cover}
+                  title={e.data.title}
+                  {...eventEntryCardProps(e.data)}
+                />
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      <div class="section__actions section__actions--news">
+        <a class="badge-btn badge-btn--light" href="/events/">More →</a>
+      </div>
+    </div>
+  </section>
+
+  {/* おしらせ */}
+  <section class="section">
+    <div class="container">
+      <SectionHead jp="おしらせ" />
+      <NewsList
+        items={news.map((n) => ({
+          date: n.date,
+          title: n.title,
+          href: n.href,
+        }))}
+      />
+      <div class="section__actions section__actions--news">
+        <a class="badge-btn badge-btn--light" href="/news/">More →</a>
+      </div>
+    </div>
+  </section>
+
+  {/* 友の会 */}
+  <section class="section section--friends-banner">
+    <div class="container">
+      <div class="banner-row banner-row--1">
+        <BannerLink
+          href={friendsBanner.href}
+          title={friendsBanner.title}
+          english={friendsBanner.english}
+          wide
+          light
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* 開講クラス */}
+  <section class="section section--classes">
+    <div class="container">
+      <SectionHead jp="開講クラス" />
+      <div class="grid-center grid-center--3">
+        {
+          homeClasses.map((c) => (
+            <Card href={c.path} image={c.image} title={c.name} body={c.summary}>
+              <span class="card__more">詳細を見る <span class="card__more-arrow">→</span></span>
+            </Card>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ご案内 */}
+  <section class="section section--banners">
+    <div class="container">
+      <SectionHead jp="ご案内" />
+      <div class="banner-row banner-row--2">
+        {homeBanners.map((b) => (
+          <BannerLink href={b.href} title={b.title} english={b.english} light />
+        ))}
+      </div>
+      <div class="banner-row banner-row--1">
+        <BannerLink
+          href={corporateBanner.href}
+          title={corporateBanner.title}
+          english={corporateBanner.english}
+          wide
+          light
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* スタジオ所在地・お問い合わせ */}
+  <section id="studios" class="section section--footer-links">
+    <div class="container">
+      <div class="footer-links">
+        <div class="footer-links__block">
+          <h2 class="footer-links__title">スタジオ所在地</h2>
+          <ul class="studio-list">
+            {
+              studios.map((s) => (
+                <li class="studio-list__item">
+                  <span class="studio-list__name">{s.name}</span>
+                  <StudioMapLink studio={s} inline class="studio-list__addr" />
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="footer-links__block footer-links__block--contact">
+          <h2 class="footer-links__title">お問い合わせ</h2>
+          <p class="footer-links__lead">
+            公演・クラス・ワークショップ・取材等に関するお問い合わせは、フォームよりお願いいたします。
+          </p>
+          <a class="btn" href="/contact/">
+            お問い合わせフォーム <span class="btn__arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+</Base>

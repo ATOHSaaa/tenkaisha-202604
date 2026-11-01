@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <rect width="600" height="400" fill="#0a0a0a"/>
+  <g fill="#f6f5f2">
+    <rect x="60" y="180" width="160" height="120"/>
+    <rect x="240" y="160" width="120" height="160"/>
+    <rect x="380" y="200" width="160" height="100"/>
+  </g>
+  <rect x="240" y="160" width="120" height="40" fill="#f2cf1a"/>
+  <text x="40" y="80" fill="#f6f5f2" font-family="'Archivo',sans-serif" font-weight="700" font-size="14" letter-spacing="4">CREATIVE CLASS</text>
+</svg>

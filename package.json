@@ -1,0 +1,30 @@
+{
+  "name": "tenkaisha",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "一般社団法人 転回社 公式サイト",
+  "scripts": {
+    "dev": "astro dev",
+    "dev:local": "bash scripts/dev-server.sh",
+    "start": "npm run dev:local",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "emdash:seed": "emdash seed"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.0",
+    "@astrojs/node": "^11.1.5",
+    "@astrojs/react": "^6.0.5",
+    "astro": "^7.2.10",
+    "emdash": "^0.36.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.6.0"
+  }
+}

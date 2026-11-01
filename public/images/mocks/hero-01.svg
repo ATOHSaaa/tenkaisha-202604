@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid slice">
+  <rect width="1200" height="720" fill="#0a0a0a"/>
+  <g fill="none" stroke="#f6f5f2" stroke-width="1" opacity="0.3">
+    <line x1="0" y1="180" x2="1200" y2="180"/>
+    <line x1="0" y1="360" x2="1200" y2="360"/>
+    <line x1="0" y1="540" x2="1200" y2="540"/>
+    <line x1="300" y1="0" x2="300" y2="720"/>
+    <line x1="600" y1="0" x2="600" y2="720"/>
+    <line x1="900" y1="0" x2="900" y2="720"/>
+  </g>
+  <g fill="#f2cf1a">
+    <rect x="80" y="100" width="280" height="4"/>
+    <rect x="80" y="620" width="140" height="4"/>
+  </g>
+  <text x="80" y="180" fill="#f6f5f2" font-family="'Noto Sans JP',sans-serif" font-weight="900" font-size="120">��</text>
+  <text x="80" y="320" fill="#f6f5f2" font-family="'Noto Sans JP',sans-serif" font-weight="900" font-size="120">��Y�</text>
+  <text x="80" y="600" fill="#6b6b6b" font-family="'Archivo',sans-serif" font-weight="500" font-size="18" letter-spacing="8">TENKAISHA  KUMAMOTO THEATER COMPANY</text>
+</svg>

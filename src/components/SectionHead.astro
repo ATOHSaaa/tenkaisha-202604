@@ -1,0 +1,13 @@
+---
+interface Props {
+  jp: string;
+  note?: string;
+}
+
+const { jp, note } = Astro.props;
+---
+
+<header class="section-head">
+  <h2 class="section-head__jp heading-section">{jp}</h2>
+  {note && <span class="section-head__note">{note}</span>}
+</header>

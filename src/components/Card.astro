@@ -1,0 +1,110 @@
+---
+import { formatShowTitle, splitShowTitleBeforeWork } from '../utils/titles';
+
+interface Props {
+  href?: string;
+  image?: string;
+  label?: string;
+  badge?: string;
+  badgeVariant?: 'long-run';
+  nextPerformanceDate?: Date;
+  /** 日付ブロックの見出し（既定: 次回公演） */
+  nextDateLabel?: string;
+  /** @deprecated nextPerformanceDate + nextDateLabel を使用 */
+  scheduleText?: string;
+  title: string;
+  body?: string;
+  external?: boolean;
+  imageAspect?: string;
+}
+
+const {
+  href,
+  image,
+  label,
+  badge,
+  badgeVariant,
+  nextPerformanceDate,
+  nextDateLabel = '次回公演',
+  scheduleText,
+  title,
+  body,
+  external,
+  imageAspect,
+} = Astro.props;
+const titleParts = splitShowTitleBeforeWork(title);
+const displayTitle = formatShowTitle(title);
+const Tag = href ? 'a' : 'div';
+const extAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+
+const fmtDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<Tag class="card" href={href} {...extAttrs}>
+  {badge && (
+    <span class:list={['card__badge', badgeVariant === 'long-run' && 'card__badge--long-run']}>
+      {badge}
+    </span>
+  )}
+  {
+    image ? (
+      <div class="card__visual">
+        <h3 class="card__title">
+          {
+            titleParts ? (
+              <>
+                {titleParts.lead}
+                <wbr />
+                {titleParts.work}
+              </>
+            ) : (
+              displayTitle
+            )
+          }
+        </h3>
+        <div class="card__thumb-frame">
+          <img
+            class="card__thumb"
+            src={image}
+            alt=""
+            loading="lazy"
+            style={imageAspect ? `aspect-ratio:${imageAspect}` : undefined}
+          />
+        </div>
+      </div>
+    ) : (
+      <h3 class="card__title">
+        {
+          titleParts ? (
+            <>
+              {titleParts.lead}
+              <wbr />
+              {titleParts.work}
+            </>
+          ) : (
+            displayTitle
+          )
+        }
+      </h3>
+    )
+  }
+  {
+    nextPerformanceDate ? (
+      <p class="card__next">
+        <span class="card__next-label">{nextDateLabel}</span>
+        <time class="card__next-date" datetime={nextPerformanceDate.toISOString()}>
+          {fmtDate(nextPerformanceDate)}
+        </time>
+      </p>
+    ) : scheduleText ? (
+      <p class="card__next">
+        <span class="card__next-date card__next-date--schedule">{scheduleText}</span>
+      </p>
+    ) : (
+      label && <span class="card__label">{label}</span>
+    )
+  }
+  {body && <p class="card__body">{body}</p>}
+  <slot />
+</Tag>

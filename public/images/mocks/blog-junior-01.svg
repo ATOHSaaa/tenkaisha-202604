@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <rect width="600" height="400" fill="#f6f5f2"/>
+  <g fill="#0a0a0a">
+    <rect x="40" y="200" width="80" height="140"/>
+    <rect x="160" y="160" width="80" height="180"/>
+    <rect x="280" y="220" width="80" height="120"/>
+    <rect x="400" y="180" width="80" height="160"/>
+  </g>
+  <rect x="400" y="180" width="80" height="40" fill="#f2cf1a"/>
+  <text x="40" y="80" fill="#0a0a0a" font-family="'Archivo',sans-serif" font-weight="700" font-size="14" letter-spacing="4">JUNIOR CLASS</text>
+</svg>

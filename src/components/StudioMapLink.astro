@@ -1,0 +1,41 @@
+---
+import { studioMapUrl, type Studio } from '../data/site';
+
+interface Props {
+  studio: Studio;
+  /** 住所と建物名を1行で表示（トップのリスト向け） */
+  inline?: boolean;
+  class?: string;
+}
+
+const { studio, inline = false, class: className } = Astro.props;
+const href = studioMapUrl(studio);
+
+/** Font Awesome solid「up-right-from-square」相当（mask 用） */
+const externalIconMask = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23000' d='M352 0c-12.9 0-24.6 7.5-30 19.2s-2.6 25.5 6.8 34.6L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l17.4 17.4c9.1 9.4 22.9 11.9 34.6 6.8s19.2-17.1 19.2-30V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V336c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H176c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z'/%3E%3C/svg%3E")`;
+---
+
+<a
+  class:list={['studio-map-link', className]}
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  style={`--studio-map-icon: ${externalIconMask}`}
+>
+  {
+    inline ? (
+      <>
+        {studio.address} {studio.building}
+        <span class="studio-map-link__icon" aria-hidden="true"></span>
+      </>
+    ) : (
+      <>
+        {studio.address}
+        <br />
+        {studio.building}
+        <span class="studio-map-link__icon" aria-hidden="true"></span>
+      </>
+    )
+  }
+  <span class="sr-only">（Google マップで開く）</span>
+</a>

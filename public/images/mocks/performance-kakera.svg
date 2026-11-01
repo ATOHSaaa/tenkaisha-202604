@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+  <rect width="400" height="500" fill="#0a0a0a"/>
+  <g fill="#f6f5f2">
+    <polygon points="40,160 160,180 120,280 30,250"/>
+    <polygon points="200,200 320,160 360,280 240,320"/>
+    <polygon points="80,340 220,360 180,430 50,410"/>
+  </g>
+  <polygon points="240,320 360,280 320,380 260,400" fill="#f2cf1a"/>
+  <text x="40" y="70" fill="#f6f5f2" font-family="'Archivo',sans-serif" font-weight="900" font-size="18" letter-spacing="6">KAKERA</text>
+  <text x="40" y="95" fill="#f2cf1a" font-family="'Archivo',sans-serif" font-weight="500" font-size="10" letter-spacing="4">YEAR-END PLAY 2025</text>
+  <text x="40" y="470" fill="#f6f5f2" font-family="'Noto Sans JP',sans-serif" font-weight="900" font-size="28">KQ��pH�</text>
+</svg>

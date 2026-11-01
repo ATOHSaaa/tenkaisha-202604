@@ -1,0 +1,26 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import NewsList from '../../components/NewsList.astro';
+import { getPublishedNews } from '../../utils/emdash-news';
+
+const news = await getPublishedNews();
+---
+
+<Base title="おしらせ" description="転回社からのおしらせ一覧。">
+  <div class="news-page">
+  <PageHeader jp="おしらせ" lead="公演・稽古・メディア掲載等、転回社からの最新情報をお届けします。" />
+
+  <section class="news">
+    <div class="container">
+      <NewsList
+        items={news.map((n) => ({
+          date: n.date,
+          title: n.title,
+          href: n.href,
+        }))}
+      />
+    </div>
+  </section>
+  </div>
+</Base>

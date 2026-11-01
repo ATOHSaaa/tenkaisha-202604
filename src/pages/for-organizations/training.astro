@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import RequestDetail from '../../components/RequestDetail.astro';
+import { organizationPrograms } from '../../data/site';
+
+const info = organizationPrograms.find((p) => p.slug === 'training')!;
+---
+
+<Base title={info.name} description={info.summary}>
+  <RequestDetail
+    info={{
+      slug: info.slug,
+      name: info.name,
+      english: 'TEACHER TRAINING',
+      summary: info.summary,
+      image: info.image,
+      path: info.path,
+    }}
+    description="授業づくりや学級経営、児童・生徒との関わり方に演劇的手法を取り入れる教職員向け研修です。体験を通して学ぶ形式を基本とし、学校現場ですぐに活かせる視点をお伝えします。"
+    points={[
+      '授業づくりに活かせる演劇的手法の紹介',
+      '学級の対話・協働を促すワークの体験',
+      '校内研修・研究授業・公開講座などに対応',
+      '対象：小学校・中学校・高等学校の教職員',
+    ]}
+    backHref="/for-organizations/"
+    backLabel="法人の方向けへ戻る"
+  />
+</Base>

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://emdashcms.com/seed.schema.json",
+  "version": "1",
+  "meta": {
+    "name": "転回社",
+    "description": "転回社公式サイトのお知らせコレクション"
+  },
+  "settings": {
+    "title": "転回社",
+    "tagline": "熊本の劇団"
+  },
+  "collections": [
+    {
+      "slug": "news",
+      "label": "おしらせ",
+      "labelSingular": "おしらせ",
+      "description": "公演・稽古・メディア掲載などのお知らせ",
+      "icon": "bell",
+      "sortOrder": 1,
+      "supports": ["drafts", "revisions"],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "タイトル",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "date",
+          "label": "日付",
+          "type": "datetime",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "slug": "tag",
+          "label": "カテゴリ",
+          "type": "select",
+          "required": true,
+          "defaultValue": "おしらせ",
+          "validation": {
+            "options": ["公演", "稽古", "おしらせ", "ワークショップ", "メディア"]
+          }
+        },
+        {
+          "slug": "pinned",
+          "label": "上部に固定",
+          "type": "boolean",
+          "defaultValue": false
+        },
+        {
+          "slug": "link",
+          "label": "外部リンク",
+          "type": "url"
+        },
+        {
+          "slug": "content",
+          "label": "本文",
+          "type": "portableText"
+        }
+      ]
+    }
+  ],
+  "content": {
+    "news": [
+      {
+        "id": "2026-06-27-site-renewal",
+        "slug": "2026-06-27-site-renewal",
+        "status": "published",
+        "data": {
+          "title": "Webサイトをリニューアルしました",
+          "date": "2026-06-27T00:00:00.000Z",
+          "tag": "おしらせ",
+          "pinned": false,
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "children": [
+                {
+                  "_type": "span",
+                  "text": "転回社公式Webサイトをリニューアルしました。"
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "children": [
+                {
+                  "_type": "span",
+                  "text": "公演・イベント情報、おしらせ、クラスなどの情報を、このサイトからご覧いただけます。"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { contactFormUrl } from '../data/site';
+---
+
+<Base title="お問い合わせ" description="転回社へのお問い合わせは、Googleフォームよりお願いいたします。">
+  <PageHeader jp="お問い合わせ" lead="公演・ワークショップ・学校公演・取材・出演依頼等に関するお問い合わせは、下記のGoogleフォームよりお願いいたします。" />
+
+  <section class="contact">
+    <div class="container">
+      <div class="contact__grid">
+        <div class="contact__primary">
+          <p class="contact__label">お問い合わせフォーム</p>
+          <h2 class="contact__heading">
+            ご相談は<br />Googleフォームから
+          </h2>
+          <p class="contact__body">
+            内容によっては返信に数日いただく場合がございます。
+            お急ぎの場合は、お電話またはメールでも承ります。
+          </p>
+          <a class="btn contact__cta" href={contactFormUrl} target="_blank" rel="noopener noreferrer">
+            フォームを開く <span class="btn__arrow">→</span>
+          </a>
+          <p class="contact__note">※ 外部サイト（Googleフォーム）が新しいタブで開きます。</p>
+        </div>
+
+        <aside class="contact__side">
+          <dl class="meta">
+            <div><dt>電話</dt><dd>080-1770-8318</dd></div>
+            <div><dt>FAX</dt><dd>096-323-7267</dd></div>
+            <div><dt>E-mail</dt><dd><a href="mailto:office@tenkai.org">office@tenkai.org</a></dd></div>
+            <div>
+              <dt>所在地</dt>
+              <dd>〒862-0950<br />熊本県熊本市中央区<br />水前寺1-32-28-202</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+  <rect width="400" height="500" fill="#0a0a0a"/>
+  <g fill="none" stroke="#f6f5f2" stroke-width="1">
+    <circle cx="200" cy="260" r="60"/>
+    <circle cx="200" cy="260" r="100"/>
+    <circle cx="200" cy="260" r="140"/>
+    <circle cx="200" cy="260" r="180"/>
+  </g>
+  <circle cx="200" cy="260" r="30" fill="#f2cf1a"/>
+  <text x="40" y="70" fill="#f6f5f2" font-family="'Archivo',sans-serif" font-weight="900" font-size="18" letter-spacing="6">MUSICAL CLUB</text>
+  <text x="40" y="95" fill="#f2cf1a" font-family="'Archivo',sans-serif" font-weight="500" font-size="10" letter-spacing="4">KUMAMOTO / �,��������</text>
+  <text x="40" y="460" fill="#f6f5f2" font-family="'Noto Sans JP',sans-serif" font-weight="900" font-size="24">�,��������</text>
+</svg>

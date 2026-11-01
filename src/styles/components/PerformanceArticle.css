@@ -1,0 +1,160 @@
+.perf__hero {
+    background: var(--fg);
+    color: var(--bg);
+    padding-block: clamp(40px, 8vw, 96px);
+  }
+  .perf .page-header__jp.heading-section,
+  .perf__title.heading-section {
+    letter-spacing: 0.8em;
+    font-feature-settings: "palt" 1;
+  }
+  .perf__hero-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .perf__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .perf__period {
+    font-family: var(--font-en);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--bg);
+  }
+  .perf__next {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .perf__next-label {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--bg);
+    line-height: 1.4;
+  }
+  .perf__next-date {
+    font-family: var(--font-en);
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.15;
+    color: var(--bg);
+  }
+  .perf__venue {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--bg);
+  }
+  .perf__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .perf__hero .btn {
+    --_bg: var(--bg-alt);
+    --_fg: var(--fg);
+    --_bd: var(--bg-alt);
+    box-shadow: 0 2px 8px rgba(10, 10, 10, 0.08);
+  }
+  .perf__hero .btn:hover,
+  .perf__hero .btn:focus-visible {
+    --_bg: transparent;
+    --_fg: var(--bg-alt);
+    --_bd: var(--bg-alt);
+  }
+  .perf__ticket {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .perf__ticket-btn {
+    --_bg: var(--fg);
+    --_fg: var(--bg-alt);
+    --_bd: var(--fg);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.5;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(10, 10, 10, 0.08);
+  }
+  .perf__ticket-btn:hover,
+  .perf__ticket-btn:focus-visible {
+    --_bg: var(--bg-alt);
+    --_fg: var(--fg);
+    --_bd: var(--line);
+  }
+  .perf__ticket-icon {
+    font-size: 0.95em;
+    line-height: 1;
+  }
+  .perf__ticket-label {
+    text-align: center;
+  }
+  .perf__body {
+    padding-bottom: clamp(48px, 8vw, 96px);
+  }
+  .perf:has(.page-header--compact) .perf__body {
+    padding-top: 0;
+  }
+  .perf__grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: clamp(32px, 5vw, 80px);
+    align-items: start;
+  }
+  .perf__side {
+    position: sticky;
+    top: var(--sticky-sidebar-top);
+    align-self: start;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .perf__side-inner {
+    width: 100%;
+    max-width: 360px;
+  }
+  .perf__cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: top center;
+    border-radius: var(--radius-badge);
+    box-shadow: var(--shadow-card);
+  }
+  .perf__back {
+    margin-top: var(--space-8);
+    border-top: 1px solid var(--line);
+    padding-top: var(--space-5);
+  }
+  @media (max-width: 900px) {
+    .perf__grid {
+      grid-template-columns: 1fr;
+    }
+    .perf__side {
+      position: static;
+      order: -1;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: var(--space-6);
+    }
+    .perf__side-inner {
+      max-width: min(100%, 320px);
+      margin-inline: auto;
+    }
+  }

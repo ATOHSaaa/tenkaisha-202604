@@ -1,0 +1,23 @@
+---
+import { formatNextPerformanceSlot, type NextPerformanceSlot } from '../utils/dates';
+
+interface Props {
+  slots: NextPerformanceSlot[];
+}
+
+const { slots } = Astro.props;
+---
+
+{
+  slots.length > 0 && (
+    <>
+      <h2>次回公演</h2>
+      <ul>
+        {slots.map((slot) => (
+          <li>{formatNextPerformanceSlot(slot)}</li>
+        ))}
+      </ul>
+      <p class="next-performances__note">※開場は開演の30分前です</p>
+    </>
+  )
+}

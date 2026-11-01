@@ -1,0 +1,57 @@
+---
+import type { ClassInfo } from '../data/site';
+
+interface Props {
+  class: ClassInfo;
+  description?: string;
+  paragraphs?: string[];
+  highlights?: string[];
+}
+
+const { class: c, description, paragraphs = [], highlights = [] } = Astro.props;
+---
+
+<section class="cd__body container">
+  <h2 class="cd__title">{c.name}</h2>
+  <div class="cd__grid">
+    <div class="prose">
+      <h2>このクラスについて</h2>
+      {
+        paragraphs.length > 0
+          ? paragraphs.map((p) => <p>{p}</p>)
+          : description && <p>{description}</p>
+      }
+      {
+        highlights.length > 0 && (
+          <>
+            <h2>このクラスの特徴</h2>
+            <ul>
+              {highlights.map((h) => (
+                <li>{h}</li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+      <h2>体験参加について</h2>
+      <p>
+        各クラスとも体験参加を随時受け付けています。
+        <a href="/contact/">お問い合わせフォーム</a> より、ご希望のクラスを明記のうえご連絡ください。
+      </p>
+    </div>
+
+    <aside class="cd__side">
+      <img class="cd__cover" src={c.image} alt="" />
+      <dl class="cd__meta">
+        {c.schedule && <div><dt>稽古日</dt><dd>{c.schedule}</dd></div>}
+        {c.target && <div><dt>対象</dt><dd>{c.target}</dd></div>}
+        {c.fee && <div><dt>月謝</dt><dd>{c.fee}</dd></div>}
+      </dl>
+      <a class="btn" href="/contact/">体験参加を申し込む <span class="btn__arrow">→</span></a>
+    </aside>
+  </div>
+
+  <div class="cd__back">
+    <a class="link-arrow" href="/classes/">← 稽古情報へ戻る</a>
+  </div>
+</section>
