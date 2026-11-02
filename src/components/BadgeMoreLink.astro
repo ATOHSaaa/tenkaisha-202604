@@ -3,11 +3,12 @@ import { withBase } from '../utils/path';
 
 interface Props {
   href: string;
+  label?: string;
 }
 
-const { href } = Astro.props;
+const { href, label = 'More →' } = Astro.props;
 ---
 
 <a class="badge-btn badge-btn--light badge-btn--pill" href={withBase(href)}>
-  <span class="badge-btn__label">More →</span>
+  <span class="badge-btn__label">{label}</span>
 </a>
