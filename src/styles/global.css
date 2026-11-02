@@ -2951,6 +2951,105 @@ a.perf-history__date--link:hover {
   }
 }
 
+/* ---------- 学校演劇WS 活動実績 ---------- */
+.prose .ws-stats {
+  margin-top: var(--space-8);
+}
+.ws-stats__lead {
+  font-size: clamp(16px, 2.1vw, 19px);
+  line-height: 1.75;
+}
+.ws-stats__highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  margin: var(--space-5) 0 var(--space-6);
+  padding: 0;
+}
+.ws-stats__highlights > div {
+  padding: var(--space-4);
+  background: var(--bg-alt);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-card);
+}
+.ws-stats__highlights dt {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--space-2);
+}
+.ws-stats__highlights dd {
+  margin: 0;
+  font-size: clamp(16px, 2.1vw, 18px);
+  font-weight: 500;
+  line-height: 1.5;
+}
+.ws-stats__num {
+  font-family: var(--font-en);
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-right: 0.15em;
+}
+.ws-stats__table-wrap {
+  overflow: hidden;
+  overflow-x: auto;
+  border: 2px solid var(--line);
+  background: var(--bg);
+  border-radius: var(--radius-card);
+  -webkit-overflow-scrolling: touch;
+}
+.ws-stats__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.ws-stats__table thead th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: var(--fg);
+  color: var(--bg);
+  border-bottom: 2px solid var(--line);
+}
+.ws-stats__table tbody th,
+.ws-stats__table tbody td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+.ws-stats__table tbody tr:nth-child(even) th,
+.ws-stats__table tbody tr:nth-child(even) td {
+  background: var(--bg-alt);
+}
+.ws-stats__table tbody tr:last-child th,
+.ws-stats__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.ws-stats__table tbody th {
+  font-weight: 500;
+  text-align: left;
+}
+.ws-stats__table tbody td {
+  text-align: right;
+}
+.ws-stats__note {
+  margin-top: var(--space-4);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--fg-muted, var(--fg));
+  opacity: 0.85;
+}
+@media (max-width: 640px) {
+  .ws-stats__highlights {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- セクション見出し ---------- */
 .section-head {
   margin-bottom: var(--space-4);
@@ -4044,15 +4143,6 @@ a.perf-history__date--link:hover {
 }
 
 @media (max-width: 640px) {
-  .section--classes > .container,
-  .classes > .container {
-    padding-inline: 0;
-  }
-
-  .section--classes .section-head {
-    padding-inline: var(--container-pad);
-  }
-
   .section--classes .grid-center {
     justify-content: stretch;
     gap: clamp(10px, 2.8vw, 16px);
@@ -4067,10 +4157,6 @@ a.perf-history__date--link:hover {
 
   .classes .grid--3 {
     gap: clamp(10px, 2.8vw, 16px);
-  }
-
-  .classes > .container > :not(.classes__grid) {
-    padding-inline: var(--container-pad);
   }
 }
 

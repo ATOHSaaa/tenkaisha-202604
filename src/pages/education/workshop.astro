@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import RequestDetail from '../../components/RequestDetail.astro';
+import SchoolWorkshopStats from '../../components/SchoolWorkshopStats.astro';
 
 const info = {
   slug: 'school-workshop',
@@ -23,11 +24,13 @@ const info = {
       '表現力・協働・コミュニケーションを育てる内容',
       '1コマから連続プログラムまで対応',
       '学年・人数・校庭・体育館など環境に合わせて設計',
-      '文化庁事業など、学校での実績多数',
+      '文化庁事業など、国・自治体の事業にも多数参加',
     ]}
     backHref="/education/"
     backLabel="演劇と教育へ戻る"
     showHero={false}
     showSidebar={false}
-  />
+  >
+    <SchoolWorkshopStats slot="before-contact" />
+  </RequestDetail>
 </Base>
