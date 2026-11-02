@@ -52,7 +52,7 @@ export function buildBreadcrumbs(
   if (segments[0] === 'stages' && segments.length > 1) {
     return withBaseOnItems([
       { label: 'Top', href: '/' },
-      { label: SEGMENT_LABELS.stages! },
+      { label: SEGMENT_LABELS.stages!, href: '/stages/' },
     ]);
   }
 
@@ -75,14 +75,9 @@ export function buildBreadcrumbs(
   for (let i = 0; i < lastSegmentIndex; i++) {
     const segment = segments[i]!;
     acc += `/${segment}`;
-    const isParentOfCurrent = i === lastSegmentIndex - 1;
     const label = segmentLabel(segment);
 
-    if (isParentOfCurrent) {
-      items.push({ label });
-    } else {
-      items.push({ label, href: `${acc}/` });
-    }
+    items.push({ label, href: `${acc}/` });
   }
 
   return withBaseOnItems(items);

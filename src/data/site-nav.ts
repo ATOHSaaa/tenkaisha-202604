@@ -3,9 +3,8 @@ export type SiteNavItem = { label: string; href: string };
 
 export const siteHeaderNav: SiteNavItem[] = [
   { label: '公演・イベント', href: '/stages/' },
-  { label: '開講クラス', href: '/classes/' },
   { label: 'おしらせ', href: '/news/' },
-  { label: '日々のこと', href: '/blog/' },
+  { label: '開講クラス', href: '/classes/' },
   { label: '劇団員紹介', href: '/members/' },
   { label: '演劇と教育', href: '/education/' },
   { label: '法人の方向け', href: '/for-organizations/' },

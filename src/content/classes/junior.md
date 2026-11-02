@@ -2,7 +2,7 @@
 title: 転回社ジュニアクラス
 english: JUNIOR CLASS
 tag: 小1〜中3
-summary: 小学1年生〜中学3年生を対象とした、演劇を通じて表現を育てるクラス。
+summary: 小学1年生〜中学3年生向け。毎週水曜、経験豊富な講師とオリジナルミュージカルづくりに取り組みます。人見知りや舞台初めのお子さんも歓迎です。
 image: /images/classes/junior-flyer.png
 coverFit: contain
 schedule: 毎週水曜日

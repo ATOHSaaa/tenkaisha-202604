@@ -3,16 +3,17 @@ import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import Card from '../../components/Card.astro';
 import { classDetailHref, getClassEntries } from '../../utils/classes-content';
+import { withBase } from '../../utils/path';
 
 const classes = await getClassEntries();
 ---
 
-<Base title="開講クラス" description="転回社が運営する3つのクラス（熊本ミュージカルクラブ・転回社ジュニアクラス・くまもと発声表現教室）の情報。">
-  <PageHeader jp="開講クラス" lead="転回社では、4つのクラスを常設で運営しています。見学・体験のご要望もお気軽にどうぞ。" />
+<Base title="開講クラス" description="熊本ミュージカルクラブ・転回社ジュニアクラス・くまもと発声表現教室の稽古日、対象、月謝のご案内。">
+  <PageHeader jp="開講クラス" />
 
   <section class="classes">
     <div class="container">
-      <div class="grid grid--2 classes__grid">
+      <div class="grid grid--3 classes__grid">
         {
           classes.map((entry) => {
             const c = entry.data;
@@ -34,6 +35,11 @@ const classes = await getClassEntries();
             );
           })
         }
+      </div>
+
+      <div class="classes__cta">
+        <p>体験参加・見学をご希望の方、クラス内容についてのご質問は、お問い合わせフォームよりお気軽にご連絡ください。</p>
+        <a class="btn" href={withBase('/contact/')}>お問い合わせへ <span class="btn__arrow">→</span></a>
       </div>
     </div>
   </section>

@@ -117,7 +117,13 @@ const hasArchiveYears = archiveYearGroups.length > 0;
                         <div class="events-archive">
                           {archiveYearGroups.map((group) => (
                             <div class="events-archive__year">
-                              <h3 class="events-archive__year-title">{group.year}年</h3>
+                              <h3 class="events-archive__year-title">
+                                <span class="events-archive__year-label">{group.year}年</span>
+                                <span class="events-archive__year-stats">
+                                  <span class="events-archive__year-stat-num">{group.worksCount}</span>Works /
+                                  <span class="events-archive__year-stat-num">{group.stagesCount}</span>Stages
+                                </span>
+                              </h3>
                               <div class="grid-events grid-long-run">
                                 {group.entries.map((entry) => (
                                   <Card

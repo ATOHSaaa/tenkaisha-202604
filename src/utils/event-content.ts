@@ -186,12 +186,17 @@ export function partitionEventList(all: EventEntry[]) {
 export type ArchiveYearGroup = {
   year: string;
   entries: EventEntry[];
+  /** その年の一覧に載る公演・イベント件数 */
+  worksCount: number;
+  /** その年の上演日数（performanceHistory） */
+  stagesCount: number;
 };
 
 /** 「これまで」: 過去の上演日が属する年ごとにカード（複数年にまたがる公演は年ごとに重複表示） */
 export function groupArchiveEntriesByYear(all: EventEntry[]): ArchiveYearGroup[] {
   const todayKey = calendarDayKeyInJST();
   const yearBuckets = new Map<string, { entry: EventEntry; sortKey: string }[]>();
+  const yearStageCounts = new Map<string, number>();
 
   for (const entry of all) {
     const pastDates = pastPerformanceHistoryItems(entry.data.performanceHistory, todayKey);
@@ -207,6 +212,7 @@ export function groupArchiveEntriesByYear(all: EventEntry[]): ArchiveYearGroup[]
     }
 
     for (const [year, keys] of keysByYear) {
+      yearStageCounts.set(year, (yearStageCounts.get(year) ?? 0) + keys.length);
       const sortKey = keys.sort().at(-1)!;
       if (!yearBuckets.has(year)) yearBuckets.set(year, []);
       yearBuckets.get(year)!.push({ entry, sortKey });
@@ -217,6 +223,8 @@ export function groupArchiveEntriesByYear(all: EventEntry[]): ArchiveYearGroup[]
     .sort(([a], [b]) => b.localeCompare(a))
     .map(([year, items]) => ({
       year,
+      worksCount: items.length,
+      stagesCount: yearStageCounts.get(year) ?? 0,
       entries: items
         .sort((a, b) => b.sortKey.localeCompare(a.sortKey))
         .map(({ entry }) => entry),

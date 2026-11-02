@@ -5,7 +5,7 @@ import { withBase } from '../utils/path';
 const navId = 'site-header-nav';
 ---
 
-<header class="site-header">
+<div class="site-header-root">
   <div class="site-header__inner container">
     <a class="site-header__brand" href={withBase('/')} aria-label="転回社 トップへ">
       <span class="site-header__logo">転回社</span>
@@ -40,24 +40,60 @@ const navId = 'site-header-nav';
       </ul>
     </nav>
   </div>
-</header>
+
+  <button
+    type="button"
+    class="site-header__backdrop"
+    aria-label="メニューを閉じる"
+    tabindex="-1"
+    hidden
+    data-site-header-backdrop
+  ></button>
+</div>
 
 <script>
   function setupSiteHeaderMenu() {
-    const header = document.querySelector('.site-header');
+    const root = document.querySelector('.site-header-root');
     const toggle = document.querySelector('[data-site-header-toggle]');
     const nav = document.getElementById('site-header-nav');
-    if (!header || !toggle || !nav || toggle.hasAttribute('data-nav-bound')) return;
-    toggle.setAttribute('data-nav-bound', '');
+    const backdrop = document.querySelector('[data-site-header-backdrop]');
+    if (!root || !toggle || !nav || !backdrop || root.hasAttribute('data-nav-bound')) return;
+    root.setAttribute('data-nav-bound', '');
+
+    const isMobileNav = () => window.matchMedia('(max-width: 900px)').matches;
 
     const setOpen = (open: boolean) => {
-      header.classList.toggle('is-nav-open', open);
+      root.classList.toggle('is-nav-open', open);
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+      if (open) {
+        backdrop.removeAttribute('hidden');
+      } else {
+        backdrop.setAttribute('hidden', '');
+      }
+      if (isMobileNav()) {
+        nav.setAttribute('aria-hidden', open ? 'false' : 'true');
+      } else {
+        nav.removeAttribute('aria-hidden');
+      }
+      document.body.classList.toggle('site-header-nav-open', open);
     };
 
-    toggle.addEventListener('click', () => {
-      setOpen(!header.classList.contains('is-nav-open'));
+    setOpen(false);
+
+    toggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+      setOpen(!root.classList.contains('is-nav-open'));
+    });
+
+    backdrop.addEventListener('click', () => setOpen(false));
+
+    document.addEventListener('click', (event) => {
+      if (!root.classList.contains('is-nav-open') || !isMobileNav()) return;
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (nav.contains(target) || toggle.contains(target)) return;
+      setOpen(false);
     });
 
     nav.querySelectorAll('a').forEach((link) => {
@@ -65,7 +101,7 @@ const navId = 'site-header-nav';
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape' && root.classList.contains('is-nav-open')) setOpen(false);
     });
 
     window.matchMedia('(min-width: 901px)').addEventListener('change', (event) => {

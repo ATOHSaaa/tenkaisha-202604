@@ -2,7 +2,7 @@
 title: 熊本ミュージカルクラブ
 english: KUMAMOTO MUSICAL CLUB
 tag: ミュージカル
-summary: 週に一回、国府電停そばのスタジオで楽しくミュージカル活動。元劇団四季・小松野希海と一緒に、ミュージカルの世界を体験してみませんか。
+summary: 火曜19:30から国府近くのスタジオで週1回。元劇団四季・小松野希海とミュージカル稽古。年齢制限なしで、仕事や学校と両立しやすいクラスです。
 image: /images/classes/musical-club-flyer.jpg
 coverFit: contain
 schedule: 火曜 19:30-21:00

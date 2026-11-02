@@ -2,7 +2,7 @@
 title: くまもと発声表現教室
 english: VOICE EXPRESSION
 tag: 発声／話し方
-summary: あなたの声のお悩み、解決しちゃいます。グループで話し・聞き合いながら、発声と表現を多角的に学ぶ教室です。
+summary: 転回社所属俳優が講師。第1・第3土曜のグループで、話す・聞く・声の出し方を演劇手法で学ぶ大人向け教室。個人レッスン・体験も可。
 image: /images/classes/hassei-flyer.png
 schedule: 毎月第1・第3土曜 10:00-11:15
 target: 大人（一般）
