@@ -426,6 +426,10 @@ ol {
   --_bd: var(--line);
 }
 
+.btn--pill {
+  border-radius: 999px;
+}
+
 .btn--ghost:hover,
 .btn--ghost:focus-visible {
   --_bg: var(--accent);
@@ -3686,6 +3690,9 @@ a.perf-history__date--link:hover {
   color: #fff;
   overflow: hidden;
   border-radius: var(--radius-card);
+  --hero-overlay-inset-x: clamp(8px, 2vw, 16px);
+  --hero-overlay-inset-top: clamp(10px, 2vw, 18px);
+  --hero-overlay-inset-bottom: clamp(14px, 3.5vw, 22px);
 }
 
 .home-hero__slides {
@@ -3794,8 +3801,9 @@ a.perf-history__date--link:hover {
 .home-hero__copy {
   position: absolute;
   z-index: 1;
-  top: clamp(14px, 2.2vw, 24px);
-  left: clamp(20px, 3.5vw, 40px);
+  top: var(--hero-overlay-inset-top);
+  left: var(--hero-overlay-inset-x);
+  max-width: calc(100% - 2 * var(--hero-overlay-inset-x));
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -3865,13 +3873,6 @@ a.perf-history__date--link:hover {
   box-sizing: border-box;
 }
 
-.home-hero__bouten {
-  -webkit-text-emphasis: dot currentColor;
-  text-emphasis: dot currentColor;
-  text-emphasis-position: over right;
-  -webkit-text-emphasis-position: over right;
-}
-
 .home-hero__vertical-address-part {
   display: inline-block;
 }
@@ -3904,14 +3905,14 @@ a.perf-history__date--link:hover {
 .home-hero__credit-row {
   position: absolute;
   z-index: 1;
-  top: clamp(12px, 2vw, 20px);
-  right: clamp(10px, 1.6vw, 18px);
+  top: var(--hero-overlay-inset-top);
+  right: var(--hero-overlay-inset-x);
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-end;
   gap: 4px;
-  max-width: calc(100% - clamp(28px, 5vw, 56px));
+  max-width: calc(100% - 2 * var(--hero-overlay-inset-x));
   pointer-events: none;
 }
 
@@ -3932,11 +3933,13 @@ a.perf-history__date--link:hover {
 .home-hero__marquee {
   position: absolute;
   z-index: 2;
-  right: 0;
-  bottom: clamp(14px, 2.2vw, 24px);
-  left: 0;
+  right: var(--hero-overlay-inset-x);
+  bottom: var(--hero-overlay-inset-bottom);
+  left: var(--hero-overlay-inset-x);
+  width: auto;
   overflow: hidden;
   background: var(--bg);
+  border-radius: var(--radius-card);
 }
 
 .home-hero__marquee-track {
@@ -4005,12 +4008,6 @@ a.perf-history__date--link:hover {
 }
 
 @media (max-width: 640px) {
-  .home-hero__copy {
-    top: clamp(10px, 2vw, 18px);
-    left: clamp(8px, 2vw, 16px);
-    max-width: calc(100% - clamp(8px, 2vw, 16px));
-  }
-
   .home-hero__vertical-copy--tagline-mobile {
     display: block;
   }
@@ -4019,13 +4016,8 @@ a.perf-history__date--link:hover {
     display: none;
   }
 
-  .home-hero__media {
-    display: flex;
-    flex-direction: column;
-  }
-
   .home-hero__slides {
-    flex: 0 0 auto;
+    flex: none;
     width: 100%;
     aspect-ratio: 3 / 4;
     min-height: clamp(360px, calc((100vw - 40px) * 4 / 3), 560px);
@@ -4041,23 +4033,6 @@ a.perf-history__date--link:hover {
     object-fit: cover;
     object-position: top right;
     transform: none;
-  }
-
-  .home-hero__marquee {
-    position: relative;
-    z-index: 2;
-    right: auto;
-    bottom: auto;
-    left: auto;
-    flex-shrink: 0;
-    border-radius: 0 0 var(--radius-card) var(--radius-card);
-  }
-
-  .home-hero__credit-row {
-    top: clamp(10px, 2vw, 18px);
-    right: clamp(8px, 2vw, 16px);
-    gap: 4px;
-    max-width: calc(100% - clamp(16px, 4vw, 32px));
   }
 
   .home-hero__horizontal-copy {
@@ -4085,6 +4060,46 @@ a.perf-history__date--link:hover {
 }
 .home .section-head {
   margin-bottom: var(--space-5);
+}
+
+/* トップ: おしらせ（前後セクションとの余白を詰める） */
+.home .section--home-news {
+  padding-top: clamp(12px, 2vw, 20px);
+  padding-bottom: clamp(16px, 2.5vw, 28px);
+}
+
+.home .section--first {
+  padding-bottom: clamp(20px, 3.5vw, 40px);
+}
+
+.home .section--home-news + .section {
+  padding-top: clamp(16px, 2.5vw, 32px);
+}
+
+.home .section--home-news .section-head {
+  margin-bottom: var(--space-3);
+}
+
+.home .section--home-news .news-list__link {
+  padding-block: var(--space-3);
+}
+
+.home .section--home-news .section__actions {
+  margin-top: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .home .section--home-news .section-head {
+    margin-bottom: var(--space-2);
+  }
+
+  .home .section--home-news .news-list__link {
+    padding-block: var(--space-2);
+  }
+
+  .home .section--home-news .section__actions {
+    margin-top: var(--space-3);
+  }
 }
 
 .home > .section:last-of-type {
