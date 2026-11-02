@@ -1,5 +1,5 @@
 ---
-// サイト共通ヘッダー（お問い合わせのみ・全幅でボタン表示）
+import { siteHeaderNav } from '../data/site-nav';
 import { withBase } from '../utils/path';
 ---
 
@@ -10,7 +10,17 @@ import { withBase } from '../utils/path';
     </a>
 
     <nav class="site-header__nav" aria-label="サイト内メニュー">
-      <a class="badge-btn site-header__link" href={withBase('/contact/')}>お問い合わせ</a>
+      <ul class="site-header__nav-list">
+        {
+          siteHeaderNav.map((item) => (
+            <li class="site-header__nav-item">
+              <a class="site-header__link" href={withBase(item.href)}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </nav>
   </div>
 </header>
