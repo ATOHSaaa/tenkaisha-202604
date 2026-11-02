@@ -108,6 +108,85 @@ export const friendsBanner: BannerInfo = {
   href: '/supporter/',
 };
 
+export type HomeActivityThumbnail = {
+  image: string;
+  imageFocus?: 'top' | 'center';
+  imagePosition?: string;
+  imageScaleDesktop?: number;
+};
+
+export type HomeActivity = {
+  number: string;
+  title: string;
+  summary: string;
+  href: string;
+  linkLabel: string;
+  image: string;
+  /** サムネイル2枚並置（指定時はこちらを表示） */
+  thumbnails?: HomeActivityThumbnail[];
+  /** サムネイルの object-position（既定: center） */
+  imageFocus?: 'top' | 'center';
+  /** imageFocus より優先（例: center 26%） */
+  imagePosition?: string;
+  /** サムネイル拡大（上端基準、はみ出しはクリップ） */
+  imageScale?: number;
+  /** PC幅のみ imageScale と同様 */
+  imageScaleDesktop?: number;
+};
+
+/** トップ：友の会バナー直上の活動カード */
+export const homeActivities: HomeActivity[] = [
+  {
+    number: '01',
+    title: '舞台制作',
+    summary:
+      'オリジナルミュージカルやストレートプレイの企画・制作・公演。熊本を拠点に、継続的な上演と新作づくりを行っています。',
+    href: '/stages/',
+    linkLabel: '公演・イベント',
+    image: '/images/home-hero-alt.jpg',
+    imagePosition: 'center 24%',
+  },
+  {
+    number: '02',
+    title: '教育活動',
+    summary:
+      '学校公演、演劇ワークショップ、ジュニアクラスなど。子どもから大人まで、演劇に触れ・学べる場を届けます。',
+    href: '/education/',
+    linkLabel: '演劇と教育',
+    image: '/images/education/school-performance.png',
+    imageFocus: 'top',
+    imageScaleDesktop: 1.12,
+  },
+  {
+    number: '03',
+    title: '外部出演',
+    summary:
+      '転回社所属の俳優・音楽家が、舞台をはじめメディアや地域のイベントなど、さまざまな場で活動しています。',
+    href: '/members/',
+    linkLabel: '劇団員紹介',
+    image: '/images/members/komatsuno-nozomi.png',
+    thumbnails: [
+      {
+        image: '/images/members/komatsuno-nozomi.png',
+        imagePosition: 'center 18%',
+      },
+      {
+        image: '/images/members/sakaguchi-kanoko.png',
+        imagePosition: 'center 22%',
+      },
+    ],
+  },
+  {
+    number: '04',
+    title: '外部講師',
+    summary:
+      '企業・自治体・学校向けに、演劇ワークショップや教職員研修など、講師・ファシリテーターの派遣を承ります。',
+    href: '/for-organizations/',
+    linkLabel: '法人の方向け',
+    image: '/images/mocks/request-workshop.svg',
+  },
+];
+
 export type OrganizationProgram = {
   slug: string;
   name: string;
@@ -120,7 +199,7 @@ export type OrganizationProgram = {
 export const organizationPrograms: OrganizationProgram[] = [
   {
     slug: 'workshop',
-    name: '演劇ワークショッププログラム',
+    name: '演劇ワークショップ',
     summary: '企業・自治体・福祉施設向けに、演劇の手法を活かしたワークショップをご提案します。',
     image: '/images/mocks/request-workshop.svg',
     path: '/for-organizations/workshop/',
@@ -131,6 +210,48 @@ export const organizationPrograms: OrganizationProgram[] = [
     summary: '授業づくりや学級経営に活かせる、演劇的手法を取り入れた教職員研修です。',
     image: '/images/mocks/request-school.svg',
     path: '/for-organizations/training/',
+  },
+];
+
+export type EducationProgramCard = {
+  title: string;
+  english: string;
+  summary: string;
+  image: string;
+  path: string;
+};
+
+/** 演劇と教育ページのプログラムカード */
+export const educationPrograms: EducationProgramCard[] = [
+  {
+    title: '学校公演',
+    english: 'SCHOOL SHOW',
+    summary: '主に小学校を対象とした、学校公演を承ります。',
+    image: '/images/education/school-performance.png',
+    path: '/education/school/',
+  },
+  {
+    title: '演劇ワークショップ',
+    english: 'WORKSHOP',
+    summary:
+      '小・中学校向けの演劇ワークショップ。学級活動や総合的な学習の時間など、学校のご要望に合わせて設計します。',
+    image: '/images/mocks/request-workshop.svg',
+    path: '/education/workshop/',
+  },
+  {
+    title: '学校教職員向け研修',
+    english: 'TEACHER TRAINING',
+    summary: '授業づくりや学級経営に活かせる、演劇的手法を取り入れた教職員研修です。',
+    image: '/images/mocks/request-school.svg',
+    path: '/for-organizations/training/',
+  },
+  {
+    title: '転回社ジュニアクラス',
+    english: 'JUNIOR CLASS',
+    summary:
+      '小学1年生〜中学3年生向け。毎週水曜、経験豊富な講師とオリジナルミュージカルづくりに取り組みます。',
+    image: '/images/classes/junior-flyer.png',
+    path: '/classes/junior/',
   },
 ];
 

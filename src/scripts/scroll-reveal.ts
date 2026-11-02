@@ -3,7 +3,7 @@ let lastScrollY = 0;
 let scrollingDown = true;
 let scrollDirectionBound = false;
 
-const STAGGER_SELECTOR = '.card, .guide-link, .footer-links__block';
+const STAGGER_SELECTOR = '.card, .guide-link, .activity-card, .footer-links__block, .news-list__item';
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;

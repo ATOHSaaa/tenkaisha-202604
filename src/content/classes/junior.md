@@ -8,7 +8,7 @@ coverFit: contain
 schedule: 毎週水曜日
 target: 小学1年生〜中学3年生
 fee: 月額 4,000円
-order: 2
+order: 1
 instructors:
   - name: 坂口佳乃子
     photo: /images/classes/junior-instructor-sakaguchi.jpg

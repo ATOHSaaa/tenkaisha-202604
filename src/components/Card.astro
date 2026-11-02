@@ -23,7 +23,8 @@ interface Props {
   external?: boolean;
   imageAspect?: string;
   /** ニュースサイドバー: チラシ左・タイトル＋日付を右に縦並び */
-  layout?: 'default' | 'sidebar';
+  /** 開講クラス: PCは縦積み、狭い幅でチラシ左・テキスト右 */
+  layout?: 'default' | 'sidebar' | 'classFlyer';
 }
 
 const {
@@ -53,6 +54,7 @@ const fmtDate = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 
 const sidebarLayout = layout === 'sidebar' && Boolean(image);
+const classFlyerLayout = layout === 'classFlyer' && Boolean(image);
 
 function resolveHref(raw?: string) {
   if (!raw) return undefined;
@@ -64,7 +66,11 @@ const imageSrc = image && !/^https?:\/\//i.test(image) ? withBase(image) : image
 const linkHref = resolveHref(href);
 ---
 
-<Tag class:list={['card', sidebarLayout && 'card--sidebar']} href={linkHref} {...extAttrs}>
+<Tag
+  class:list={['card', sidebarLayout && 'card--sidebar', classFlyerLayout && 'card--class-flyer']}
+  href={linkHref}
+  {...extAttrs}
+>
   {
     badgeList.length > 0 && (
       <div class="card__badges">
@@ -75,7 +81,33 @@ const linkHref = resolveHref(href);
     )
   }
   {
-    sidebarLayout ? (
+    classFlyerLayout ? (
+      <div class="card__class-stack">
+        <h3 class="card__title">
+          {
+            titleParts ? (
+              <>
+                {titleParts.lead}
+                <wbr />
+                {titleParts.work}
+              </>
+            ) : (
+              displayTitle
+            )
+          }
+        </h3>
+        <div class="card__thumb-frame">
+          <img
+            class="card__thumb"
+            src={imageSrc}
+            alt=""
+            loading="lazy"
+            style={imageAspect ? `aspect-ratio:${imageAspect}` : undefined}
+          />
+        </div>
+        {body && <p class="card__body">{body}</p>}
+      </div>
+    ) : sidebarLayout ? (
       <div class="card__visual card__visual--sidebar">
         <div class="card__thumb-frame">
           <img
@@ -161,6 +193,7 @@ const linkHref = resolveHref(href);
   }
   {
     !sidebarLayout &&
+      !classFlyerLayout &&
       (nextPerformanceDate ? (
         <p class="card__next">
           <span class="card__next-label">{nextDateLabel}</span>
@@ -176,6 +209,6 @@ const linkHref = resolveHref(href);
         label && <span class="card__label">{label}</span>
       ))
   }
-  {body && <p class="card__body">{body}</p>}
+  {body && !classFlyerLayout && <p class="card__body">{body}</p>}
   <slot />
 </Tag>

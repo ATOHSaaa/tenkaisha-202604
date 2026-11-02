@@ -2,12 +2,29 @@
 interface Props {
   jp: string;
   note?: string;
+  /** 見出し直下の説明文（改行は \n） */
+  lead?: string;
 }
 
-const { jp, note } = Astro.props;
+const { jp, note, lead } = Astro.props;
+const leadLines = lead?.split('\n').filter(Boolean) ?? [];
 ---
 
 <header class="section-head">
-  <h2 class="section-head__jp heading-section">{jp}</h2>
-  {note && <span class="section-head__note">{note}</span>}
+  <div class="section-head__title-row">
+    <h2 class="section-head__jp heading-section">{jp}</h2>
+    {note && <span class="section-head__note">{note}</span>}
+  </div>
+  {
+    leadLines.length > 0 && (
+      <p class="section-head__lead">
+        {leadLines.map((line, index) => (
+          <>
+            {index > 0 && <br />}
+            {line}
+          </>
+        ))}
+      </p>
+    )
+  }
 </header>

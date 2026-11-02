@@ -53,7 +53,7 @@ export type EventBadge = {
 };
 
 const BADGE_BY_TYPE = {
-  'long-run': { badge: 'ロングラン上演中！' as const, badgeVariant: 'long-run' as const },
+  'long-run': { badge: 'ロングラン' as const, badgeVariant: 'long-run' as const },
   performance: { badge: '公演' as const, badgeVariant: undefined },
   event: { badge: 'イベント' as const, badgeVariant: 'event' as const },
 };

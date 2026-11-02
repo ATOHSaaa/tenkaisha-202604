@@ -5,7 +5,7 @@ import Card from '../../components/Card.astro';
 import { organizationPrograms } from '../../data/site';
 ---
 
-<Base title="法人の方向け" description="企業・自治体・学校向けの演劇ワークショッププログラムと教職員研修のご案内。">
+<Base title="法人の方向け" description="企業・自治体向けの演劇ワークショップと教職員研修のご案内。">
   <PageHeader
     jp="法人の方向け"
     lead="企業・自治体・学校など、法人・団体向けの演劇プログラムをご用意しています。"
@@ -16,9 +16,7 @@ import { organizationPrograms } from '../../data/site';
       <div class="grid grid--2">
         {
           organizationPrograms.map((p) => (
-            <Card href={p.path} image={p.image} title={p.name} body={p.summary}>
-              <span class="card__more">詳細を見る <span class="card__more-arrow">→</span></span>
-            </Card>
+            <Card href={p.path} title={p.name} body={p.summary} />
           ))
         }
       </div>

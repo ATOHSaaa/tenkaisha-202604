@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { buildBreadcrumbs, type BreadcrumbItem } from '../utils/breadcrumbs';
 import { withBase, stripBasePath } from '../utils/path';
+import { THEME_USER_CHOICE_ENABLED } from '../scripts/theme';
 
 interface Props {
   title?: string;
@@ -22,7 +23,7 @@ const {
   title,
   description = '熊本を拠点に活動する劇団「転回社」の公式サイト。公演情報、開講クラス、演劇教育、スタジオ情報をご案内します。',
   ogImage = '/images/ogp.png',
-  scrollReveal = true,
+  scrollReveal = false,
   breadcrumbs: breadcrumbsProp,
   breadcrumbLabel,
 } = Astro.props;
@@ -61,6 +62,26 @@ const breadcrumbJsonLd =
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    {
+      THEME_USER_CHOICE_ENABLED ? (
+        <script is:inline>
+          (function () {
+            try {
+              var k = 'tenkaisha-theme';
+              var s = localStorage.getItem(k);
+              var d =
+                s === 'dark' ||
+                (s !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+              if (d) document.documentElement.setAttribute('data-theme', 'dark');
+            } catch (e) {}
+          })();
+        </script>
+      ) : (
+        <script is:inline>
+          document.documentElement.removeAttribute('data-theme');
+        </script>
+      )
+    }
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
@@ -125,9 +146,16 @@ const breadcrumbJsonLd =
     </script>
     <script>
       import { initScrollReveal } from '../scripts/scroll-reveal';
+      import { initTheme, initThemeToggle } from '../scripts/theme';
 
+      initTheme();
+      initThemeToggle();
       initScrollReveal();
-      document.addEventListener('astro:page-load', initScrollReveal);
+      document.addEventListener('astro:page-load', () => {
+        initTheme();
+        initThemeToggle();
+        initScrollReveal();
+      });
     </script>
 
     

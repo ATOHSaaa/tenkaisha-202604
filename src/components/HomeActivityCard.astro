@@ -1,0 +1,96 @@
+---
+import { withBase } from '../utils/path';
+import type { HomeActivity, HomeActivityThumbnail } from '../data/site';
+
+interface Props {
+  activity: HomeActivity;
+}
+
+const { activity } = Astro.props;
+const href = withBase(activity.href);
+
+function thumbStyle(thumb: HomeActivityThumbnail) {
+  const objectPosition =
+    thumb.imagePosition ??
+    (thumb.imageFocus === 'top' ? 'top center' : 'center center');
+  return {
+    objectPosition,
+    ...(thumb.imageScaleDesktop
+      ? { '--activity-img-scale': String(thumb.imageScaleDesktop) }
+      : {}),
+  };
+}
+
+const mediaItems: HomeActivityThumbnail[] =
+  activity.thumbnails && activity.thumbnails.length > 0
+    ? activity.thumbnails
+    : [
+        {
+          image: activity.image,
+          imageFocus: activity.imageFocus,
+          imagePosition: activity.imagePosition,
+          imageScaleDesktop: activity.imageScaleDesktop,
+        },
+      ];
+const isDuo = mediaItems.length > 1;
+---
+
+<a class="activity-card scroll-reveal" href={href}>
+  <div class="activity-card__layout">
+    <div class="activity-card__aside">
+      <div class:list={['activity-card__media', { 'activity-card__media--duo': isDuo }]}>
+        {
+          isDuo ? (
+            <div class="activity-card__duo">
+              {mediaItems.map((thumb) => (
+                <div class="activity-card__duo-cell">
+                  <img
+                    class:list={[
+                      'activity-card__img',
+                      {
+                        'activity-card__img--desktop-scale': Boolean(
+                          thumb.imageScaleDesktop,
+                        ),
+                      },
+                    ]}
+                    src={withBase(thumb.image)}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    style={thumbStyle(thumb)}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <img
+              class:list={[
+                'activity-card__img',
+                {
+                  'activity-card__img--desktop-scale': Boolean(
+                    mediaItems[0]?.imageScaleDesktop,
+                  ),
+                },
+              ]}
+              src={withBase(mediaItems[0].image)}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              style={thumbStyle(mediaItems[0])}
+            />
+          )
+        }
+      </div>
+    </div>
+    <div class="activity-card__body">
+      <p class="activity-card__label">
+        <span class="activity-card__num">{activity.number}</span>
+        {activity.title}
+      </p>
+      <p class="activity-card__summary">{activity.summary}</p>
+      <span class="activity-card__cta">
+        {activity.linkLabel}<span class="activity-card__cta-arrow" aria-hidden="true"> →</span>
+      </span>
+    </div>
+  </div>
+</a>

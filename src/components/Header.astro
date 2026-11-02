@@ -1,6 +1,7 @@
 ---
 import { siteHeaderNav } from '../data/site-nav';
 import { withBase } from '../utils/path';
+import { THEME_USER_CHOICE_ENABLED } from '../scripts/theme';
 
 const navId = 'site-header-nav';
 ---
@@ -27,7 +28,31 @@ const navId = 'site-header-nav';
     </button>
 
     <nav class="site-header__nav" id={navId} aria-label="サイト内メニュー">
+      <span class="site-header__nav-indicator" aria-hidden="true"></span>
       <ul class="site-header__nav-list">
+        {
+          THEME_USER_CHOICE_ENABLED ? (
+            <li class="site-header__nav-item site-header__nav-item--theme">
+              <button
+                type="button"
+                class="site-header__theme-toggle"
+                aria-label="ダークモードに切り替え"
+                aria-pressed="false"
+                data-theme-toggle
+              >
+                <i
+                  class="fa-solid fa-moon site-header__theme-icon site-header__theme-icon--moon"
+                  aria-hidden="true"
+                />
+                <i
+                  class="fa-solid fa-sun site-header__theme-icon site-header__theme-icon--sun"
+                  aria-hidden="true"
+                />
+                <span class="sr-only">表示モード切替</span>
+              </button>
+            </li>
+          ) : null
+        }
         {
           siteHeaderNav.map((item) => (
             <li class="site-header__nav-item">
@@ -109,6 +134,114 @@ const navId = 'site-header-nav';
     });
   }
 
+  function setupSiteHeaderNavIndicator() {
+    const nav = document.getElementById('site-header-nav');
+    const list = nav?.querySelector('.site-header__nav-list');
+    const indicator = nav?.querySelector('.site-header__nav-indicator');
+    if (!nav || !list || !indicator || !(indicator instanceof HTMLElement) || nav.hasAttribute('data-indicator-bound'))
+      return;
+    nav.setAttribute('data-indicator-bound', '');
+
+    const desktopMq = window.matchMedia('(min-width: 901px)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const links = () => [...list.querySelectorAll<HTMLAnchorElement>('.site-header__link')];
+
+    let activeLink: HTMLAnchorElement | null = null;
+    let canSlide = false;
+    let hideTimer: ReturnType<typeof setTimeout> | null = null;
+    const hideDelayMs = 100;
+
+    const cancelScheduledHide = (): void => {
+      if (hideTimer === null) return;
+      clearTimeout(hideTimer);
+      hideTimer = null;
+    };
+
+    const hideNow = (): void => {
+      cancelScheduledHide();
+      activeLink = null;
+      indicator.classList.add('is-instant');
+      indicator.classList.remove('is-visible');
+      requestAnimationFrame(() => indicator.classList.remove('is-instant'));
+    };
+
+    const scheduleHide = (): void => {
+      cancelScheduledHide();
+      if (reducedMotion.matches) {
+        hideNow();
+        return;
+      }
+      hideTimer = setTimeout(() => {
+        hideTimer = null;
+        if (list.querySelector('.site-header__link:hover')) return;
+        hideNow();
+      }, hideDelayMs);
+    };
+
+    const moveTo = (link: HTMLAnchorElement, forceInstant = false): void => {
+      if (!desktopMq.matches) return;
+      cancelScheduledHide();
+      activeLink = link;
+      const navRect = nav.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      const instant = forceInstant || !canSlide || reducedMotion.matches;
+      if (instant) indicator.classList.add('is-instant');
+      indicator.style.left = `${linkRect.left - navRect.left}px`;
+      indicator.style.top = `${linkRect.top - navRect.top}px`;
+      indicator.style.width = `${linkRect.width}px`;
+      indicator.style.height = `${linkRect.height}px`;
+      indicator.classList.add('is-visible');
+      if (!forceInstant) canSlide = true;
+      if (instant) {
+        void indicator.offsetWidth;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => indicator.classList.remove('is-instant'));
+        });
+      }
+    };
+
+    links().forEach((link) => {
+      link.addEventListener('mouseenter', () => moveTo(link));
+      link.addEventListener('mouseleave', () => {
+        if (!desktopMq.matches) return;
+        requestAnimationFrame(() => {
+          if (list.querySelector('.site-header__link:hover')) return;
+          scheduleHide();
+        });
+      });
+      link.addEventListener('focus', () => moveTo(link));
+    });
+
+    list.addEventListener('mouseleave', scheduleHide);
+    nav.addEventListener('mouseleave', (event) => {
+      if (!desktopMq.matches) return;
+      const next = event.relatedTarget;
+      if (next instanceof Node && nav.contains(next)) return;
+      scheduleHide();
+    });
+    nav.addEventListener('focusout', (event) => {
+      if (!desktopMq.matches) return;
+      const next = event.relatedTarget;
+      if (next instanceof Node && nav.contains(next)) return;
+      scheduleHide();
+    });
+
+    const onLayoutChange = (): void => {
+      if (!desktopMq.matches) {
+        hideNow();
+        return;
+      }
+      if (activeLink) moveTo(activeLink, true);
+    };
+
+    window.addEventListener('resize', onLayoutChange);
+    desktopMq.addEventListener('change', onLayoutChange);
+  }
+
   setupSiteHeaderMenu();
-  document.addEventListener('astro:page-load', setupSiteHeaderMenu);
+  setupSiteHeaderNavIndicator();
+  document.addEventListener('astro:page-load', () => {
+    setupSiteHeaderMenu();
+    setupSiteHeaderNavIndicator();
+  });
 </script>

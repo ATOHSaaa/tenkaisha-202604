@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
 import RequestDetail from '../../components/RequestDetail.astro';
 
 const info = {
@@ -7,12 +8,14 @@ const info = {
   name: '学校公演',
   english: 'SCHOOL SHOW',
   summary: '主に小学校を対象とした、学校公演を承ります。',
-  image: '/images/mocks/request-school.svg',
+  image: '/images/education/school-performance.png',
   path: '/education/school/',
 };
 ---
 
 <Base title={info.name} description={info.summary}>
+  <PageHeader jp={info.name} compact />
+
   <RequestDetail
     info={info}
     description="熊本を中心に、主に小学校を対象とした学校公演を承ります。体育館・多目的室での上演にも対応可能で、公演後に児童・生徒と交流する時間も設けられます。"
@@ -24,5 +27,7 @@ const info = {
     ]}
     backHref="/education/"
     backLabel="演劇と教育へ戻る"
+    showHero={false}
+    showSidebar={false}
   />
 </Base>

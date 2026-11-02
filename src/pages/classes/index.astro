@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import Card from '../../components/Card.astro';
 import { classDetailHref, getClassEntries } from '../../utils/classes-content';
-import { withBase } from '../../utils/path';
+import PageContactCta from '../../components/PageContactCta.astro';
 
 const classes = await getClassEntries();
 ---
@@ -21,10 +21,9 @@ const classes = await getClassEntries();
               <Card
                 href={classDetailHref(entry)}
                 image={c.image}
-                label={c.english}
                 title={c.title}
                 body={c.summary}
-                imageAspect="4/3"
+                layout="classFlyer"
               >
                 <dl class="classes__meta">
                   {c.target && <div><dt>対象</dt><dd>{c.target}</dd></div>}
@@ -37,10 +36,7 @@ const classes = await getClassEntries();
         }
       </div>
 
-      <div class="classes__cta">
-        <p>体験参加・見学をご希望の方、クラス内容についてのご質問は、お問い合わせフォームよりお気軽にご連絡ください。</p>
-        <a class="btn" href={withBase('/contact/')}>お問い合わせへ <span class="btn__arrow">→</span></a>
-      </div>
+      <PageContactCta body="体験参加・見学をご希望の方、クラス内容についてのご質問は、お問い合わせフォームよりお気軽にご連絡ください。" />
     </div>
   </section>
 </Base>

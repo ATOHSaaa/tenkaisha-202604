@@ -7,24 +7,48 @@ import BannerLink from '../components/BannerLink.astro';
 import StudioMapLink from '../components/StudioMapLink.astro';
 import { getPublishedNews } from '../utils/news';
 import { getCollection } from 'astro:content';
-import { studios, homeBanners, corporateBanner, friendsBanner } from '../data/site';
+import { studios, homeBanners, corporateBanner, friendsBanner, homeActivities } from '../data/site';
+import HomeActivityCard from '../components/HomeActivityCard.astro';
 import { classDetailHref, getHomeClassEntries } from '../utils/classes-content';
 import {
   eventEntryCardProps,
   partitionEventList,
+  scheduleFromData,
 } from '../utils/event-content';
+import { compareEntriesUpcoming, resolveNextPerformanceDate } from '../utils/schedule';
+import { fmtDate } from '../utils/dates';
 import { withBase } from '../utils/path';
+import HomeHero from '../components/HomeHero.astro';
+import BadgeMoreLink from '../components/BadgeMoreLink.astro';
 
 // お知らせを日付降順ですべて取得
 const news = await getPublishedNews();
 
 const { currentPerformances, currentEvents } = partitionEventList(await getCollection('stages'));
 const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
+const homeStageCount = currentPerformances.length + currentEvents.length;
+/** 3列グリッドの最終行に空きがあるとき More をセル内に置く（デスクトップ） */
+const stagesMoreInlineDesktop = homeStageCount > 0 && homeStageCount % 3 !== 0;
 const homeClasses = await getHomeClassEntries();
+
+const heroMarqueeItems = currentPerformances
+  .sort((a, b) =>
+    compareEntriesUpcoming(scheduleFromData(a.data), scheduleFromData(b.data)),
+  )
+  .map((entry) => {
+    const next = resolveNextPerformanceDate(scheduleFromData(entry.data));
+    return {
+      href: `/stages/${entry.id}/`,
+      title: entry.data.title,
+      dateLabel: next ? fmtDate(next) : '',
+    };
+  });
+
 ---
 
-<Base>
+<Base scrollReveal>
   <div class="home">
+  <HomeHero marqueeItems={heroMarqueeItems} />
   {/* 公演・イベント */}
   <section class="section section--first">
     <div class="container">
@@ -52,14 +76,25 @@ const homeClasses = await getHomeClassEntries();
                   {...eventEntryCardProps(e.data)}
                 />
               ))}
+              {
+                stagesMoreInlineDesktop ? (
+                  <div class="grid-events__more grid-events__more--in-grid">
+                    <BadgeMoreLink href="/stages/" />
+                  </div>
+                ) : null
+              }
             </div>
           )
         }
       </div>
 
-      <div class="section__actions section__actions--news">
-        <a class="badge-btn badge-btn--light" href={withBase('/stages/')}>More →</a>
-      </div>
+      {
+        hasCurrent && !stagesMoreInlineDesktop ? (
+          <div class="section__actions section__actions--news">
+            <BadgeMoreLink href="/stages/" />
+          </div>
+        ) : null
+      }
     </div>
   </section>
 
@@ -75,7 +110,22 @@ const homeClasses = await getHomeClassEntries();
         }))}
       />
       <div class="section__actions section__actions--news">
-        <a class="badge-btn badge-btn--light" href={withBase('/news/')}>More →</a>
+        <BadgeMoreLink href="/news/" />
+      </div>
+    </div>
+  </section>
+
+  {/* 転回社の活動 */}
+  <section class="section section--home-activities">
+    <div class="container">
+      <SectionHead
+        jp="転回社の活動"
+        lead="演劇活動をベースに、さまざまな活動を行っています。"
+      />
+      <div class="home-activities">
+        {homeActivities.map((activity) => (
+          <HomeActivityCard activity={activity} />
+        ))}
       </div>
     </div>
   </section>
@@ -104,7 +154,13 @@ const homeClasses = await getHomeClassEntries();
           homeClasses.map((entry) => {
             const c = entry.data;
             return (
-              <Card href={classDetailHref(entry)} image={c.image} title={c.title} body={c.summary} />
+              <Card
+                href={classDetailHref(entry)}
+                image={c.image}
+                title={c.title}
+                body={c.summary}
+                layout="classFlyer"
+              />
             );
           })
         }

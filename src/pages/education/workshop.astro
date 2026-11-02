@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import RequestDetail from '../../components/RequestDetail.astro';
+
+const info = {
+  slug: 'school-workshop',
+  name: '演劇ワークショップ',
+  english: 'SCHOOL WORKSHOP',
+  summary: '小・中学校向けの演劇ワークショップを、学校のご要望に合わせて設計・実施します。',
+  image: '/images/mocks/request-workshop.svg',
+  path: '/education/workshop/',
+};
+---
+
+<Base title={info.name} description={info.summary}>
+  <PageHeader jp={info.name} compact />
+
+  <RequestDetail
+    info={info}
+    description="熊本県内の小・中学校を中心に、演劇の手法を用いたワークショップを行っています。学級活動・総合的な学習の時間・文化祭など、目的や時間に合わせたプログラムをご提案します。"
+    points={[
+      '表現力・協働・コミュニケーションを育てる内容',
+      '1コマから連続プログラムまで対応',
+      '学年・人数・校庭・体育館など環境に合わせて設計',
+      '文化庁事業など、学校での実績多数',
+    ]}
+    backHref="/education/"
+    backLabel="演劇と教育へ戻る"
+    showHero={false}
+    showSidebar={false}
+  />
+</Base>

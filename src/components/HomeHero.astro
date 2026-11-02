@@ -1,0 +1,89 @@
+---
+import { withBase } from '../utils/path';
+
+export type HomeHeroMarqueeItem = {
+  href: string;
+  title: string;
+  dateLabel: string;
+};
+
+interface Props {
+  /** 「これから」の公演（リンク付き） */
+  marqueeItems?: HomeHeroMarqueeItem[];
+}
+
+const { marqueeItems = [] } = Astro.props;
+const hasMarquee = marqueeItems.length > 0;
+
+const srcPrimary = withBase('/images/home-hero.jpg');
+const srcAlt = withBase('/images/home-hero-alt.jpg');
+---
+
+<div class="home-hero">
+  <div class="home-hero__frame container">
+    <div class="home-hero__media">
+      <div class="home-hero__slides" aria-hidden="true">
+        <img
+          class="home-hero__img home-hero__img--primary"
+          src={srcPrimary}
+          alt="転回社の公演の舞台写真"
+          width={1024}
+          height={682}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <img
+          class="home-hero__img home-hero__img--alt"
+          src={srcAlt}
+          alt=""
+          width={1024}
+          height={682}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <div class="home-hero__copy">
+        <div class="home-hero__vertical-copy-group">
+          <p class="home-hero__vertical-copy home-hero__vertical-copy--address" aria-label="中央区 国府">
+            <span class="home-hero__vertical-address-part">中央区</span>
+            <span class="home-hero__vertical-address-part">国府</span>
+          </p>
+          <p class="home-hero__vertical-copy">おもしろいことは、</p>
+          <p class="home-hero__vertical-copy">転回社から</p>
+        </div>
+        <p class="home-hero__vertical-access">電停から歩いて１分</p>
+      </div>
+
+      <div class="home-hero__credit-row">
+        <p class="home-hero__horizontal-copy">熊本を拠点に活動する劇団です。</p>
+        <p class="home-hero__credit" aria-label="転回社">©tenkaisha</p>
+      </div>
+
+      {
+        hasMarquee ? (
+          <nav class="home-hero__marquee" aria-label="これからの公演">
+            <div class="home-hero__marquee-track">
+              {[0, 1].map((copy) => (
+                <div
+                  class="home-hero__marquee-run"
+                  aria-hidden={copy === 1 ? true : undefined}
+                >
+                  {marqueeItems.map((item) => (
+                    <a class="home-hero__marquee-link" href={withBase(item.href)}>
+                      {item.dateLabel ? (
+                        <span class="home-hero__marquee-date">{item.dateLabel}</span>
+                      ) : null}
+                      <span class="home-hero__marquee-title">{item.title}</span>
+                    </a>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </nav>
+        ) : null
+      }
+    </div>
+  </div>
+</div>
