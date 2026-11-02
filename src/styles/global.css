@@ -1737,6 +1737,101 @@ a.card.scroll-reveal--visible:focus-visible {
   text-underline-offset: 0.18em;
 }
 
+.site-header__menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-btn);
+  background: var(--bg-alt);
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.site-header__menu-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 22px;
+}
+
+.site-header__menu-icon span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+
+.site-header.is-nav-open .site-header__menu-icon span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.site-header.is-nav-open .site-header__menu-icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.site-header.is-nav-open .site-header__menu-icon span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 900px) {
+  .site-header__inner {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .site-header__menu-toggle {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  .site-header__nav {
+    display: none;
+    flex: 1 1 100%;
+    width: 100%;
+    order: 3;
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-3);
+    border-top: 1px solid var(--line);
+    margin-top: var(--space-2);
+  }
+
+  .site-header.is-nav-open .site-header__nav {
+    display: block;
+  }
+
+  .site-header__nav-list {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+  }
+
+  .site-header__nav-item {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-header__nav-item:last-child {
+    border-bottom: none;
+  }
+
+  .site-header__link {
+    display: block;
+    padding: var(--space-3) 0;
+    font-size: 14px;
+    white-space: normal;
+  }
+}
+
 /* ---------- パンくず ---------- */
 .breadcrumb-bar {
   padding-block: var(--breadcrumb-bar-pt) var(--breadcrumb-bar-pb);
