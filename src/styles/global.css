@@ -2300,7 +2300,7 @@ body.site-header-nav-open {
     display: inline-flex;
     margin-left: auto;
     position: relative;
-    z-index: 2;
+    z-index: 125;
   }
 
   .site-header__backdrop {
@@ -3865,6 +3865,13 @@ a.perf-history__date--link:hover {
   box-sizing: border-box;
 }
 
+.home-hero__bouten {
+  -webkit-text-emphasis: dot currentColor;
+  text-emphasis: dot currentColor;
+  text-emphasis-position: over right;
+  -webkit-text-emphasis-position: over right;
+}
+
 .home-hero__vertical-address-part {
   display: inline-block;
 }
@@ -5097,6 +5104,8 @@ a.member--link:focus-visible {
   position: relative;
   overflow: hidden;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 0;
   border: 2px solid var(--line);
   border-radius: var(--radius-card);
@@ -5131,6 +5140,7 @@ a.member--link:focus-visible {
 .home-friends__inner {
   position: relative;
   z-index: 2;
+  min-width: 0;
   padding: clamp(32px, 5vw, 56px) clamp(20px, 4vw, 40px);
 }
 
@@ -5138,6 +5148,7 @@ a.member--link:focus-visible {
   max-width: 40rem;
   margin-inline: auto;
   width: 100%;
+  min-width: 0;
   font-size: clamp(15px, 1.85vw, 18px);
   font-weight: 700;
   line-height: 1.9;
@@ -5145,6 +5156,7 @@ a.member--link:focus-visible {
   text-align: center;
   line-break: strict;
   word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .home-friends__en {
@@ -5158,11 +5170,13 @@ a.member--link:focus-visible {
 
 .home-friends__title {
   margin: 0 0 clamp(36px, 4.5vw, 48px);
+  max-width: 100%;
   font-size: clamp(24px, 3.2vw, 34px);
   font-weight: var(--font-weight-heading);
   letter-spacing: 0.1em;
   line-height: 1.35;
   color: inherit;
+  text-wrap: balance;
 }
 
 .home-friends__title-mark {
@@ -5218,6 +5232,42 @@ a.member--link:focus-visible {
   .home-friends__backdrop-img {
     transform: scale(1.03);
     filter: blur(2px);
+  }
+}
+
+@media (max-width: 640px) {
+  .section--friends-intro > .container {
+    min-width: 0;
+  }
+
+  .home-friends__inner {
+    padding-inline: clamp(16px, 4.5vw, 24px);
+  }
+
+  .home-friends__en {
+    letter-spacing: 0.12em;
+    overflow-wrap: anywhere;
+  }
+
+  .home-friends__title {
+    font-size: clamp(20px, 5.4vw, 28px);
+    letter-spacing: 0.06em;
+  }
+
+  .home-friends__body {
+    font-size: clamp(14px, 3.8vw, 16px);
+    line-height: 1.85;
+    word-break: normal;
+    line-break: auto;
+    text-wrap: pretty;
+  }
+
+  .home-friends__cta.badge-btn {
+    box-sizing: border-box;
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+    hyphens: auto;
   }
 }
 
