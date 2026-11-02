@@ -9,7 +9,6 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
-  noindex?: boolean;
   /** false のとき h2・カードのスクロール表示アニメーションを無効化 */
   scrollReveal?: boolean;
   /** 未指定時は URL + title から自動生成。配列で上書き可 */
@@ -22,7 +21,6 @@ const {
   title,
   description = '熊本を拠点に活動する劇団「転回社」の公式サイト。公演情報、開講クラス、演劇教育、スタジオ情報をご案内します。',
   ogImage = '/images/ogp.png',
-  noindex = false,
   scrollReveal = true,
   breadcrumbs: breadcrumbsProp,
   breadcrumbLabel,
@@ -66,7 +64,8 @@ const breadcrumbJsonLd =
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex, nofollow" />
 
     {
       breadcrumbJsonLd && (

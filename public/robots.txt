@@ -1,4 +1,5 @@
 User-agent: *
-Allow: /
+Disallow: /
 
-Sitemap: https://tenkai.org/sitemap-index.xml
+User-agent: Googlebot
+Disallow: /

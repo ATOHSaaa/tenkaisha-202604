@@ -103,9 +103,7 @@ const homeClasses = await getHomeClassEntries();
           homeClasses.map((entry) => {
             const c = entry.data;
             return (
-              <Card href={classDetailHref(entry)} image={c.image} title={c.title} body={c.summary}>
-                <span class="card__more">詳細を見る <span class="card__more-arrow">→</span></span>
-              </Card>
+              <Card href={classDetailHref(entry)} image={c.image} title={c.title} body={c.summary} />
             );
           })
         }
