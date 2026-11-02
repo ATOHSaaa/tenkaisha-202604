@@ -1,4 +1,5 @@
 import { parseBadgeFilter } from './event-content';
+import { withBase, stripBasePath } from './path';
 
 export type BreadcrumbItem = {
   label: string;
@@ -22,13 +23,19 @@ const SEGMENT_LABELS: Record<string, string> = {
 };
 
 function normalizePathname(pathname: string): string {
-  const path = pathname.split('?')[0]?.split('#')[0] ?? '/';
+  const path = stripBasePath(pathname);
   if (path === '/') return '/';
   return path.endsWith('/') ? path : `${path}/`;
 }
 
 function segmentLabel(segment: string): string {
   return SEGMENT_LABELS[segment] ?? segment;
+}
+
+function withBaseOnItems(items: BreadcrumbItem[]): BreadcrumbItem[] {
+  return items.map((item) =>
+    item.href ? { ...item, href: withBase(item.href) } : item,
+  );
 }
 
 export function buildBreadcrumbs(
@@ -43,22 +50,22 @@ export function buildBreadcrumbs(
 
   /** 公演詳細: 一覧まで（作品名・現在ページ名は出さない） */
   if (segments[0] === 'stages' && segments.length > 1) {
-    return [
+    return withBaseOnItems([
       { label: 'Top', href: '/' },
       { label: SEGMENT_LABELS.stages! },
-    ];
+    ]);
   }
 
   /** 公演一覧（バッジ絞り込み時は h1 ラベルをパンくずに含めない） */
   if (segments[0] === 'stages' && segments.length === 1) {
     const badgeFilter = parseBadgeFilter(searchParams?.get('badge') ?? null);
     if (badgeFilter) {
-      return [
+      return withBaseOnItems([
         { label: 'Top', href: '/' },
         { label: SEGMENT_LABELS.stages!, href: '/stages/' },
-      ];
+      ]);
     }
-    return [{ label: 'Top', href: '/' }];
+    return withBaseOnItems([{ label: 'Top', href: '/' }]);
   }
 
   const items: BreadcrumbItem[] = [{ label: 'Top', href: '/' }];
@@ -78,5 +85,5 @@ export function buildBreadcrumbs(
     }
   }
 
-  return items;
+  return withBaseOnItems(items);
 }

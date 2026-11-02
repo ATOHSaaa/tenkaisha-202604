@@ -2,6 +2,7 @@
 import NotFoundPage from '../../components/NotFoundPage.astro';
 import Base from '../../layouts/Base.astro';
 import { getCollection, getEntry, render } from 'astro:content';
+import { withBase } from '../../utils/path';
 
 export async function getStaticPaths() {
   const entries = await getCollection('blog');
@@ -37,7 +38,7 @@ const fmtDate = (d: Date) =>
         {
           entry.data.cover && (
             <div class="post__cover">
-              <img src={entry.data.cover} alt="" />
+              <img src={withBase(entry.data.cover)} alt="" />
             </div>
           )
         }
@@ -54,7 +55,7 @@ const fmtDate = (d: Date) =>
             {Content && <Content />}
           </div>
           <div class="post__actions">
-            <a class="link-arrow" href="/blog/">← ブログ一覧へ</a>
+            <a class="link-arrow" href={withBase('/blog/')}>← ブログ一覧へ</a>
           </div>
         </div>
       </article>

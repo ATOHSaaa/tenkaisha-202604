@@ -9,6 +9,7 @@ import { pastPerformanceHistoryItems } from '../utils/performance-history';
 import { buildPeatixLinkResolver } from '../utils/peatix-history-links';
 import StageAdjacentNav from './StageAdjacentNav.astro';
 import { formatShowTitle } from '../utils/titles';
+import { withBase } from '../utils/path';
 import type { StageAdjacentNav as StageAdjacentNavData } from '../utils/stage-adjacent';
 
 interface Props {
@@ -58,7 +59,7 @@ const typeBadges = eventDetailBadges(entry.data);
         entry.data.cover && (
           <aside class="perf__side">
             <div class="perf__side-inner">
-              <img class="perf__cover" src={entry.data.cover} alt="" />
+              <img class="perf__cover" src={withBase(entry.data.cover)} alt="" />
               {tickets && tickets.length > 0 && (
                 <PerformanceTickets tickets={tickets} variant="sidebar" />
               )}

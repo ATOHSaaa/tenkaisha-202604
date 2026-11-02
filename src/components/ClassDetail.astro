@@ -3,6 +3,7 @@ import type { ClassEntry } from '../utils/classes-content';
 import { getClassAppendEntries } from '../utils/classes-content';
 import { render } from 'astro:content';
 import ClassInstructors from './ClassInstructors.astro';
+import { withBase } from '../utils/path';
 
 interface Props {
   entry: ClassEntry;
@@ -19,6 +20,7 @@ const appendBlocks = await Promise.all(
   }),
 );
 const { Content } = await render(entry);
+const coverSrc = c.image ? withBase(c.image) : undefined;
 ---
 
 <section class="cd__body container">
@@ -40,10 +42,10 @@ const { Content } = await render(entry);
       {
         c.coverFit === 'contain' ? (
           <div class="cd__cover-wrap cd__cover-wrap--chira">
-            <img class="cd__cover cd__cover--contain" src={c.image} alt="" />
+            <img class="cd__cover cd__cover--contain" src={coverSrc} alt="" />
           </div>
         ) : (
-          <img class="cd__cover" src={c.image} alt="" />
+          <img class="cd__cover" src={coverSrc} alt="" />
         )
       }
       <dl class="cd__meta">
@@ -51,11 +53,11 @@ const { Content } = await render(entry);
         {c.target && <div><dt>対象</dt><dd>{c.target}</dd></div>}
         {c.fee && <div><dt>月謝</dt><dd>{c.fee}</dd></div>}
       </dl>
-      <a class="btn" href="/contact/">体験参加を申し込む <span class="btn__arrow">→</span></a>
+      <a class="btn" href={withBase('/contact/')}>体験参加を申し込む <span class="btn__arrow">→</span></a>
     </aside>
   </div>
 
   <div class="cd__back">
-    <a class="link-arrow" href="/classes/">← 開講クラスへ戻る</a>
+    <a class="link-arrow" href={withBase('/classes/')}>← 開講クラスへ戻る</a>
   </div>
 </section>

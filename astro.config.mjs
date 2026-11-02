@@ -4,8 +4,10 @@ import {
   trailingSlashDevRedirectPlugin,
 } from './scripts/trailing-slash-redirect.mjs';
 import remarkBreaks from 'remark-breaks';
+import { rehypeWithBase } from './scripts/rehype-with-base.mjs';
 
 const githubPages = process.env.GITHUB_PAGES === 'true';
+const siteBase = githubPages ? '/tenkaisha-202604/' : '/';
 
 // 転回社サイト設定（静的出力。本番 tenkai.org は FTP、プレビューは GitHub Pages）
 export default defineConfig({
@@ -20,6 +22,7 @@ export default defineConfig({
   compressHTML: true,
   markdown: {
     remarkPlugins: [remarkBreaks],
+    rehypePlugins: [[rehypeWithBase, { base: siteBase }]],
   },
   vite: {
     plugins: [trailingSlashDevRedirectPlugin(), contentMarkdownReloadPlugin()],

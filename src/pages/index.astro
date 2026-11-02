@@ -13,6 +13,7 @@ import {
   eventEntryCardProps,
   partitionEventList,
 } from '../utils/event-content';
+import { withBase } from '../utils/path';
 
 // お知らせを日付降順ですべて取得
 const news = await getPublishedNews();
@@ -57,7 +58,7 @@ const homeClasses = await getHomeClassEntries();
       </div>
 
       <div class="section__actions section__actions--news">
-        <a class="badge-btn badge-btn--light" href="/stages/">More →</a>
+        <a class="badge-btn badge-btn--light" href={withBase('/stages/')}>More →</a>
       </div>
     </div>
   </section>
@@ -74,7 +75,7 @@ const homeClasses = await getHomeClassEntries();
         }))}
       />
       <div class="section__actions section__actions--news">
-        <a class="badge-btn badge-btn--light" href="/news/">More →</a>
+        <a class="badge-btn badge-btn--light" href={withBase('/news/')}>More →</a>
       </div>
     </div>
   </section>

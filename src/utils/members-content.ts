@@ -1,9 +1,10 @@
 import { members, type Member } from '../data/site';
+import { withBase } from './path';
 
 export type { Member };
 
 export function memberHref(slug: string): string {
-  return `/members/${slug}/`;
+  return withBase(`/members/${slug}/`);
 }
 
 export function getMembers(): Member[] {

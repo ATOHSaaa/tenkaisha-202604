@@ -12,6 +12,7 @@ import {
   resolveNextPerformanceDate,
   type EntrySchedule,
 } from './schedule';
+import { withBase } from './path';
 
 export type EventEntry = CollectionEntry<'stages'>;
 export type EventData = EventEntry['data'];
@@ -104,7 +105,7 @@ export function badgeFilterId(item: EventBadge): BadgeFilterId | null {
 
 export function stagesListHrefForBadge(item: EventBadge): string | undefined {
   const id = badgeFilterId(item);
-  return id ? `/stages/?badge=${id}` : undefined;
+  return id ? withBase(`/stages/?badge=${id}`) : undefined;
 }
 
 export function entryMatchesBadgeFilter(data: EventData, filter: BadgeFilterId): boolean {

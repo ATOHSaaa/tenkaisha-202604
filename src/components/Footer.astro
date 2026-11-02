@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../utils/path';
+
 // フッター。SNSリンク先はダミー。後ほど URL 差し替えてください。
 const social: { label: string; url: string }[] = [
   { label: 'X', url: 'https://x.com/' },
@@ -55,7 +57,7 @@ const nav: { heading: string; items: { label: string; href: string }[] }[] = [
               <ul>
                 {group.items.map((item) => (
                   <li>
-                    <a href={item.href}>{item.label}</a>
+                    <a href={withBase(item.href)}>{item.label}</a>
                   </li>
                 ))}
               </ul>

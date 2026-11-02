@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
+import { withBase } from '../utils/path';
 ---
 
 <Base title="演劇と教育" description="転回社の演劇教育活動について。学校ワークショップ、子ども向けクラス、刊行物など。">
@@ -17,16 +18,16 @@ import PageHeader from '../components/PageHeader.astro';
       </p>
       <h2>主なプログラム</h2>
       <ul class="links">
-        <li><a href="/classes/junior/">転回社ジュニアクラス</a></li>
-        <li><a href="/education/school/">学校公演</a></li>
-        <li><a href="/for-organizations/workshop/">演劇ワークショップ</a></li>
-        <li><a href="/for-organizations/training/">学校の教職員向け研修</a></li>
-        <li><a href="/publications/school-workshop/">学校ワークショップ事例集</a></li>
+        <li><a href={withBase('/classes/junior/')}>転回社ジュニアクラス</a></li>
+        <li><a href={withBase('/education/school/')}>学校公演</a></li>
+        <li><a href={withBase('/for-organizations/workshop/')}>演劇ワークショップ</a></li>
+        <li><a href={withBase('/for-organizations/training/')}>学校の教職員向け研修</a></li>
+        <li><a href={withBase('/publications/school-workshop/')}>学校ワークショップ事例集</a></li>
       </ul>
       <h2>お問い合わせ</h2>
       <p>
         演劇教育に関するご相談は
-        <a href="/contact/">お問い合わせフォーム</a>
+        <a href={withBase('/contact/')}>お問い合わせフォーム</a>
         よりお気軽にどうぞ。
       </p>
     </div>

@@ -8,6 +8,7 @@ import { eventDetailBadges, isPerformanceEntry } from '../../utils/event-content
 import StageAdjacentNav from '../../components/StageAdjacentNav.astro';
 import { getStageAdjacentNav } from '../../utils/stage-adjacent';
 import { formatShowTitle } from '../../utils/titles';
+import { withBase } from '../../utils/path';
 
 export async function getStaticPaths() {
   const entries = await getCollection('stages');
@@ -64,7 +65,7 @@ const adjacent = entry ? await getStageAdjacentNav(entry.id) : { prev: null, nex
             {
               entry!.data.cover && (
                 <aside class="event__side">
-                  <img class="event__cover" src={entry!.data.cover} alt="" />
+                  <img class="event__cover" src={withBase(entry!.data.cover)} alt="" />
                 </aside>
               )
             }

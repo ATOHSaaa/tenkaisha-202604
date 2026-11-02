@@ -3,6 +3,7 @@ import NotFoundPage from '../../components/NotFoundPage.astro';
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import { getMemberBySlug, getMembers } from '../../utils/members-content';
+import { withBase } from '../../utils/path';
 
 export function getStaticPaths() {
   return getMembers().map((m) => ({
@@ -42,7 +43,7 @@ if (notFound) {
                   'member-detail__photo',
                   member!.photoDetail && 'member-detail__photo--hi-res',
                 ]}
-                src={member!.photoDetail ?? member!.photo}
+                src={withBase(member!.photoDetail ?? member!.photo)}
                 alt=""
                 width={member!.photoDetail ? 360 : 200}
                 height={member!.photoDetail ? 360 : 300}
@@ -56,7 +57,7 @@ if (notFound) {
           </div>
 
           <p class="member-detail__back">
-            <a class="link-arrow" href="/members/">← 劇団員紹介へ戻る</a>
+            <a class="link-arrow" href={withBase('/members/')}>← 劇団員紹介へ戻る</a>
           </p>
         </div>
       </section>

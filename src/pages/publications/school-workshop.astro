@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { publications } from '../../data/site';
+import { withBase } from '../../utils/path';
 
 const p = publications.find((x) => x.slug === 'school-workshop')!;
 ---
@@ -36,24 +37,24 @@ const p = publications.find((x) => x.slug === 'school-workshop')!;
           </ul>
           <h2>お問い合わせ</h2>
           <p>
-            ご関心のある方は <a href="/contact/">お問い合わせフォーム</a> よりご連絡ください。
+            ご関心のある方は <a href={withBase('/contact/')}>お問い合わせフォーム</a> よりご連絡ください。
             閲覧希望や関連するご相談も承っています。
           </p>
         </div>
 
         <aside class="pub__side">
-          <img class="pub__cover" src={p.cover} alt="" />
+          <img class="pub__cover" src={withBase(p.cover)} alt="" />
           <dl class="pub__spec">
             <div><dt>刊行</dt><dd>{p.year}年</dd></div>
             <div><dt>発行</dt><dd>一般社団法人 転回社</dd></div>
             <div><dt>分類</dt><dd>事例集 / 記録集</dd></div>
           </dl>
-          <a class="btn" href="/contact/">刊行物について問い合わせる <span class="btn__arrow">→</span></a>
+          <a class="btn" href={withBase('/contact/')}>刊行物について問い合わせる <span class="btn__arrow">→</span></a>
         </aside>
       </div>
 
       <div class="pub__back">
-        <a class="link-arrow" href="/publications/">← 刊行物一覧へ</a>
+        <a class="link-arrow" href={withBase('/publications/')}>← 刊行物一覧へ</a>
       </div>
     </section>
   </article>

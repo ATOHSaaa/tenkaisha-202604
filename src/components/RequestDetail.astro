@@ -1,5 +1,6 @@
 ---
 import type { RequestInfo } from '../data/site';
+import { withBase } from '../utils/path';
 
 interface Props {
   info: RequestInfo;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const { info, description, points = [], backHref = '/education/', backLabel = '演劇と教育へ戻る' } = Astro.props;
+const resolvedBackHref = withBase(backHref);
 ---
 
 <section class="rd__hero">
@@ -38,18 +40,18 @@ const { info, description, points = [], backHref = '/education/', backLabel = '�
       }
       <h2>お問い合わせ</h2>
       <p>
-        ご依頼・ご相談は <a href="/contact/">お問い合わせフォーム</a> よりお気軽にどうぞ。
+        ご依頼・ご相談は <a href={withBase('/contact/')}>お問い合わせフォーム</a> よりお気軽にどうぞ。
         ご予算・ご希望の内容・対象人数等をお聞かせいただければ、詳しくご案内いたします。
       </p>
     </div>
 
     <aside class="rd__side">
-      <img class="rd__cover" src={info.image} alt="" />
-      <a class="btn" href="/contact/">お問い合わせへ <span class="btn__arrow">→</span></a>
+      <img class="rd__cover" src={withBase(info.image)} alt="" />
+      <a class="btn" href={withBase('/contact/')}>お問い合わせへ <span class="btn__arrow">→</span></a>
     </aside>
   </div>
 
   <div class="rd__back">
-    <a class="link-arrow" href={backHref}>← {backLabel}</a>
+    <a class="link-arrow" href={resolvedBackHref}>← {backLabel}</a>
   </div>
 </section>

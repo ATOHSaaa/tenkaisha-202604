@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../utils/path';
+
 interface NewsItem {
   date: Date;
   title: string;
@@ -27,7 +29,7 @@ const fmt = (d: Date) => {
       {
         items.map((item) => (
           <li class="news-list__item">
-            <a class="news-list__link" href={item.href}>
+            <a class="news-list__link" href={withBase(item.href)}>
               <time class="news-list__date" datetime={item.date.toISOString()}>
                 {fmt(item.date)}
               </time>

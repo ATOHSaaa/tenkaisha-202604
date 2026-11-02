@@ -2,6 +2,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import { scheduleFromData, type EventEntry } from './event-content';
 import { compareEntriesPast } from './schedule';
 import { formatShowTitle } from './titles';
+import { withBase } from './path';
 
 export type StageAdjacentLink = {
   id: string;
@@ -25,7 +26,7 @@ function toLink(entry: CollectionEntry<'stages'>): StageAdjacentLink {
   return {
     id: entry.id,
     title,
-    href: `/stages/${entry.id}/`,
+    href: withBase(`/stages/${entry.id}/`),
   };
 }
 

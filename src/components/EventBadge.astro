@@ -1,5 +1,6 @@
 ---
 import type { EventBadgeVariant } from '../utils/event-content';
+import { withBase } from '../utils/path';
 
 interface Props {
   badge: string;
@@ -21,7 +22,7 @@ const Tag = href ? 'a' : 'span';
     badgeVariant === 'event' && 'card__badge--event',
     badgeVariant === 'junior' && 'card__badge--junior',
   ]}
-  href={href}
+  href={href ? withBase(href) : undefined}
 >
   {badge}
 </Tag>

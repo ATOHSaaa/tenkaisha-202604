@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../utils/path';
+
 interface Props {
   href: string;
   title: string;
@@ -12,6 +14,8 @@ interface Props {
 
 const { href, title, english, wide = false, light = false, figure } = Astro.props;
 const withFigure = Boolean(figure);
+const linkHref = withBase(href);
+const figureSrc = figure ? withBase(figure) : undefined;
 ---
 
 <a
@@ -21,7 +25,7 @@ const withFigure = Boolean(figure);
     light && 'guide-link--light',
     withFigure && 'guide-link--with-figure',
   ]}
-  href={href}
+  href={linkHref}
 >
   <span class="guide-link__inner">
     {english && <span class="guide-link__en">{english}</span>}
@@ -30,7 +34,7 @@ const withFigure = Boolean(figure);
   {
     figure && (
       <span class="guide-link__figure" aria-hidden="true">
-        <img src={figure} alt="" width={320} height={420} loading="lazy" decoding="async" />
+        <img src={figureSrc} alt="" width={320} height={420} loading="lazy" decoding="async" />
       </span>
     )
   }

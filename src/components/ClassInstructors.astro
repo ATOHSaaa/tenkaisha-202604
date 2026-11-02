@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../utils/path';
+
 export type ClassInstructor = {
   name: string;
   photo: string;
@@ -25,7 +27,7 @@ const { instructors } = Astro.props;
               <p class="class-instructor__name">{person.name}</p>
               <img
                 class="class-instructor__photo"
-                src={person.photo}
+                src={withBase(person.photo)}
                 alt=""
                 width={248}
                 height={300}
