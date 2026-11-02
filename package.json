@@ -9,19 +9,19 @@
     "dev:local": "bash scripts/dev-server.sh",
     "start": "npm run dev:local",
     "build": "astro build",
+    "build:gh-pages": "GITHUB_PAGES=true astro build",
+    "build:production": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "emdash:seed": "emdash seed"
+    "wp:import-stage": "node scripts/wp-import-stage-info.mjs",
+    "events:normalize-bodies": "node scripts/apply-normalize-event-bodies.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.0",
     "@astrojs/node": "^11.1.5",
-    "@astrojs/react": "^6.0.5",
     "astro": "^7.2.10",
-    "emdash": "^0.36.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "remark-breaks": "^4.0.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

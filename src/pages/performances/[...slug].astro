@@ -1,10 +1,21 @@
 ---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('stages');
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+  }));
+}
+
+export const prerender = true;
+
 const slugParam = Astro.params.slug;
 const slug = Array.isArray(slugParam) ? slugParam.join('/') : slugParam;
 
 if (!slug) {
-  return Astro.redirect('/events/', 301);
+  return Astro.redirect('/stages/', 301);
 }
 
-return Astro.redirect(`/events/${slug}/`, 301);
+return Astro.redirect(`/stages/${slug}/`, 301);
 ---

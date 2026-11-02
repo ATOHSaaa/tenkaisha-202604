@@ -1,47 +1,51 @@
 ---
-import type { ClassInfo } from '../data/site';
+import type { ClassEntry } from '../utils/classes-content';
+import { getClassAppendEntries } from '../utils/classes-content';
+import { render } from 'astro:content';
+import ClassInstructors from './ClassInstructors.astro';
 
 interface Props {
-  class: ClassInfo;
-  description?: string;
-  paragraphs?: string[];
-  highlights?: string[];
+  entry: ClassEntry;
 }
 
-const { class: c, description, paragraphs = [], highlights = [] } = Astro.props;
+const { entry } = Astro.props;
+const c = entry.data;
+const instructors = c.instructors ?? [];
+const appendEntries = await getClassAppendEntries(entry.id);
+const appendBlocks = await Promise.all(
+  appendEntries.map(async (appendEntry) => {
+    const { Content } = await render(appendEntry);
+    return Content;
+  }),
+);
+const { Content } = await render(entry);
 ---
 
 <section class="cd__body container">
-  <h2 class="cd__title">{c.name}</h2>
+  <h1 class="cd__title">{c.title}</h1>
   <div class="cd__grid">
-    <div class="prose">
-      <h2>このクラスについて</h2>
+    <div class="prose cd__prose">
+      <Content />
+      {instructors.length > 0 && <ClassInstructors instructors={instructors} />}
       {
-        paragraphs.length > 0
-          ? paragraphs.map((p) => <p>{p}</p>)
-          : description && <p>{description}</p>
+        appendBlocks.map((AppendContent) => (
+          <div class="cd__append">
+            <AppendContent />
+          </div>
+        ))
       }
-      {
-        highlights.length > 0 && (
-          <>
-            <h2>このクラスの特徴</h2>
-            <ul>
-              {highlights.map((h) => (
-                <li>{h}</li>
-              ))}
-            </ul>
-          </>
-        )
-      }
-      <h2>体験参加について</h2>
-      <p>
-        各クラスとも体験参加を随時受け付けています。
-        <a href="/contact/">お問い合わせフォーム</a> より、ご希望のクラスを明記のうえご連絡ください。
-      </p>
     </div>
 
     <aside class="cd__side">
-      <img class="cd__cover" src={c.image} alt="" />
+      {
+        c.coverFit === 'contain' ? (
+          <div class="cd__cover-wrap cd__cover-wrap--chira">
+            <img class="cd__cover cd__cover--contain" src={c.image} alt="" />
+          </div>
+        ) : (
+          <img class="cd__cover" src={c.image} alt="" />
+        )
+      }
       <dl class="cd__meta">
         {c.schedule && <div><dt>稽古日</dt><dd>{c.schedule}</dd></div>}
         {c.target && <div><dt>対象</dt><dd>{c.target}</dd></div>}
@@ -52,6 +56,6 @@ const { class: c, description, paragraphs = [], highlights = [] } = Astro.props;
   </div>
 
   <div class="cd__back">
-    <a class="link-arrow" href="/classes/">← 稽古情報へ戻る</a>
+    <a class="link-arrow" href="/classes/">← 開講クラスへ戻る</a>
   </div>
 </section>

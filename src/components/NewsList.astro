@@ -19,19 +19,25 @@ const fmt = (d: Date) => {
 };
 ---
 
-<ul class="news-list">
-  {
-    items.map((item) => (
-      <li class="news-list__item">
-        <a class="news-list__link" href={item.href}>
-          <time class="news-list__date" datetime={item.date.toISOString()}>
-            {fmt(item.date)}
-          </time>
-          <div class="news-list__headline">
-            <span class="news-list__title">{item.title}</span>
-          </div>
-        </a>
-      </li>
-    ))
-  }
-</ul>
+{
+  items.length === 0 ? (
+    <p class="empty">お知らせはまだありません。</p>
+  ) : (
+    <ul class="news-list">
+      {
+        items.map((item) => (
+          <li class="news-list__item">
+            <a class="news-list__link" href={item.href}>
+              <time class="news-list__date" datetime={item.date.toISOString()}>
+                {fmt(item.date)}
+              </time>
+              <div class="news-list__headline">
+                <span class="news-list__title">{item.title}</span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  )
+}

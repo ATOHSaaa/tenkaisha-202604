@@ -1,0 +1,41 @@
+---
+export type ClassInstructor = {
+  name: string;
+  photo: string;
+  bio: string;
+};
+
+interface Props {
+  instructors: ClassInstructor[];
+}
+
+const { instructors } = Astro.props;
+---
+
+{
+  instructors.length > 0 && (
+    <section class="class-instructors" aria-labelledby="class-instructors-title">
+      <h2 id="class-instructors-title" class="class-instructors__title">
+        講師
+      </h2>
+      <ul class="class-instructors__list">
+        {
+          instructors.map((person) => (
+            <li class="class-instructor">
+              <p class="class-instructor__name">{person.name}</p>
+              <img
+                class="class-instructor__photo"
+                src={person.photo}
+                alt=""
+                width={248}
+                height={300}
+                loading="lazy"
+              />
+              <p class="class-instructor__bio">{person.bio}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  )
+}

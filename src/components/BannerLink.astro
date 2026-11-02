@@ -6,17 +6,32 @@ interface Props {
   wide?: boolean;
   /** 白背景・黒文字（トップ友の会バナーなど） */
   light?: boolean;
+  /** カード右側に配置する切り抜き画像（装飾） */
+  figure?: string;
 }
 
-const { href, title, english, wide = false, light = false } = Astro.props;
+const { href, title, english, wide = false, light = false, figure } = Astro.props;
+const withFigure = Boolean(figure);
 ---
 
 <a
-  class:list={['guide-link', wide && 'guide-link--wide', light && 'guide-link--light']}
+  class:list={[
+    'guide-link',
+    wide && 'guide-link--wide',
+    light && 'guide-link--light',
+    withFigure && 'guide-link--with-figure',
+  ]}
   href={href}
 >
   <span class="guide-link__inner">
     {english && <span class="guide-link__en">{english}</span>}
     <span class="guide-link__jp">{title}</span>
   </span>
+  {
+    figure && (
+      <span class="guide-link__figure" aria-hidden="true">
+        <img src={figure} alt="" width={320} height={420} loading="lazy" decoding="async" />
+      </span>
+    )
+  }
 </a>

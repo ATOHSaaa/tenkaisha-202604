@@ -35,96 +35,44 @@ export const studios: Studio[] = [
 ];
 
 export type Member = {
+  slug: string;
   name: string;
   role: string;
   bio: string;
   photo: string;
+  /** 詳細ページ用（幅 560px 以上推奨）。未指定時は photo */
+  photoDetail?: string;
 };
 
 export const members: Member[] = [
   {
+    slug: 'komatsuno-nozomi',
     name: '小松野 希海',
     role: 'プロデューサー / 俳優',
     bio: '元劇団四季。2015年より転回社スタジオを主宰。継続的な演劇活動の場を熊本に根づかせる活動を行う。',
     photo: '/images/members/komatsuno-nozomi.png',
   },
   {
+    slug: 'sakaguchi-kanoko',
     name: '坂口 佳乃子',
     role: '俳優',
     bio: '熊本少年少女合唱団出身。劇団第七インターチェンジ所属。転回社製作のミュージカルには音楽隊のメンバーとして参加している。また、文化庁事業の演劇ワークショップ講師アシスタントとして多数の小中学校で演劇ワークショップを行っている。',
     photo: '/images/members/sakaguchi-kanoko.png',
   },
   {
+    slug: 'nojima-fuyu',
     name: '野島 ふゆ',
     role: '俳優',
     bio: '小学生、老兵士、哲学書ソクラテス、江夏豊。幅広い役柄を独自の感性で演じきる実力派俳優。',
     photo: '/images/members/nojima-fuyu.png',
   },
   {
+    slug: 'fujino-minami',
     name: '藤野 未波',
     role: '俳優',
     bio: '天草が生んだ元気娘。とぼけた顔で舞台中をパワフルに飛び跳ねる。',
     photo: '/images/members/fujino-minami.png',
   },
-];
-
-export type ClassInfo = {
-  slug: string;
-  name: string;
-  english: string;
-  tag: string;
-  summary: string;
-  image: string;
-  schedule?: string;
-  target?: string;
-  fee?: string;
-  path: string;
-};
-
-export const classes: ClassInfo[] = [
-  {
-    slug: 'musical-club',
-    name: '熊本ミュージカルクラブ',
-    english: 'KUMAMOTO MUSICAL CLUB',
-    tag: 'ミュージカル',
-    summary: '週に一回、国府電停そばのスタジオで楽しくミュージカル活動。元劇団四季・小松野希海と一緒に、ミュージカルの世界を体験してみませんか。',
-    image: '/images/mocks/class-musical.svg',
-    schedule: '火曜 19:30-21:00',
-    target: '年齢制限なし',
-    fee: '月額 8,000円',
-    path: '/classes/musical-club/',
-  },
-  {
-    slug: 'junior',
-    name: '転回社ジュニアクラス',
-    english: 'JUNIOR CLASS',
-    tag: '小1〜中3',
-    summary: '小学1年生〜中学3年生を対象とした、演劇を通じて表現を育てるクラス。',
-    image: '/images/mocks/class-junior.svg',
-    schedule: '毎週金曜 17:30-19:30',
-    target: '小学1年生〜中学3年生',
-    fee: '月額 6,000円',
-    path: '/classes/junior/',
-  },
-  {
-    slug: 'hassei',
-    name: 'くまもと発声表現教室',
-    english: 'VOICE EXPRESSION',
-    tag: '発声／話し方',
-    summary: '演劇の手法を活かした、大人のための発声・表現の教室。',
-    image: '/images/mocks/class-hassei.svg',
-    schedule: '毎週水曜 19:30-21:00',
-    target: '大人（一般）',
-    fee: '月額 5,000円',
-    path: '/classes/hassei/',
-  },
-];
-
-/** トップページ「開講クラス」に表示する3クラス */
-export const homeClasses: ClassInfo[] = [
-  classes.find((c) => c.slug === 'musical-club')!,
-  classes.find((c) => c.slug === 'junior')!,
-  classes.find((c) => c.slug === 'hassei')!,
 ];
 
 export type BannerInfo = {
@@ -143,7 +91,7 @@ export const homeBanners: BannerInfo[] = [
   {
     title: '劇団員紹介',
     english: 'MEMBERS',
-    href: '/requests/members/',
+    href: '/members/',
   },
 ];
 
@@ -186,6 +134,7 @@ export const organizationPrograms: OrganizationProgram[] = [
   },
 ];
 
+/** 依頼詳細コンポーネント用（法人向けプログラム等） */
 export type RequestInfo = {
   slug: string;
   name: string;
@@ -194,33 +143,6 @@ export type RequestInfo = {
   image: string;
   path: string;
 };
-
-export const requests: RequestInfo[] = [
-  {
-    slug: 'school',
-    name: '学校公演',
-    english: 'SCHOOL SHOW',
-    summary: '主に小学校を対象とした、学校公演を承ります。',
-    image: '/images/mocks/request-school.svg',
-    path: '/requests/school/',
-  },
-  {
-    slug: 'workshop',
-    name: 'ワークショップ',
-    english: 'WORKSHOP',
-    summary: '演劇の手法を使った、学校・地域向けワークショップ。',
-    image: '/images/mocks/request-workshop.svg',
-    path: '/requests/workshop/',
-  },
-  {
-    slug: 'members',
-    name: '劇団員紹介',
-    english: 'MEMBERS',
-    summary: '転回社に所属する俳優・スタッフをご紹介します。',
-    image: '/images/mocks/request-members.svg',
-    path: '/requests/members/',
-  },
-];
 
 export type Publication = {
   slug: string;

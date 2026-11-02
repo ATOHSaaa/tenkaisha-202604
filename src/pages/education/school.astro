@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import RequestDetail from '../../components/RequestDetail.astro';
+
+const info = {
+  slug: 'school',
+  name: '学校公演',
+  english: 'SCHOOL SHOW',
+  summary: '主に小学校を対象とした、学校公演を承ります。',
+  image: '/images/mocks/request-school.svg',
+  path: '/education/school/',
+};
+---
+
+<Base title={info.name} description={info.summary}>
+  <RequestDetail
+    info={info}
+    description="熊本を中心に、主に小学校を対象とした学校公演を承ります。体育館・多目的室での上演にも対応可能で、公演後に児童・生徒と交流する時間も設けられます。"
+    points={[
+      '体育館・多目的室での上演に対応',
+      '題材・時間・内容のカスタマイズ可',
+      '公演後の交流・ワークショップも対応可能',
+      '熊本県内での実績多数',
+    ]}
+    backHref="/education/"
+    backLabel="演劇と教育へ戻る"
+  />
+</Base>

@@ -44,45 +44,157 @@ export function normalizePerformanceHistoryDate(input: Date | string): Date | nu
   return null;
 }
 
-/** performanceHistory の1日分（YAML では `- 2026-11-05`） */
-export type PerformanceHistoryItem = Date;
+export type PerformanceHistoryEntry = {
+  date: Date;
+  time?: string;
+  url?: string;
+};
 
-export function performanceHistoryDayKey(date: Date): string | null {
-  const parsed = normalizePerformanceHistoryDate(date);
-  return parsed ? performanceHistoryDayKeyFromDate(parsed) : null;
+/** performanceHistory の1件（YAML `- 2026-11-05` または `{ date, time?, url? }`） */
+export type PerformanceHistoryItem = Date | PerformanceHistoryEntry;
+
+export type NormalizedPerformanceHistoryItem = {
+  date: Date;
+  time?: string;
+  url?: string;
+};
+
+export function normalizePerformanceHistoryEntry(
+  item: PerformanceHistoryItem,
+): NormalizedPerformanceHistoryItem | null {
+  if (item instanceof Date) {
+    const parsed = normalizePerformanceHistoryDate(item);
+    return parsed ? { date: parsed } : null;
+  }
+
+  if (item && typeof item === 'object' && 'date' in item) {
+    const parsed = normalizePerformanceHistoryDate(item.date);
+    if (!parsed) return null;
+    return { date: parsed, time: item.time, url: item.url };
+  }
+
+  return null;
 }
 
-/** 上演履歴の表示用（例: 8月9日（土）） */
-export function formatPerformanceHistoryDateLabel(date: Date): string {
+/** フロントマターの url を優先し、なければ resolveLink（Peatix 推測など） */
+export function performanceHistoryHref(
+  item: PerformanceHistoryItem,
+  resolveLink?: (item: PerformanceHistoryItem) => string | undefined,
+): string | undefined {
+  const normalized = normalizePerformanceHistoryEntry(item);
+  if (normalized?.url) return normalized.url;
+  return resolveLink?.(item);
+}
+
+export function performanceHistoryDayKey(item: PerformanceHistoryItem): string | null {
+  const normalized = normalizePerformanceHistoryEntry(item);
+  return normalized ? performanceHistoryDayKeyFromDate(normalized.date) : null;
+}
+
+/** 上演履歴の表示用（例: 8月9日(土) 19:00） */
+export function formatPerformanceHistoryDateLabel(
+  item: PerformanceHistoryItem,
+  options?: { includeTime?: boolean },
+): string {
+  const normalized = normalizePerformanceHistoryEntry(item);
+  if (!normalized) return '';
+
+  const base = formatPerformanceHistoryCalendarLabel(normalized.date);
+  if (options?.includeTime && normalized.time) {
+    return `${base} ${normalized.time}`;
+  }
+  return base;
+}
+
+/** 月日曜日のみ（例: 8月9日(土)） */
+export function formatPerformanceHistoryCalendarLabel(date: Date): string {
   const normalized = normalizePerformanceHistoryDate(date);
   if (!normalized) return '';
 
   const key = performanceHistoryDayKeyFromDate(normalized);
   const [, m, d] = key.split('-').map(Number);
   const weekday = WEEKDAYS[normalized.getUTCDay()];
-  return `${m}月${d}日（${weekday}）`;
+  return `${m}月${d}日(${weekday})`;
+}
+
+function comparePerformanceTime(a: string, b: string): number {
+  const [ah, am] = a.split(':').map(Number);
+  const [bh, bm] = b.split(':').map(Number);
+  return ah * 60 + am - (bh * 60 + bm);
+}
+
+export type PerformanceHistoryDisplayPart = { text: string; href?: string };
+
+export type PerformanceHistoryDisplayItem = {
+  label: string;
+  href?: string;
+  parts?: PerformanceHistoryDisplayPart[];
+};
+
+function buildMergedDayDisplay(
+  date: Date,
+  slots: { time?: string; href?: string }[],
+): PerformanceHistoryDisplayItem {
+  const base = formatPerformanceHistoryCalendarLabel(date);
+  const timed = slots
+    .filter((s): s is { time: string; href?: string } => Boolean(s.time))
+    .sort((a, b) => comparePerformanceTime(a.time, b.time));
+
+  if (timed.length === 0) {
+    const href = slots.find((s) => s.href)?.href;
+    return { label: base, href };
+  }
+
+  if (timed.length === 1) {
+    return { label: `${base} ${timed[0].time}`, href: timed[0].href };
+  }
+
+  const timeLabel = timed.map((s) => s.time).join(' / ');
+  const label = `${base} ${timeLabel}`;
+  const hrefs = [...new Set(timed.map((s) => s.href).filter(Boolean))];
+
+  if (hrefs.length === 1) {
+    return { label, href: hrefs[0] };
+  }
+
+  if (hrefs.length === 0) {
+    return { label };
+  }
+
+  const parts: PerformanceHistoryDisplayPart[] = [
+    { text: `${base} ${timed[0].time}`, href: timed[0].href },
+  ];
+  for (let index = 1; index < timed.length; index++) {
+    parts.push({ text: ' / ' });
+    parts.push({ text: timed[index].time, href: timed[index].href });
+  }
+  return { label, parts };
 }
 
 /** 年見出し用（例: 2026） */
-export function formatPerformanceHistoryYear(date: Date): string {
-  const normalized = normalizePerformanceHistoryDate(date);
+export function formatPerformanceHistoryYear(item: PerformanceHistoryItem): string {
+  const normalized = normalizePerformanceHistoryEntry(item);
   if (!normalized) return 'その他';
-  return performanceHistoryDayKeyFromDate(normalized).slice(0, 4);
+  return performanceHistoryDayKeyFromDate(normalized.date).slice(0, 4);
 }
 
-/** 今日以降の公演日（昇順） */
+/** 今日以降の公演日（昇順・暦日単位で重複除去） */
 export function upcomingPerformanceDatesFromHistory(
   items: PerformanceHistoryItem[] | undefined,
   todayKey = calendarDayKeyInJST(),
 ): Date[] {
   if (!items?.length) return [];
 
+  const seen = new Set<string>();
   const upcoming: Date[] = [];
   for (const item of items) {
-    const parsed = normalizePerformanceHistoryDate(item);
-    if (!parsed) continue;
-    const key = performanceHistoryDayKeyFromDate(parsed);
-    if (key >= todayKey) upcoming.push(parsed);
+    const normalized = normalizePerformanceHistoryEntry(item);
+    if (!normalized) continue;
+    const key = performanceHistoryDayKeyFromDate(normalized.date);
+    if (key >= todayKey && !seen.has(key)) {
+      seen.add(key);
+      upcoming.push(normalized.date);
+    }
   }
 
   return upcoming.sort((a, b) => a.valueOf() - b.valueOf());
@@ -95,8 +207,8 @@ export function pastPerformanceHistoryItems(
 ): PerformanceHistoryItem[] {
   if (!items?.length) return [];
 
-  return items.filter((date) => {
-    const key = performanceHistoryDayKey(date);
+  return items.filter((item) => {
+    const key = performanceHistoryDayKey(item);
     return key !== null && key < todayKey;
   });
 }
@@ -114,8 +226,8 @@ export function resolvePerformanceLastDayKey(input: {
 }): string | null {
   const keys: string[] = [];
 
-  for (const date of input.performanceHistory ?? []) {
-    const key = performanceHistoryDayKey(date);
+  for (const item of input.performanceHistory ?? []) {
+    const key = performanceHistoryDayKey(item);
     if (key) keys.push(key);
   }
 
@@ -124,20 +236,80 @@ export function resolvePerformanceLastDayKey(input: {
 }
 
 /** 上演履歴を年ごとにグループ化（表示順は items の並びを維持） */
-export function groupPerformanceHistoryByYear(items: PerformanceHistoryItem[]) {
-  const groups: { year: string; items: { label: string }[] }[] = [];
+export function groupPerformanceHistoryByYear(
+  items: PerformanceHistoryItem[],
+  resolveLink?: (item: PerformanceHistoryItem) => string | undefined,
+  options?: { includeTime?: boolean },
+) {
+  if (options?.includeTime) {
+    return groupPerformanceHistoryByYearWithMergedDays(items, resolveLink);
+  }
+
+  const groups: { year: string; items: PerformanceHistoryDisplayItem[] }[] = [];
   const yearIndex = new Map<string, number>();
 
-  for (const date of items) {
-    const year = formatPerformanceHistoryYear(date);
-    const label = formatPerformanceHistoryDateLabel(date);
+  for (const item of items) {
+    const year = formatPerformanceHistoryYear(item);
+    const label = formatPerformanceHistoryDateLabel(item, options);
+    const href = performanceHistoryHref(item, resolveLink);
     const existing = yearIndex.get(year);
 
     if (existing === undefined) {
       yearIndex.set(year, groups.length);
-      groups.push({ year, items: [{ label }] });
+      groups.push({ year, items: [{ label, href }] });
     } else {
-      groups[existing].items.push({ label });
+      groups[existing].items.push({ label, href });
+    }
+  }
+
+  return groups;
+}
+
+function groupPerformanceHistoryByYearWithMergedDays(
+  items: PerformanceHistoryItem[],
+  resolveLink?: (item: PerformanceHistoryItem) => string | undefined,
+) {
+  type DayBucket = {
+    year: string;
+    date: Date;
+    order: number;
+    slots: { time?: string; href?: string }[];
+  };
+
+  const buckets = new Map<string, DayBucket>();
+  let order = 0;
+
+  for (const item of items) {
+    const normalized = normalizePerformanceHistoryEntry(item);
+    if (!normalized) continue;
+
+    const dayKey = performanceHistoryDayKeyFromDate(normalized.date);
+    const year = dayKey.slice(0, 4);
+    const bucketKey = `${year}#${dayKey}`;
+    let bucket = buckets.get(bucketKey);
+    if (!bucket) {
+      bucket = { year, date: normalized.date, order: order++, slots: [] };
+      buckets.set(bucketKey, bucket);
+    }
+
+    bucket.slots.push({
+      time: normalized.time,
+      href: performanceHistoryHref(item, resolveLink),
+    });
+  }
+
+  const groups: { year: string; items: PerformanceHistoryDisplayItem[] }[] = [];
+  const yearIndex = new Map<string, number>();
+
+  for (const bucket of [...buckets.values()].sort((a, b) => a.order - b.order)) {
+    const display = buildMergedDayDisplay(bucket.date, bucket.slots);
+    const existing = yearIndex.get(bucket.year);
+
+    if (existing === undefined) {
+      yearIndex.set(bucket.year, groups.length);
+      groups.push({ year: bucket.year, items: [display] });
+    } else {
+      groups[existing].items.push(display);
     }
   }
 

@@ -1,6 +1,0 @@
-.pubs {
-    padding-bottom: clamp(40px, 8vw, 96px);
-  }
-  .pubs__grid .card__thumb {
-    aspect-ratio: 5/7;
-  }

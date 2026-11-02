@@ -4,70 +4,53 @@ import PerformanceHistory from './PerformanceHistory.astro';
 import PerformanceTickets from './PerformanceTickets.astro';
 import { render } from 'astro:content';
 import type { PerformanceEntry } from '../utils/event-content';
-import { performancePeriodLabel, fmtDate } from '../utils/dates';
+import { eventDetailBadges } from '../utils/event-content';
 import { pastPerformanceHistoryItems } from '../utils/performance-history';
-import { isPerformanceUpcoming, resolveNextPerformanceDate } from '../utils/schedule';
+import { buildPeatixLinkResolver } from '../utils/peatix-history-links';
+import StageAdjacentNav from './StageAdjacentNav.astro';
 import { formatShowTitle } from '../utils/titles';
+import type { StageAdjacentNav as StageAdjacentNavData } from '../utils/stage-adjacent';
 
 interface Props {
   entry: PerformanceEntry;
+  adjacent: StageAdjacentNavData;
 }
 
-const { entry } = Astro.props;
+const { entry, adjacent } = Astro.props;
 
 const { Content } = await render(entry);
 
 const showTitle = formatShowTitle(entry.data.title);
-const performanceSchedule = {
-  performanceHistory: entry.data.performanceHistory,
-};
-const nextPerformanceDate = resolveNextPerformanceDate(performanceSchedule);
-const period = performancePeriodLabel(performanceSchedule);
 const pastHistory = pastPerformanceHistoryItems(entry.data.performanceHistory);
+const resolvePeatixLink = buildPeatixLinkResolver({
+  title: entry.data.title,
+  body: entry.body,
+  tickets: 'tickets' in entry.data ? entry.data.tickets : undefined,
+});
 const isLongRun = entry.data.type === 'long-run';
-
-const showUpcomingTag =
-  !isLongRun && isPerformanceUpcoming(performanceSchedule);
+const tickets = 'tickets' in entry.data ? entry.data.tickets : undefined;
+const typeBadges = eventDetailBadges(entry.data);
 ---
 
 <article class="perf">
-  {
-    isLongRun ? (
-      <PageHeader jp={showTitle} compact />
-    ) : (
-      <div class="perf__hero">
-        <div class="container perf__hero-inner">
-          <div class="perf__meta">
-            {
-              showUpcomingTag && (
-                <span class="tag tag--accent">UPCOMING</span>
-              )
-            }
-            {
-              nextPerformanceDate ? (
-                <div class="perf__next">
-                  <p class="perf__next-label">次回公演</p>
-                  <p class="perf__next-date">{fmtDate(nextPerformanceDate)}</p>
-                </div>
-              ) : (
-                <span class="perf__period">{period}</span>
-              )
-            }
-          </div>
-            <h1 class="perf__title heading-section">{showTitle}</h1>
-            <PerformanceTickets tickets={entry.data.tickets} variant="hero" />
-        </div>
-      </div>
-    )
-  }
+  <PageHeader
+    jp={showTitle}
+    compact
+    badges={typeBadges}
+    badgeAlignCover={Boolean(entry.data.cover)}
+  />
 
   <section class="container perf__body">
     <div class="perf__grid">
-      <div class="prose">
+      <div class="prose perf__prose">
         <Content />
         {
-          pastHistory.length > 0 && (
-            <PerformanceHistory items={pastHistory} />
+          isLongRun && pastHistory.length > 0 && (
+            <PerformanceHistory
+              items={pastHistory}
+              resolveLink={resolvePeatixLink}
+              includeTime={isLongRun}
+            />
           )
         }
       </div>
@@ -76,18 +59,14 @@ const showUpcomingTag =
           <aside class="perf__side">
             <div class="perf__side-inner">
               <img class="perf__cover" src={entry.data.cover} alt="" />
-              {isLongRun && <PerformanceTickets tickets={entry.data.tickets} variant="sidebar" />}
+              {tickets && tickets.length > 0 && (
+                <PerformanceTickets tickets={tickets} variant="sidebar" />
+              )}
             </div>
           </aside>
         )
       }
     </div>
-    {
-      !isLongRun && (
-        <div class="perf__back">
-          <a class="link-arrow" href="/events/">← 公演・イベントへ戻る</a>
-        </div>
-      )
-    }
+    <StageAdjacentNav adjacent={adjacent} />
   </section>
 </article>

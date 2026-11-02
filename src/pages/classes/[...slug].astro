@@ -1,0 +1,35 @@
+---
+import NotFoundPage from '../../components/NotFoundPage.astro';
+import Base from '../../layouts/Base.astro';
+import ClassDetail from '../../components/ClassDetail.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { isStandaloneClassEntry } from '../../utils/classes-content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('classes');
+  return entries.filter(isStandaloneClassEntry).map((entry) => ({
+    params: { slug: entry.id },
+  }));
+}
+
+export const prerender = true;
+
+const slugParam = Astro.params.slug;
+const slug = Array.isArray(slugParam) ? slugParam.join('/') : slugParam;
+const entry = slug ? await getEntry('classes', slug) : undefined;
+const notFound = !slug || !entry;
+
+if (notFound) {
+  Astro.response.status = 404;
+}
+---
+
+{
+  notFound ? (
+    <NotFoundPage />
+  ) : (
+    <Base title={entry!.data.title} scrollReveal={false}>
+      <ClassDetail entry={entry!} />
+    </Base>
+  )
+}

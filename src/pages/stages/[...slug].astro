@@ -1,0 +1,77 @@
+---
+import NotFoundPage from '../../components/NotFoundPage.astro';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PerformanceArticle from '../../components/PerformanceArticle.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+import { eventDetailBadges, isPerformanceEntry } from '../../utils/event-content';
+import StageAdjacentNav from '../../components/StageAdjacentNav.astro';
+import { getStageAdjacentNav } from '../../utils/stage-adjacent';
+import { formatShowTitle } from '../../utils/titles';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('stages');
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+  }));
+}
+
+export const prerender = true;
+
+const slugParam = Astro.params.slug;
+const slug = Array.isArray(slugParam) ? slugParam.join('/') : slugParam;
+
+const entry = slug ? await getEntry('stages', slug) : undefined;
+const notFound = !slug || !entry;
+
+if (notFound) {
+  Astro.response.status = 404;
+}
+
+const showTitle = entry ? formatShowTitle(entry.data.title) : '';
+const performanceEntry = entry && isPerformanceEntry(entry) ? entry : null;
+const isPerformance = Boolean(performanceEntry);
+const detailBadges = entry ? eventDetailBadges(entry.data) : [];
+
+let EventContent: Awaited<ReturnType<typeof render>>['Content'] | null = null;
+if (entry && !isPerformance) {
+  ({ Content: EventContent } = await render(entry));
+}
+
+const adjacent = entry ? await getStageAdjacentNav(entry.id) : { prev: null, next: null };
+---
+
+{
+  notFound ? (
+    <NotFoundPage />
+  ) : performanceEntry ? (
+    <Base title={showTitle} scrollReveal={false}>
+      <PerformanceArticle entry={performanceEntry} adjacent={adjacent} />
+    </Base>
+  ) : (
+    <Base title={showTitle} scrollReveal={false}>
+      <article class="event">
+        <PageHeader
+          jp={showTitle}
+          compact
+          badges={detailBadges}
+          badgeAlignCover={Boolean(entry!.data.cover)}
+        />
+
+        <section class="container event__body">
+          <div class="event__grid">
+            <div class="prose">{EventContent && <EventContent />}</div>
+            {
+              entry!.data.cover && (
+                <aside class="event__side">
+                  <img class="event__cover" src={entry!.data.cover} alt="" />
+                </aside>
+              )
+            }
+          </div>
+          <StageAdjacentNav adjacent={adjacent} />
+        </section>
+      </article>
+    </Base>
+  )
+}

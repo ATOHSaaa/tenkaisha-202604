@@ -1,0 +1,37 @@
+---
+import Card from './Card.astro';
+import { getCollection } from 'astro:content';
+import { eventEntryCardProps, partitionEventList } from '../utils/event-content';
+
+const { currentPerformances, currentEvents } = partitionEventList(await getCollection('stages'));
+const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
+---
+
+<aside class="news-layout__side news-sidebar" aria-label="公演・イベント">
+  {
+    !hasCurrent ? (
+      <p class="news-sidebar__empty">現在、公演・イベントの情報はありません。</p>
+    ) : (
+      <div class="news-sidebar__cards">
+        {currentPerformances.map((p) => (
+          <Card
+            layout="sidebar"
+            href={`/stages/${p.id}/`}
+            image={p.data.cover}
+            title={p.data.title}
+            {...eventEntryCardProps(p.data)}
+          />
+        ))}
+        {currentEvents.map((e) => (
+          <Card
+            layout="sidebar"
+            href={`/stages/${e.id}/`}
+            image={e.data.cover}
+            title={e.data.title}
+            {...eventEntryCardProps(e.data)}
+          />
+        ))}
+      </div>
+    )
+  }
+</aside>

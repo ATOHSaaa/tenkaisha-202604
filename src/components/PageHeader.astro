@@ -1,4 +1,8 @@
 ---
+import EventBadge from './EventBadge.astro';
+import type { EventBadge as EventBadgeData } from '../utils/event-content';
+import { stagesListHrefForBadge } from '../utils/event-content';
+
 interface Props {
   jp: string;
   lead?: string;
@@ -6,10 +10,28 @@ interface Props {
   compact?: boolean;
   /** 旧API互換のため受け取るが、表示には使わない */
   en?: string;
+  /** @deprecated badges を使用 */
+  badge?: string;
+  /** @deprecated badges を使用 */
+  badgeVariant?: 'long-run' | 'event' | 'junior';
+  badges?: EventBadgeData[];
+  /** 公演詳細：右カラムのチラシ（max 360px）右端にバッジを揃える */
+  badgeAlignCover?: boolean;
 }
 
-const { jp, lead, compact = false } = Astro.props;
+const {
+  jp,
+  lead,
+  compact = false,
+  badge,
+  badgeVariant,
+  badges: badgesProp,
+  badgeAlignCover = false,
+} = Astro.props;
+const badgeList =
+  badgesProp ?? (badge ? [{ badge, badgeVariant }] : []);
 const hasBody = Astro.slots.has('default');
+const hasBadges = badgeList.length > 0;
 ---
 
 <section
@@ -17,10 +39,39 @@ const hasBody = Astro.slots.has('default');
     'page-header',
     compact && 'page-header--compact',
     hasBody && 'page-header--with-body',
+    hasBadges && badgeAlignCover && 'page-header--cover-align',
   ]}
 >
   <div class="container page-header__inner">
     <h1 class="page-header__jp heading-section">{jp}</h1>
+    {
+      hasBadges &&
+        (badgeAlignCover ? (
+          <div class="page-header__badge-col">
+            <div class="page-header__badges">
+              {badgeList.map((item) => (
+                <EventBadge
+                  badge={item.badge}
+                  badgeVariant={item.badgeVariant}
+                  class="page-header__type-badge"
+                  href={stagesListHrefForBadge(item)}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div class="page-header__badges page-header__badge">
+            {badgeList.map((item) => (
+              <EventBadge
+                badge={item.badge}
+                badgeVariant={item.badgeVariant}
+                class="page-header__type-badge"
+                href={stagesListHrefForBadge(item)}
+              />
+            ))}
+          </div>
+        ))
+    }
     {lead && <p class="page-header__lead">{lead}</p>}
     {
       hasBody && (

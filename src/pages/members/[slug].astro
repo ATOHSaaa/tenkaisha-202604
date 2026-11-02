@@ -1,0 +1,65 @@
+---
+import NotFoundPage from '../../components/NotFoundPage.astro';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { getMemberBySlug, getMembers } from '../../utils/members-content';
+
+export function getStaticPaths() {
+  return getMembers().map((m) => ({
+    params: { slug: m.slug },
+  }));
+}
+
+export const prerender = true;
+
+const slug = Astro.params.slug ?? '';
+const member = getMemberBySlug(slug);
+const notFound = !member;
+
+if (notFound) {
+  Astro.response.status = 404;
+}
+---
+
+{
+  notFound ? (
+    <NotFoundPage />
+  ) : (
+    <Base title={member!.name} description={`${member!.role}。${member!.bio}`} scrollReveal={false}>
+      <PageHeader jp={member!.name} lead={member!.role} compact />
+
+      <section class="member-detail">
+        <div class="container member-detail__inner">
+          <div
+            class:list={[
+              'member-detail__layout',
+              member!.photoDetail && 'member-detail__layout--hi-res',
+            ]}
+          >
+            <div class="member-detail__photo-wrap">
+              <img
+                class:list={[
+                  'member-detail__photo',
+                  member!.photoDetail && 'member-detail__photo--hi-res',
+                ]}
+                src={member!.photoDetail ?? member!.photo}
+                alt=""
+                width={member!.photoDetail ? 360 : 200}
+                height={member!.photoDetail ? 360 : 300}
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+            <div class="member-detail__body prose">
+              <p>{member!.bio}</p>
+            </div>
+          </div>
+
+          <p class="member-detail__back">
+            <a class="link-arrow" href="/members/">← 劇団員紹介へ戻る</a>
+          </p>
+        </div>
+      </section>
+    </Base>
+  )
+}

@@ -1,0 +1,37 @@
+---
+import type { StageAdjacentNav } from '../utils/stage-adjacent';
+
+interface Props {
+  adjacent: StageAdjacentNav;
+}
+
+const { adjacent } = Astro.props;
+const { prev, next } = adjacent;
+
+if (!prev && !next) return null;
+---
+
+<nav class="stage-adjacent" aria-label="前後の公演・イベント">
+  <div class="stage-adjacent__inner">
+    {
+      prev ? (
+        <a class="stage-adjacent__link stage-adjacent__link--prev" href={prev.href}>
+          <span class="stage-adjacent__dir">← 前へ</span>
+          <span class="stage-adjacent__title">{prev.title}</span>
+        </a>
+      ) : (
+        <span class="stage-adjacent__spacer" aria-hidden="true" />
+      )
+    }
+    {
+      next ? (
+        <a class="stage-adjacent__link stage-adjacent__link--next" href={next.href}>
+          <span class="stage-adjacent__dir">次へ →</span>
+          <span class="stage-adjacent__title">{next.title}</span>
+        </a>
+      ) : (
+        <span class="stage-adjacent__spacer" aria-hidden="true" />
+      )
+    }
+  </div>
+</nav>

@@ -1,0 +1,27 @@
+---
+import type { EventBadgeVariant } from '../utils/event-content';
+
+interface Props {
+  badge: string;
+  badgeVariant?: EventBadgeVariant;
+  class?: string;
+  href?: string;
+}
+
+const { badge, badgeVariant, class: className, href } = Astro.props;
+const Tag = href ? 'a' : 'span';
+---
+
+<Tag
+  class:list={[
+    'card__badge',
+    href && 'card__badge--link',
+    className,
+    badgeVariant === 'long-run' && 'card__badge--long-run',
+    badgeVariant === 'event' && 'card__badge--event',
+    badgeVariant === 'junior' && 'card__badge--junior',
+  ]}
+  href={href}
+>
+  {badge}
+</Tag>

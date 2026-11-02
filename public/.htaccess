@@ -20,7 +20,7 @@
   #    寄せつつ、ここで URL を新しい階層にマッピングします。
   # ------------------------------------------------------------------
   RewriteCond %{HTTP_HOST} ^ink\.tenkai\.org$ [NC]
-  RewriteRule ^stage-info/?$ https://tenkai.org/events/ [L,R=301]
+  RewriteRule ^stage-info/?$ https://tenkai.org/stages/ [L,R=301]
 
   RewriteCond %{HTTP_HOST} ^ink\.tenkai\.org$ [NC]
   RewriteRule ^juniorclass/?$ https://tenkai.org/classes/junior/ [L,R=301]
@@ -43,13 +43,27 @@
   # 旧 tenkai.org 側の旧URL（静的HTML時代）を新しいパスに寄せる
   # ------------------------------------------------------------------
   RewriteRule ^about\.html$ /about/ [L,R=301]
-  RewriteRule ^school\.html$ /requests/school/ [L,R=301]
-  RewriteRule ^member\.html$ /requests/members/ [L,R=301]
-  RewriteRule ^recruit/?$ /requests/members/ [L,R=301]
+  RewriteRule ^school\.html$ /education/school/ [L,R=301]
+  RewriteRule ^member\.html$ /members/ [L,R=301]
+  RewriteRule ^recruit/?$ /members/ [L,R=301]
+
+  RewriteRule ^requests/?$ /education/ [L,R=301]
+  RewriteRule ^requests/school/?$ /education/school/ [L,R=301]
+  RewriteRule ^requests/workshop/?$ /for-organizations/workshop/ [L,R=301]
+  RewriteRule ^requests/members/?$ /members/ [L,R=301]
+
+  # 旧 /events/・/stage/ を /stages/ へ
+  RewriteRule ^events/?$ /stages/ [L,R=301]
+  RewriteRule ^events/stage-([0-9]{3})/?$ /stages/$1/ [L,R=301]
+  RewriteRule ^events/(.+)/?$ /stages/$1/ [L,R=301]
+
+  RewriteRule ^stage/?$ /stages/ [L,R=301]
+  RewriteRule ^stage/stage-([0-9]{3})/?$ /stages/$1/ [L,R=301]
+  RewriteRule ^stage/(.+)/?$ /stages/$1/ [L,R=301]
 
   # 旧 /performances/ を公演・イベント一覧へ
-  RewriteRule ^performances/?$ /events/ [L,R=301]
-  RewriteRule ^performances/(.+)/?$ /events/$1/ [L,R=301]
+  RewriteRule ^performances/?$ /stages/ [L,R=301]
+  RewriteRule ^performances/(.+)/?$ /stages/$1/ [L,R=301]
 
   # ------------------------------------------------------------------
   # 末尾スラッシュ統一（ディレクトリに対して / を付与）

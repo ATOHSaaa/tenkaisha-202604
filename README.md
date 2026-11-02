@@ -52,10 +52,11 @@ npm run preview
 │       ├── publications/
 │       └── members/
 ├── src/
-│   ├── content.config.ts       # Content Collections 定義（blog / events）
+│   ├── content.config.ts       # Content Collections 定義（blog / stages / news）
 │   ├── content/
 │   │   ├── blog/*.md           # ブログ
-│   │   └── events/*.md         # 公演・イベント（kind: performance | event）
+│   │   ├── news/*.md           # おしらせ
+│   │   └── stages/*.md         # 公演・イベント（type: performance | event）
 │   ├── data/site.ts            # スタジオ/メンバー/クラス/依頼窓口/刊行物 等のデータ
 │   ├── layouts/Base.astro      # 共通レイアウト（OGP, フォント, Header/Footer）
 │   ├── components/             # ヘッダー, フッター, カード, 見出し等
@@ -73,8 +74,6 @@ npm run preview
 ---
 title: "4月公演のチケット先行販売を開始しました"
 date: 2026-04-10
-tag: "公演"    # 公演 / 稽古 / お知らせ / ワークショップ / メディア
-pinned: false
 # link: "https://tenkai.peatix.com/" # 外部リンクに飛ばしたいときだけ
 ---
 
@@ -83,7 +82,6 @@ pinned: false
 
 - ファイル名は `YYYY-MM-DD-keyword.md` 推奨（`id` がそのまま URL スラッグになります）
 - `date` は YAML の日付表記（クォート不要）
-- `tag` は `src/content.config.ts` の `z.enum` に定義されている値のみ許可
 
 ### ブログ
 
@@ -91,7 +89,7 @@ pinned: false
 
 ### 公演・イベント
 
-`src/content/events/` に Markdown を追加します。フロントマターは **`title` を先頭**にし、続けて **`type`**（種別）を指定します。
+`src/content/stages/` に Markdown を追加します。フロントマターは **`title` を先頭**にし、続けて **`type`**（種別）を指定します。
 
 - **`type: long-run`** … バッジ「ロングラン上演中！」（赤）
 - **`type: performance`** … バッジ「公演」（黄）
@@ -118,7 +116,6 @@ tickets:
 - フォント: **Noto Sans JP（和文）** + **Archivo（Latin）**（Google Fonts）
 - 角は基本的に **直角**。太い黒ボーダーでグラフィカルに整理
 - スクロール連動アニメーションは **なし**。ホバー時のみ控えめなインタラクション
-- 写真はすべて `filter: grayscale(1)` で白黒表示（カラー写真を入れても自動でモノクロ化）
 
 アクセントカラーや罫線太さは `src/styles/global.css` 先頭のトークン（`:root`）で一括変更できます。
 
@@ -134,7 +131,7 @@ tickets:
 | SNSリンク | `social[]` | 各アカウントURLを入れる |
 | メンバー紹介 | `members[]` | 写真・名前・役割・プロフィール |
 | スタジオ一覧 | `studios[]` | - |
-| クラス4種 | `classes[]` | 月謝・稽古日・対象などを最新化 |
+| 開講クラス | `src/content/classes/*.md` | **本文**に見出し・段落を書く。`summary` は一覧カード用、`schedule` / `target` / `fee` は詳細サイドバー用 |
 | 依頼窓口 | `requests[]` | - |
 | 刊行物 | `publications[]` | 追加刊行時に増やす |
 
@@ -146,7 +143,7 @@ tickets:
 
 `public/.htaccess` に 301 リダイレクトを記述しています。主な変換:
 
-- `ink.tenkai.org/stage-info/` → `tenkai.org/events/`
+- `ink.tenkai.org/stage-info/` → `tenkai.org/stages/`
 - `ink.tenkai.org/juniorclass/` → `tenkai.org/classes/junior/`
 - `ink.tenkai.org/blog/` → `tenkai.org/blog/`
 - `ink.tenkai.org/YYYY/MM/*` → `tenkai.org/blog/`（年月パーマリンクを一覧に寄せる）
@@ -173,7 +170,7 @@ tickets:
    - FTP クライアントは FileZilla / Cyberduck 等
    - `dist/` フォルダ自体をアップロードせず、中身だけを配置してください
 3. `.htaccess` が正しく配置されているかを確認（隠しファイルを表示する設定を ON に）
-4. 本番サイトでトップ・`/news/`・`/events/cappa-202604/` など代表ページをブラウザチェック
+4. 本番サイトでトップ・`/news/`・`/stages/076/` など代表ページをブラウザチェック
 
 ---
 

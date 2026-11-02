@@ -5,27 +5,29 @@ import NewsList from '../components/NewsList.astro';
 import Card from '../components/Card.astro';
 import BannerLink from '../components/BannerLink.astro';
 import StudioMapLink from '../components/StudioMapLink.astro';
-import { getPublishedNews } from '../utils/emdash-news';
+import { getPublishedNews } from '../utils/news';
 import { getCollection } from 'astro:content';
-import { studios, homeClasses, homeBanners, corporateBanner, friendsBanner } from '../data/site';
+import { studios, homeBanners, corporateBanner, friendsBanner } from '../data/site';
+import { classDetailHref, getHomeClassEntries } from '../utils/classes-content';
 import {
   eventEntryCardProps,
   partitionEventList,
 } from '../utils/event-content';
 
-// お知らせを EmDash から日付降順で取得（最新1件）
-const news = (await getPublishedNews()).slice(0, 1);
+// お知らせを日付降順ですべて取得
+const news = await getPublishedNews();
 
-const { currentPerformances, currentEvents } = partitionEventList(await getCollection('events'));
+const { currentPerformances, currentEvents } = partitionEventList(await getCollection('stages'));
 const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
+const homeClasses = await getHomeClassEntries();
 ---
 
 <Base>
   <div class="home">
-  {/* 公演・イベント情報 */}
+  {/* 公演・イベント */}
   <section class="section section--first">
     <div class="container">
-      <SectionHead jp="公演・イベント情報" />
+      <SectionHead jp="公演・イベント" />
 
       <div class="subsection">
         {
@@ -35,7 +37,7 @@ const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
             <div class="grid-events grid-long-run">
               {currentPerformances.map((p) => (
                 <Card
-                  href={`/events/${p.id}/`}
+                  href={`/stages/${p.id}/`}
                   image={p.data.cover}
                   title={p.data.title}
                   {...eventEntryCardProps(p.data)}
@@ -43,7 +45,7 @@ const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
               ))}
               {currentEvents.map((e) => (
                 <Card
-                  href={`/events/${e.id}/`}
+                  href={`/stages/${e.id}/`}
                   image={e.data.cover}
                   title={e.data.title}
                   {...eventEntryCardProps(e.data)}
@@ -55,7 +57,7 @@ const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
       </div>
 
       <div class="section__actions section__actions--news">
-        <a class="badge-btn badge-btn--light" href="/events/">More →</a>
+        <a class="badge-btn badge-btn--light" href="/stages/">More →</a>
       </div>
     </div>
   </section>
@@ -98,11 +100,14 @@ const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
       <SectionHead jp="開講クラス" />
       <div class="grid-center grid-center--3">
         {
-          homeClasses.map((c) => (
-            <Card href={c.path} image={c.image} title={c.name} body={c.summary}>
-              <span class="card__more">詳細を見る <span class="card__more-arrow">→</span></span>
-            </Card>
-          ))
+          homeClasses.map((entry) => {
+            const c = entry.data;
+            return (
+              <Card href={classDetailHref(entry)} image={c.image} title={c.title} body={c.summary}>
+                <span class="card__more">詳細を見る <span class="card__more-arrow">→</span></span>
+              </Card>
+            );
+          })
         }
       </div>
     </div>

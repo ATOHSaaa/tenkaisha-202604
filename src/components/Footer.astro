@@ -11,26 +11,21 @@ const nav: { heading: string; items: { label: string; href: string }[] }[] = [
   {
     heading: '転回社について',
     items: [
-      { label: '劇団員紹介', href: '/requests/members/' },
+      { label: '劇団員紹介', href: '/members/' },
+      { label: '演劇と教育', href: '/education/' },
+      { label: '法人の方向け', href: '/for-organizations/' },
       { label: 'スタジオ所在地', href: '/#studios' },
+      { label: 'お問い合わせ', href: '/contact/' },
     ],
   },
   {
     heading: '活動',
     items: [
-      { label: '公演・イベント', href: '/events/' },
-      { label: '稽古情報', href: '/classes/' },
+      { label: '公演・イベント', href: '/stages/' },
+      { label: '開講クラス', href: '/classes/' },
       { label: '刊行物', href: '/publications/' },
       { label: '日々のこと', href: '/blog/' },
       { label: 'おしらせ', href: '/news/' },
-    ],
-  },
-  {
-    heading: 'ご依頼',
-    items: [
-      { label: '学校公演', href: '/requests/school/' },
-      { label: 'ワークショップ', href: '/requests/workshop/' },
-      { label: 'お問い合わせ', href: '/contact/' },
     ],
   },
 ];
@@ -42,10 +37,6 @@ const nav: { heading: string; items: { label: string; href: string }[] }[] = [
     <div class="site-footer__top">
       <div class="site-footer__brand">
         <p class="site-footer__name">一般社団法人 転回社</p>
-        <p class="site-footer__tagline">
-          熊本市を中心に活動する劇団・制作団体。<br />
-          2001年の旗揚げ以来、演劇の可能性を探る創作を続けています。
-        </p>
         <address class="site-footer__addr">
           <span>〒862-0950</span>
           <span>熊本県熊本市中央区水前寺 1-32-28-202</span>
@@ -86,6 +77,9 @@ const nav: { heading: string; items: { label: string; href: string }[] }[] = [
           ))
         }
       </ul>
+      <p class="site-footer__credit">
+        制作：<a href="https://production.tadeku.net/" target="_blank" rel="noopener noreferrer">蓼食う本の虫制作室</a>
+      </p>
     </div>
   </div>
 </footer>

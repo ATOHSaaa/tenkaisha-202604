@@ -73,6 +73,7 @@ npm run preview
 | `EADDRINUSE` | 別ポートで起動: `npm run dev -- --port 4322` |
 | `node_modules` なし | `npm install` 後に再実行 |
 | ページが古い | dev サーバー再起動。ブラウザのハードリロード |
+| お知らせが空 | `bash scripts/sync-astro-content.sh` のあと dev 再起動（`npm run dev:local` 推奨） |
 
 ## 関連コマンド
 

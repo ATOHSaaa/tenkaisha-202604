@@ -1,12 +1,17 @@
 ---
 import { formatShowTitle, splitShowTitleBeforeWork } from '../utils/titles';
+import EventBadge from './EventBadge.astro';
+import type { EventBadge as EventBadgeData } from '../utils/event-content';
 
 interface Props {
   href?: string;
   image?: string;
   label?: string;
+  /** @deprecated badges を使用 */
   badge?: string;
-  badgeVariant?: 'long-run';
+  /** @deprecated badges を使用 */
+  badgeVariant?: 'long-run' | 'event' | 'junior';
+  badges?: EventBadgeData[];
   nextPerformanceDate?: Date;
   /** 日付ブロックの見出し（既定: 次回公演） */
   nextDateLabel?: string;
@@ -16,6 +21,8 @@ interface Props {
   body?: string;
   external?: boolean;
   imageAspect?: string;
+  /** ニュースサイドバー: チラシ左・タイトル＋日付を右に縦並び */
+  layout?: 'default' | 'sidebar';
 }
 
 const {
@@ -24,6 +31,7 @@ const {
   label,
   badge,
   badgeVariant,
+  badges: badgesProp,
   nextPerformanceDate,
   nextDateLabel = '次回公演',
   scheduleText,
@@ -31,7 +39,10 @@ const {
   body,
   external,
   imageAspect,
+  layout = 'default',
 } = Astro.props;
+const badgeList =
+  badgesProp ?? (badge ? [{ badge, badgeVariant }] : []);
 const titleParts = splitShowTitleBeforeWork(title);
 const displayTitle = formatShowTitle(title);
 const Tag = href ? 'a' : 'div';
@@ -39,16 +50,65 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {
 
 const fmtDate = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+
+const sidebarLayout = layout === 'sidebar' && Boolean(image);
 ---
 
-<Tag class="card" href={href} {...extAttrs}>
-  {badge && (
-    <span class:list={['card__badge', badgeVariant === 'long-run' && 'card__badge--long-run']}>
-      {badge}
-    </span>
-  )}
+<Tag class:list={['card', sidebarLayout && 'card--sidebar']} href={href} {...extAttrs}>
   {
-    image ? (
+    badgeList.length > 0 && (
+      <div class="card__badges">
+        {badgeList.map((item) => (
+          <EventBadge badge={item.badge} badgeVariant={item.badgeVariant} />
+        ))}
+      </div>
+    )
+  }
+  {
+    sidebarLayout ? (
+      <div class="card__visual card__visual--sidebar">
+        <div class="card__thumb-frame">
+          <img
+            class="card__thumb"
+            src={image}
+            alt=""
+            loading="lazy"
+            style={imageAspect ? `aspect-ratio:${imageAspect}` : undefined}
+          />
+        </div>
+        <div class="card__meta">
+          <h3 class="card__title">
+            {
+              titleParts ? (
+                <>
+                  {titleParts.lead}
+                  <wbr />
+                  {titleParts.work}
+                </>
+              ) : (
+                displayTitle
+              )
+            }
+          </h3>
+          {
+            nextPerformanceDate ? (
+              <p class="card__next">
+                <span class="card__next-label">{nextDateLabel}</span>
+                <time class="card__next-date" datetime={nextPerformanceDate.toISOString()}>
+                  {fmtDate(nextPerformanceDate)}
+                </time>
+              </p>
+            ) : scheduleText ? (
+              <p class="card__next">
+                <span class="card__next-date card__next-date--schedule">{scheduleText}</span>
+              </p>
+            ) : (
+              label && <span class="card__label">{label}</span>
+            )
+          }
+        </div>
+      </div>
+    ) : image ? (
       <div class="card__visual">
         <h3 class="card__title">
           {
@@ -90,20 +150,21 @@ const fmtDate = (d: Date) =>
     )
   }
   {
-    nextPerformanceDate ? (
-      <p class="card__next">
-        <span class="card__next-label">{nextDateLabel}</span>
-        <time class="card__next-date" datetime={nextPerformanceDate.toISOString()}>
-          {fmtDate(nextPerformanceDate)}
-        </time>
-      </p>
-    ) : scheduleText ? (
-      <p class="card__next">
-        <span class="card__next-date card__next-date--schedule">{scheduleText}</span>
-      </p>
-    ) : (
-      label && <span class="card__label">{label}</span>
-    )
+    !sidebarLayout &&
+      (nextPerformanceDate ? (
+        <p class="card__next">
+          <span class="card__next-label">{nextDateLabel}</span>
+          <time class="card__next-date" datetime={nextPerformanceDate.toISOString()}>
+            {fmtDate(nextPerformanceDate)}
+          </time>
+        </p>
+      ) : scheduleText ? (
+        <p class="card__next">
+          <span class="card__next-date card__next-date--schedule">{scheduleText}</span>
+        </p>
+      ) : (
+        label && <span class="card__label">{label}</span>
+      ))
   }
   {body && <p class="card__body">{body}</p>}
   <slot />

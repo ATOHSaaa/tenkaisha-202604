@@ -6,11 +6,13 @@ import {
 
 interface Props {
   items: PerformanceHistoryItem[];
+  resolveLink?: (item: PerformanceHistoryItem) => string | undefined;
+  includeTime?: boolean;
 }
 
-const { items } = Astro.props;
+const { items, resolveLink, includeTime = false } = Astro.props;
 
-const yearGroups = groupPerformanceHistoryByYear(items);
+const yearGroups = groupPerformanceHistoryByYear(items, resolveLink, { includeTime });
 ---
 
 <section class="perf-history" aria-label="上演履歴">
@@ -25,7 +27,39 @@ const yearGroups = groupPerformanceHistoryByYear(items);
               {
                 group.items.map((item) => (
                   <li class="perf-history__item">
-                    <span class="perf-history__date">{item.label}</span>
+                    {
+                      item.parts ? (
+                        <span class="perf-history__date">
+                          {
+                            item.parts.map((part) =>
+                              part.href ? (
+                                <a
+                                  class="perf-history__date perf-history__date--link"
+                                  href={part.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {part.text}
+                                </a>
+                              ) : (
+                                part.text
+                              ),
+                            )
+                          }
+                        </span>
+                      ) : item.href ? (
+                        <a
+                          class="perf-history__date perf-history__date--link"
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {item.label}
+                        </a>
+                      ) : (
+                        <span class="perf-history__date">{item.label}</span>
+                      )
+                    }
                   </li>
                 ))
               }

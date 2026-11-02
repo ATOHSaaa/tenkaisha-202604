@@ -1,3 +1,5 @@
+.venv-rembg/
+
 # build output
 dist/
 .astro/
@@ -15,11 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 
-# EmDash (local dev)
 data.db
 data.db-shm
 data.db-wal
-uploads/
 
 # 一時作業
 .tmp-music-transcribe/

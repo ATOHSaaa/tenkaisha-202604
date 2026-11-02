@@ -1,8 +1,9 @@
 ---
 import '../styles/global.css';
-import '../styles/_imports.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { buildBreadcrumbs, type BreadcrumbItem } from '../utils/breadcrumbs';
 
 interface Props {
   title?: string;
@@ -11,19 +12,50 @@ interface Props {
   noindex?: boolean;
   /** false のとき h2・カードのスクロール表示アニメーションを無効化 */
   scrollReveal?: boolean;
+  /** 未指定時は URL + title から自動生成。配列で上書き可 */
+  breadcrumbs?: BreadcrumbItem[];
+  /** 最終 crumb のラベル（title と異なるとき） */
+  breadcrumbLabel?: string;
 }
 
 const {
   title,
-  description = '熊本を拠点に活動する劇団「転回社」の公式サイト。公演情報、稽古クラス、依頼窓口、スタジオ情報をご案内します。',
+  description = '熊本を拠点に活動する劇団「転回社」の公式サイト。公演情報、開講クラス、演劇教育、スタジオ情報をご案内します。',
   ogImage = '/images/ogp.png',
   noindex = false,
   scrollReveal = true,
+  breadcrumbs: breadcrumbsProp,
+  breadcrumbLabel,
 } = Astro.props;
 
 const siteName = '転回社';
 const pageTitle = title ? `${title} | ${siteName}` : `${siteName} | 熊本の劇団`;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const breadcrumbItems =
+  breadcrumbsProp ??
+  buildBreadcrumbs(Astro.url.pathname, breadcrumbLabel ?? title, Astro.url.searchParams);
+
+const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isHome = pathname === '/';
+
+const breadcrumbJsonLd =
+  breadcrumbItems.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbItems.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: item.label,
+          item: item.href
+            ? new URL(item.href, Astro.site).href
+            : index === breadcrumbItems.length - 1
+              ? canonical
+              : undefined,
+        })),
+      }
+    : null;
 ---
 
 <!doctype html>
@@ -35,6 +67,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    {
+      breadcrumbJsonLd && (
+        <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
+      )
+    }
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteName} />
@@ -56,10 +94,35 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <a class="skip-link" href="#main">本文へスキップ</a>
     <Header />
     <main id="main">
+      <div class:list={['breadcrumb-bar', isHome && 'breadcrumb-bar--home']}>
+        <div class="container breadcrumb-bar__inner">
+          <Breadcrumbs items={breadcrumbItems} />
+        </div>
+      </div>
       <slot />
     </main>
     <Footer />
 
+    <script is:inline>
+      /** ページ内 # リンクだけスムーズスクロール（履歴復元は auto のまま） */
+      document.addEventListener(
+        'click',
+        (e) => {
+          if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
+            return;
+          const a = e.target.closest('a[href^="#"]');
+          if (!a || !a.hash || a.hash === '#') return;
+          const id = a.hash.slice(1);
+          const target = document.getElementById(id);
+          if (!target) return;
+          e.preventDefault();
+          target.scrollIntoView({
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          });
+        },
+        true,
+      );
+    </script>
     <script>
       import { initScrollReveal } from '../scripts/scroll-reveal';
 

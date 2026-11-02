@@ -1,29 +1,39 @@
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
-import react from '@astrojs/react';
-import emdash, { local } from 'emdash/astro';
-import { sqlite } from 'emdash/db';
+import {
+  contentMarkdownReloadPlugin,
+  trailingSlashDevRedirectPlugin,
+} from './scripts/trailing-slash-redirect.mjs';
+import remarkBreaks from 'remark-breaks';
 
-// 転回社サイト設定
-// EmDash ローカル検証のため SSR モード。本番 FTP 静的配信とは別運用。
+const githubPages = process.env.GITHUB_PAGES === 'true';
+
+// 転回社サイト設定（静的出力。本番 tenkai.org は FTP、プレビューは GitHub Pages）
 export default defineConfig({
-  site: 'https://tenkai.org',
+  site: githubPages ? 'https://atohsaaa.github.io' : 'https://tenkai.org',
+  base: githubPages ? '/tenkaisha-202604' : undefined,
   trailingSlash: 'always',
-  output: 'server',
-  adapter: node({ mode: 'standalone' }),
+  output: 'static',
   build: {
     format: 'directory',
     assets: 'assets',
   },
   compressHTML: true,
-  integrations: [
-    react(),
-    emdash({
-      database: sqlite({ url: 'file:./data.db' }),
-      storage: local({
-        directory: './uploads',
-        baseUrl: '/_emdash/api/media/file',
-      }),
-    }),
-  ],
+  markdown: {
+    remarkPlugins: [remarkBreaks],
+  },
+  vite: {
+    plugins: [trailingSlashDevRedirectPlugin(), contentMarkdownReloadPlugin()],
+  },
+  redirects: {
+    '/events/': '/stages/',
+    '/events': '/stages/',
+    '/events/[...slug]': '/stages/[...slug]',
+    '/stage/': '/stages/',
+    '/stage': '/stages/',
+    '/stage/[...slug]': '/stages/[...slug]',
+    '/events/saya-minami-farewell-20260731': '/stages/077/',
+    '/events/saya-minami-farewell-20260731/': '/stages/077/',
+    '/events/tipitaka-202503': '/stages/063/',
+    '/events/tipitaka-202503/': '/stages/063/',
+  },
 });
