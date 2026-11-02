@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
+import { friendsIntro } from '../../data/site';
 
 const fanboxUrl = 'https://www.pixiv.net/fanbox/creator/38362401';
 ---
@@ -9,16 +10,8 @@ const fanboxUrl = 'https://www.pixiv.net/fanbox/creator/38362401';
   title="友の会のご案内"
   description="転回社の活動を支えてくださる『友の会』のご案内。会員種別、特典、入会方法について。"
 >
-  <PageHeader
-    jp="友の会のご案内"
-    lead="転回社の活動を支えてくださる『友の会』の会員を募集しています。温かいご支援をお願いいたします。"
-  >
+  <PageHeader jp="友の会のご案内" leadParagraphs={friendsIntro.paragraphs}>
     <div class="prose">
-      <p>
-        転回社では、公演や教育活動を支えてくださる『友の会』の会員を募集しております。
-        皆さまの応援をいただき、より充実した作品づくりと、熊本の文化の発展を目指してまいります。
-      </p>
-
       <h2>会員の種類</h2>
 
       <h3>一般会員（500円／月）</h3>

@@ -1,0 +1,43 @@
+---
+import { withBase } from '../utils/path';
+import type { FriendsIntro } from '../data/site';
+
+interface Props {
+  intro: FriendsIntro;
+}
+
+const { intro } = Astro.props;
+const href = withBase(intro.href);
+const bgSrc = withBase(intro.backgroundImage);
+---
+
+<div class="home-friends scroll-reveal">
+  <div class="home-friends__backdrop" aria-hidden="true">
+    <img
+      class="home-friends__backdrop-img"
+      src={bgSrc}
+      alt=""
+      width={1024}
+      height={683}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="home-friends__scrim" aria-hidden="true"></div>
+  <div class="home-friends__inner">
+    <p class="home-friends__en">{intro.english}</p>
+    <h2 class="home-friends__title">
+      <span class="home-friends__title-mark">{intro.titleMark}</span>{intro.titleRest}
+    </h2>
+    <div class="home-friends__body">
+      {intro.paragraphs.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </div>
+    <a class="badge-btn badge-btn--pill home-friends__cta" href={href}>
+      <span class="badge-btn__label">
+        {intro.linkLabel}<span class="home-friends__cta-arrow" aria-hidden="true"> →</span>
+      </span>
+    </a>
+  </div>
+</div>

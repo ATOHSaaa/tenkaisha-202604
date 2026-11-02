@@ -83,6 +83,15 @@ const linkHref = resolveHref(href);
   {
     classFlyerLayout ? (
       <div class="card__class-stack">
+        <div class="card__thumb-frame">
+          <img
+            class="card__thumb"
+            src={imageSrc}
+            alt=""
+            loading="lazy"
+            style={imageAspect ? `aspect-ratio:${imageAspect}` : undefined}
+          />
+        </div>
         <h3 class="card__title">
           {
             titleParts ? (
@@ -96,15 +105,6 @@ const linkHref = resolveHref(href);
             )
           }
         </h3>
-        <div class="card__thumb-frame">
-          <img
-            class="card__thumb"
-            src={imageSrc}
-            alt=""
-            loading="lazy"
-            style={imageAspect ? `aspect-ratio:${imageAspect}` : undefined}
-          />
-        </div>
         {body && <p class="card__body">{body}</p>}
       </div>
     ) : sidebarLayout ? (

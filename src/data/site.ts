@@ -101,11 +101,35 @@ export const corporateBanner: BannerInfo = {
   href: '/for-organizations/',
 };
 
-/** トップページ「開講クラス」直上の友の会バナー */
-export const friendsBanner: BannerInfo = {
+/** トップ：活動カード直下の友の会案内 */
+export type FriendsIntro = {
+  /** 見出し全体（アクセシビリティ用） */
+  title: string;
+  /** 見出し内で下線を引く部分 */
+  titleMark: string;
+  /** titleMark の後ろの見出し文言 */
+  titleRest: string;
+  english: string;
+  href: string;
+  linkLabel: string;
+  paragraphs: string[];
+  /** 背景写真（カード内・黒ブラー） */
+  backgroundImage: string;
+};
+
+export const friendsIntro: FriendsIntro = {
   title: '友の会のご案内',
+  titleMark: '友の会',
+  titleRest: 'のご案内',
   english: 'SUPPORTERS',
   href: '/supporter/',
+  linkLabel: '友の会の詳細を見る',
+  backgroundImage: '/images/home/friends-intro-bg.png',
+  paragraphs: [
+    'いつも転回社の活動を応援していただき、誠にありがとうございます。',
+    '当団体では、今後も継続的に公演や教育活動を行っていくために、活動を支援してくださる友の会の会員さまを募集しております。',
+    '皆さまの応援を頂き、より充実した作品づくりと熊本の文化の発展を目指してまいりますので、何ぞとご協力のほどよろしくお願いいたします。',
+  ],
 };
 
 export type HomeActivityThumbnail = {

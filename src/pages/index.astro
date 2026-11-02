@@ -7,8 +7,9 @@ import BannerLink from '../components/BannerLink.astro';
 import StudioMapLink from '../components/StudioMapLink.astro';
 import { getPublishedNews } from '../utils/news';
 import { getCollection } from 'astro:content';
-import { studios, homeBanners, corporateBanner, friendsBanner, homeActivities } from '../data/site';
+import { studios, homeBanners, corporateBanner, friendsIntro, homeActivities } from '../data/site';
 import HomeActivityCard from '../components/HomeActivityCard.astro';
+import HomeFriendsIntro from '../components/HomeFriendsIntro.astro';
 import { classDetailHref, getHomeClassEntries } from '../utils/classes-content';
 import {
   eventEntryCardProps,
@@ -131,17 +132,9 @@ const heroMarqueeItems = currentPerformances
   </section>
 
   {/* 友の会 */}
-  <section class="section section--friends-banner">
+  <section class="section section--friends-intro">
     <div class="container">
-      <div class="banner-row banner-row--1">
-        <BannerLink
-          href={friendsBanner.href}
-          title={friendsBanner.title}
-          english={friendsBanner.english}
-          wide
-          light
-        />
-      </div>
+      <HomeFriendsIntro intro={friendsIntro} />
     </div>
   </section>
 

@@ -6,6 +6,8 @@ import { stagesListHrefForBadge } from '../utils/event-content';
 interface Props {
   jp: string;
   lead?: string;
+  /** リードを複数段落で表示（lead より優先） */
+  leadParagraphs?: string[];
   /** タイトルのみの詳細ページ向け（h1下の余白を詰める） */
   compact?: boolean;
   /** 旧API互換のため受け取るが、表示には使わない */
@@ -22,6 +24,7 @@ interface Props {
 const {
   jp,
   lead,
+  leadParagraphs,
   compact = false,
   badge,
   badgeVariant,
@@ -72,7 +75,12 @@ const hasBadges = badgeList.length > 0;
           </div>
         ))
     }
-    {lead && <p class="page-header__lead">{lead}</p>}
+    {
+      leadParagraphs?.map((paragraph) => (
+        <p class="page-header__lead">{paragraph}</p>
+      ))
+    }
+    {!leadParagraphs?.length && lead && <p class="page-header__lead">{lead}</p>}
     {
       hasBody && (
         <div class="page-header__body">

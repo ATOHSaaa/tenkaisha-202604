@@ -8,9 +8,17 @@ const navId = 'site-header-nav';
 
 <div class="site-header-root">
   <div class="site-header__inner container">
-    <a class="site-header__brand" href={withBase('/')} aria-label="転回社 トップへ">
-      <span class="site-header__logo">転回社</span>
-    </a>
+    <div class="site-header__start">
+      <a class="site-header__brand" href={withBase('/')} aria-label="転回社 トップへ">
+        <span class="site-header__logo">転回社</span>
+      </a>
+      <div class="site-header__scroll-progress-wrap">
+        <span class="site-header__scroll-progress" aria-hidden="true">
+          <span class="site-header__scroll-progress-bar"></span>
+        </span>
+        <span class="site-header__scroll-progress-label" aria-hidden="true"></span>
+      </div>
+    </div>
 
     <button
       type="button"
@@ -238,10 +246,42 @@ const navId = 'site-header-nav';
     desktopMq.addEventListener('change', onLayoutChange);
   }
 
+  function setupSiteHeaderScrollProgress() {
+    const update = (): void => {
+      const bar = document.querySelector('.site-header__scroll-progress-bar');
+      const wrap = document.querySelector('.site-header__scroll-progress-wrap');
+      const label = document.querySelector('.site-header__scroll-progress-label');
+      if (!(bar instanceof HTMLElement) || !(wrap instanceof HTMLElement)) return;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const maxScroll = Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight,
+      );
+      const progress = maxScroll > 0 ? Math.min(1, Math.max(0, scrollTop / maxScroll)) : 0;
+      const percent = Math.round(progress * 100);
+      bar.style.width = `${progress * 100}%`;
+      wrap.classList.toggle('is-active', percent > 0);
+      if (label instanceof HTMLElement) {
+        label.textContent = percent > 0 ? `${percent}%` : '';
+        label.style.setProperty('--scroll-label-offset', `${progress * 100}%`);
+      }
+    };
+
+    if (!document.documentElement.hasAttribute('data-header-scroll-progress')) {
+      document.documentElement.setAttribute('data-header-scroll-progress', '');
+      window.addEventListener('scroll', update, { passive: true, capture: true });
+      window.addEventListener('resize', update, { passive: true });
+    }
+
+    update();
+  }
+
   setupSiteHeaderMenu();
   setupSiteHeaderNavIndicator();
+  setupSiteHeaderScrollProgress();
   document.addEventListener('astro:page-load', () => {
     setupSiteHeaderMenu();
     setupSiteHeaderNavIndicator();
+    setupSiteHeaderScrollProgress();
   });
 </script>
