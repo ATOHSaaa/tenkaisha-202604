@@ -1,0 +1,87 @@
+---
+import type { SchoolPamphletContent } from '../data/school-piece-content';
+import { resolvePersonCredits } from '../data/people';
+import SchoolPieceCreditList from './SchoolPieceCreditList.astro';
+
+interface Props {
+  pamphlet: SchoolPamphletContent;
+}
+
+const { pamphlet } = Astro.props;
+const script = resolvePersonCredits(pamphlet.script);
+const direction = resolvePersonCredits(pamphlet.direction);
+const cast = resolvePersonCredits(pamphlet.cast);
+const music = resolvePersonCredits(pamphlet.music);
+---
+
+<section class="school-piece-sheet" aria-label="公演概要">
+  <div class="school-piece-sheet__grid">
+    <div class="school-piece-sheet__col">
+      <section class="school-piece-sheet__block">
+        <h2 class="school-piece-sheet__label">脚本</h2>
+        <SchoolPieceCreditList items={script} />
+      </section>
+
+      <section class="school-piece-sheet__block">
+        <h2 class="school-piece-sheet__label">演出</h2>
+        <SchoolPieceCreditList items={direction} />
+      </section>
+
+      <section class="school-piece-sheet__block">
+        <h2 class="school-piece-sheet__label">キャスト</h2>
+        <SchoolPieceCreditList items={cast} />
+        {pamphlet.castNote ? <p class="school-piece-sheet__note">{pamphlet.castNote}</p> : null}
+      </section>
+
+      <section class="school-piece-sheet__block">
+        <h2 class="school-piece-sheet__label">演奏</h2>
+        <SchoolPieceCreditList items={music} />
+      </section>
+
+      <section class="school-piece-sheet__block">
+        <h2 class="school-piece-sheet__label">キャスト・スタッフ総人数</h2>
+        <p class="school-piece-sheet__plain">{pamphlet.headcount}</p>
+      </section>
+    </div>
+
+    <div class="school-piece-sheet__col">
+      <section class="school-piece-sheet__block">
+        <h2 class="school-piece-sheet__label school-piece-sheet__label--sr">公演条件</h2>
+        <dl class="school-piece-sheet__spec">
+          {
+            pamphlet.spec.map((row) => (
+              <div class="school-piece-sheet__spec-row">
+                <dt>{row.label}</dt>
+                <dd>
+                  {row.value}
+                  {row.note ? <span class="school-piece-sheet__spec-note">{row.note}</span> : null}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      {
+        pamphlet.recordIntro && pamphlet.recordItems?.length ? (
+          <section class="school-piece-sheet__block">
+            <h2 class="school-piece-sheet__label">公演実績</h2>
+            <p class="school-piece-sheet__lead">{pamphlet.recordIntro}</p>
+            <ul class="school-piece-sheet__record">
+              {pamphlet.recordItems.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </section>
+        ) : null
+      }
+
+      <aside class="school-piece-sheet__guide">
+        <h2 class="school-piece-sheet__guide-title">{pamphlet.appreciationTitle}</h2>
+        <div class="school-piece-sheet__guide-body">
+          {pamphlet.appreciationParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

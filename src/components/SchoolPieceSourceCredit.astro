@@ -1,0 +1,14 @@
+---
+import type { SchoolSourceCredit } from '../data/school-piece-content';
+
+interface Props {
+  credit: SchoolSourceCredit;
+}
+
+const { credit } = Astro.props;
+const label = credit.label ?? '原作';
+---
+
+<p class="school-piece__source">
+  {label}：{credit.name}
+</p>

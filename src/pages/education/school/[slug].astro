@@ -3,7 +3,10 @@ import NotFoundPage from '../../../components/NotFoundPage.astro';
 import Base from '../../../layouts/Base.astro';
 import PageContactCta from '../../../components/PageContactCta.astro';
 import PageHeader from '../../../components/PageHeader.astro';
+import SchoolPiecePamphlet from '../../../components/SchoolPiecePamphlet.astro';
+import SchoolPieceSourceCredit from '../../../components/SchoolPieceSourceCredit.astro';
 import SchoolTargetPills from '../../../components/SchoolTargetPills.astro';
+import { getSchoolPieceExtra } from '../../../data/school-piece-content';
 import { schoolPerformanceRepertoire } from '../../../data/school-performance-repertoire';
 import { getSchoolPerformancePiece } from '../../../utils/school-performance-repertoire';
 import { withBase } from '../../../utils/path';
@@ -18,12 +21,14 @@ export const prerender = true;
 
 const slug = Astro.params.slug ?? '';
 const piece = slug ? getSchoolPerformancePiece(slug) : undefined;
+const extra = slug ? getSchoolPieceExtra(slug) : undefined;
 const notFound = !piece;
 
 if (notFound) {
   Astro.response.status = 404;
 }
 
+const synopsis = extra?.synopsis ?? piece?.lead ?? '';
 const pageTitle = piece ? `${piece.work}｜学校公演` : '学校公演';
 ---
 
@@ -31,15 +36,10 @@ const pageTitle = piece ? `${piece.work}｜学校公演` : '学校公演';
   notFound ? (
     <NotFoundPage />
   ) : (
-    <Base title={pageTitle} description={piece!.lead}>
-      <PageHeader jp={piece!.work} compact />
-
-      <section class="container school-piece">
-        <div class="prose school-piece__prose">
-          <p class="school-piece__overview">{piece!.overview}</p>
-          <p>{piece!.lead}</p>
-
-          <dl class="school-piece__meta">
+    <Base title={pageTitle} description={synopsis}>
+      <PageHeader jp={piece!.work} supertitle={piece!.overview} compact>
+        <div class="school-piece__header-row">
+          <dl class="school-piece__meta school-piece__meta--header">
             <div>
               <dt>対象</dt>
               <dd>
@@ -47,11 +47,19 @@ const pageTitle = piece ? `${piece.work}｜学校公演` : '学校公演';
               </dd>
             </div>
             <div>
-              <dt>上演時間</dt>
+              <dt>公演時間</dt>
               <dd>{piece!.duration}</dd>
             </div>
           </dl>
+          <div class="school-piece__synopsis-block">
+            {extra?.sourceCredit ? <SchoolPieceSourceCredit credit={extra.sourceCredit} /> : null}
+            <p class="page-header__lead school-piece__synopsis">{synopsis}</p>
+          </div>
         </div>
+      </PageHeader>
+
+      <section class:list={['container', 'school-piece', extra?.pamphlet && 'school-piece--pamphlet']}>
+        {extra?.pamphlet ? <SchoolPiecePamphlet pamphlet={extra.pamphlet} /> : null}
 
         <PageContactCta body="学校公演のご依頼・ご相談は、お問い合わせフォームよりお気軽にご連絡ください。学年・会場・時間に合わせた構成もご相談いただけます。" />
 

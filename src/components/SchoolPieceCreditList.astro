@@ -1,0 +1,20 @@
+---
+import type { PersonCredit } from '../data/people';
+
+interface Props {
+  items: PersonCredit[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="school-piece-sheet__people">
+  {
+    items.map((person) => (
+      <li class="school-piece-sheet__person">
+        <p class="school-piece-sheet__person-name">{person.name}</p>
+        <p class="school-piece-sheet__person-bio">{person.bio}</p>
+      </li>
+    ))
+  }
+</ul>
