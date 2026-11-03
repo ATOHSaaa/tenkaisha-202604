@@ -27,6 +27,13 @@ const { Content } = entry ? await render(entry) : { Content: null };
 
 const fmtDate = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+
+const metaTags =
+  entry && entry.data.tags?.length
+    ? entry.data.tags
+    : entry
+      ? [entry.data.category]
+      : [];
 ---
 
 {
@@ -44,7 +51,7 @@ const fmtDate = (d: Date) =>
         }
         <div class="container">
           <p class="post__meta">
-            <span class="post__category">{entry.data.category}</span>
+            <span class="post__category">{metaTags.join(' / ')}</span>
             <time class="post__date" datetime={entry.data.date.toISOString()}>
               {fmtDate(entry.data.date)}
             </time>

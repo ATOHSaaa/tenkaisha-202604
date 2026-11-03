@@ -21,22 +21,33 @@ const currentPath = stripBasePath(Astro.url.pathname);
       </div>
     </div>
 
-    <button
-      type="button"
-      class="site-header__menu-toggle"
-      aria-expanded="false"
-      aria-controls={navId}
-      aria-label="メニューを開く"
-      data-site-header-toggle
-    >
-      <span class="site-header__menu-icon" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-    </button>
+    <div class="site-header__end">
+      <a
+        class="site-header__link site-header__link--cta site-header__contact-bar"
+        href={withBase('/contact/')}
+        data-nav-href="/contact/"
+        aria-current={isSiteNavCurrent(currentPath, '/contact/') ? 'page' : undefined}
+      >
+        お問い合わせ
+      </a>
+      <button
+        type="button"
+        class="site-header__menu-toggle"
+        aria-expanded="false"
+        aria-controls={navId}
+        aria-label="メニューを開く"
+        data-site-header-toggle
+      >
+        <span class="site-header__menu-icon" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
 
     <nav class="site-header__nav" id={navId} aria-label="サイト内メニュー">
+      <span class="site-header__nav-indicator" aria-hidden="true"></span>
       <ul class="site-header__nav-list">
         {
           THEME_USER_CHOICE_ENABLED ? (
@@ -65,7 +76,12 @@ const currentPath = stripBasePath(Astro.url.pathname);
           siteHeaderNav.map((item) => {
             const isCurrent = isSiteNavCurrent(currentPath, item.href);
             return (
-            <li class="site-header__nav-item">
+            <li
+              class:list={[
+                'site-header__nav-item',
+                item.href === '/contact/' && 'site-header__nav-item--contact',
+              ]}
+            >
               <a
                 class:list={[
                   'site-header__link',
@@ -105,6 +121,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
   let heldNavHref: string | null = null;
   /** ClientRouter の入れ替え中は pointerout でホバーを消さない */
   let navSwapSettled = true;
+  let snapNavIndicatorToCurrent: (() => void) | null = null;
 
   function navLinkFromEvent(event: Event): HTMLAnchorElement | null {
     const target = event.target;
@@ -120,6 +137,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
     nav.querySelectorAll<HTMLAnchorElement>('a.site-header__link[data-nav-href]').forEach((link) => {
       link.classList.toggle(HOVER_HOLD_CLASS, link.dataset.navHref === heldNavHref);
     });
+    snapNavIndicatorToCurrent?.();
   }
 
   function clearHeldNavHover(doc: Document): void {
@@ -172,10 +190,12 @@ const currentPath = stripBasePath(Astro.url.pathname);
   }
 
   function syncSiteHeaderNavCurrent(): void {
-    const nav = document.getElementById('site-header-nav');
-    if (!nav) return;
     const path = stripBasePath(window.location.pathname);
-    nav.querySelectorAll<HTMLAnchorElement>('.site-header__link[data-nav-href]').forEach((link) => {
+    document
+      .querySelectorAll<HTMLAnchorElement>(
+        '#site-header-nav a.site-header__link[data-nav-href], a.site-header__contact-bar[data-nav-href]',
+      )
+      .forEach((link) => {
       const href = link.dataset.navHref ?? '';
       const isCurrent = isSiteNavCurrent(path, href);
       link.classList.toggle('site-header__link--current', isCurrent);
@@ -228,12 +248,16 @@ const currentPath = stripBasePath(Astro.url.pathname);
       const target = event.target;
       if (!(target instanceof Node)) return;
       if (nav.contains(target) || toggle.contains(target)) return;
+      const contactBar = root.querySelector('.site-header__contact-bar');
+      if (contactBar instanceof Node && contactBar.contains(target)) return;
       setOpen(false);
     });
 
     nav.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => setOpen(false));
     });
+
+    root.querySelector('.site-header__contact-bar')?.addEventListener('click', () => setOpen(false));
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && root.classList.contains('is-nav-open')) setOpen(false);
@@ -242,6 +266,140 @@ const currentPath = stripBasePath(Astro.url.pathname);
     window.matchMedia('(min-width: 901px)').addEventListener('change', (event) => {
       if (event.matches) setOpen(false);
     });
+  }
+
+  function setupSiteHeaderNavIndicator() {
+    const nav = document.getElementById('site-header-nav');
+    const list = nav?.querySelector('.site-header__nav-list');
+    const indicator = nav?.querySelector('.site-header__nav-indicator');
+    if (!nav || !list || !indicator || !(indicator instanceof HTMLElement)) return;
+
+    if (nav.hasAttribute('data-indicator-bound')) {
+      snapNavIndicatorToCurrent?.();
+      return;
+    }
+    nav.setAttribute('data-indicator-bound', '');
+
+    const desktopMq = window.matchMedia('(min-width: 901px)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const links = () => [...list.querySelectorAll<HTMLAnchorElement>('.site-header__link')];
+
+    let canSlide = false;
+    let hideTimer: ReturnType<typeof setTimeout> | null = null;
+    const hideDelayMs = 100;
+
+    const forgetHoverPosition = (): void => {
+      canSlide = false;
+    };
+
+    const cancelScheduledHide = (): void => {
+      if (hideTimer === null) return;
+      clearTimeout(hideTimer);
+      hideTimer = null;
+    };
+
+    const hideNow = (): void => {
+      cancelScheduledHide();
+      forgetHoverPosition();
+      indicator.classList.add('is-instant');
+      indicator.classList.remove('is-visible');
+      requestAnimationFrame(() => indicator.classList.remove('is-instant'));
+    };
+
+    const scheduleHide = (): void => {
+      cancelScheduledHide();
+      if (reducedMotion.matches) {
+        forgetHoverPosition();
+        hideNow();
+        return;
+      }
+      hideTimer = setTimeout(() => {
+        hideTimer = null;
+        if (list.querySelector('.site-header__link:hover')) return;
+        if (list.querySelector(`.${HOVER_HOLD_CLASS}`)) return;
+        forgetHoverPosition();
+        hideNow();
+      }, hideDelayMs);
+    };
+
+    const activeHoverLink = (): HTMLAnchorElement | null =>
+      list.querySelector<HTMLAnchorElement>('.site-header__link:hover') ??
+      list.querySelector<HTMLAnchorElement>(`.site-header__link.${HOVER_HOLD_CLASS}`);
+
+    const moveTo = (link: HTMLAnchorElement, forceInstant = false): void => {
+      if (!desktopMq.matches) return;
+      cancelScheduledHide();
+      const navRect = nav.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      const instant = forceInstant || !canSlide || reducedMotion.matches;
+      if (instant) indicator.classList.add('is-instant');
+      indicator.style.left = `${linkRect.left - navRect.left}px`;
+      indicator.style.top = `${linkRect.top - navRect.top}px`;
+      indicator.style.width = `${linkRect.width}px`;
+      indicator.style.height = `${linkRect.height}px`;
+      indicator.classList.add('is-visible');
+      if (!forceInstant) canSlide = true;
+      if (instant) {
+        void indicator.offsetWidth;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => indicator.classList.remove('is-instant'));
+        });
+      }
+    };
+
+    links().forEach((link) => {
+      link.addEventListener('mouseenter', () => moveTo(link));
+      link.addEventListener('mouseleave', () => {
+        if (!desktopMq.matches) return;
+        requestAnimationFrame(() => {
+          if (activeHoverLink()) return;
+          scheduleHide();
+        });
+      });
+      link.addEventListener('focus', () => moveTo(link));
+    });
+
+    list.addEventListener('mouseleave', scheduleHide);
+    nav.addEventListener('mouseleave', (event) => {
+      if (!desktopMq.matches) return;
+      const next = event.relatedTarget;
+      if (next instanceof Node && nav.contains(next)) return;
+      scheduleHide();
+    });
+    nav.addEventListener('focusout', (event) => {
+      if (!desktopMq.matches) return;
+      const next = event.relatedTarget;
+      if (next instanceof Node && nav.contains(next)) return;
+      scheduleHide();
+    });
+
+    const onLayoutChange = (): void => {
+      if (!desktopMq.matches) {
+        hideNow();
+        return;
+      }
+      const hovered = activeHoverLink();
+      if (hovered) {
+        moveTo(hovered, true);
+        return;
+      }
+      hideNow();
+    };
+
+    snapNavIndicatorToCurrent = (): void => {
+      if (!desktopMq.matches) return;
+      const hovered = activeHoverLink();
+      if (hovered) {
+        moveTo(hovered, true);
+        return;
+      }
+      hideNow();
+    };
+
+    window.addEventListener('resize', onLayoutChange);
+    desktopMq.addEventListener('change', onLayoutChange);
+
+    snapNavIndicatorToCurrent();
   }
 
   function setupSiteHeaderScrollProgress() {
@@ -277,6 +435,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
 
   setupSiteHeaderMenu();
   syncSiteHeaderNavCurrent();
+  setupSiteHeaderNavIndicator();
   setupSiteHeaderLinkHoverHold();
   setupSiteHeaderScrollProgress();
   if (!document.documentElement.hasAttribute('data-header-page-load')) {
@@ -284,6 +443,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
     document.addEventListener('astro:page-load', () => {
       setupSiteHeaderMenu();
       syncSiteHeaderNavCurrent();
+      setupSiteHeaderNavIndicator();
       setupSiteHeaderLinkHoverHold();
       setupSiteHeaderScrollProgress();
       applyHeldNavHover(document);

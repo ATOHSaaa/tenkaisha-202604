@@ -14,3 +14,8 @@ export function getMembers(): Member[] {
 export function getMemberBySlug(slug: string): Member | undefined {
   return members.find((m) => m.slug === slug);
 }
+
+/** 顔写真の代わりに姓モノグラム（HTML または SVG）を円形サムネで表示 */
+export function isMemberNameplate(member: Member): boolean {
+  return Boolean(member.photoMonogram || member.photo?.endsWith('.svg'));
+}

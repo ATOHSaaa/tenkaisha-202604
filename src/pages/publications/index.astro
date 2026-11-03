@@ -12,11 +12,11 @@ import { publications } from '../../data/site';
     <div class="container">
       <div class="grid grid--3 pubs__grid">
         {
-          publications.map((p, i) => (
+          publications.map((p) => (
             <Card
               href={p.path}
               image={p.cover}
-              label={`VOL.0${i + 1} / ${p.year}`}
+              label={`${p.year}年`}
               title={p.title}
               body={p.summary}
               imageAspect="5/7"

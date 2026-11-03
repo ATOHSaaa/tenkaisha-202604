@@ -16,6 +16,7 @@ import {
   eventEntryCardProps,
   partitionEventList,
   scheduleFromData,
+  stageEntryCardSynopsis,
 } from '../utils/event-content';
 import { compareEntriesUpcoming } from '../utils/schedule';
 import {
@@ -34,8 +35,11 @@ const latestNewsMarquee = await getLatestNewsMarquee();
 const { currentPerformances, currentEvents } = partitionEventList(await getCollection('stages'));
 const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
 const stageCards = [...currentPerformances, ...currentEvents];
+/** 2件のときは2列で横幅いっぱい（More は下段） */
+const stagesGridPair = stageCards.length === 2;
 /** 3列グリッドの最終行に空きがあるとき More をセル内に置く（デスクトップ） */
-const stagesMoreInlineDesktop = stageCards.length > 0 && stageCards.length % 3 !== 0;
+const stagesMoreInlineDesktop =
+  stageCards.length > 0 && stageCards.length % 3 !== 0 && !stagesGridPair;
 const homeClasses = await getHomeClassEntries();
 
 const heroMarqueeItems = currentPerformances
@@ -77,15 +81,26 @@ const heroMarqueeItems = currentPerformances
               <SectionHead jp="公演・イベント" />
             </div>
             <div class="home-stages__frame">
-              <div class="grid-events grid-long-run">
-                {stageCards.map((entry) => (
-                  <Card
-                    href={`/stages/${entry.id}/`}
-                    image={entry.data.cover}
-                    title={entry.data.title}
-                    {...eventEntryCardProps(entry.data)}
-                  />
-                ))}
+              <div
+                class:list={[
+                  'grid-events',
+                  'grid-long-run',
+                  stagesGridPair && 'grid-events--pair',
+                ]}
+              >
+                {stageCards.map((entry) => {
+                  const synopsis = stagesGridPair ? stageEntryCardSynopsis(entry) : undefined;
+                  return (
+                    <Card
+                      layout="sidebar"
+                      href={`/stages/${entry.id}/`}
+                      image={entry.data.cover}
+                      title={entry.data.title}
+                      body={synopsis || undefined}
+                      {...eventEntryCardProps(entry.data)}
+                    />
+                  );
+                })}
                 {
                   stagesMoreInlineDesktop ? (
                     <div class="grid-events__more grid-events__more--in-grid">

@@ -1,0 +1,45 @@
+---
+import { blogArchiveHref } from '../utils/blog-archive';
+import { withBase } from '../utils/path';
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+}
+
+const { currentPage, totalPages } = Astro.props;
+const showNav = totalPages > 1;
+---
+
+{
+  showNav ? (
+    <nav class="blog-pagination" aria-label="ブログ一覧のページ送り">
+      {
+        currentPage > 1 ? (
+          <a class="blog-pagination__edge" href={withBase(blogArchiveHref(currentPage - 1))}>
+            前へ
+          </a>
+        ) : (
+          <span class="blog-pagination__edge blog-pagination__edge--disabled" aria-hidden="true">
+            前へ
+          </span>
+        )
+      }
+      <p class="blog-pagination__status">
+        <span class="sr-only">ページ</span>
+        {currentPage} / {totalPages}
+      </p>
+      {
+        currentPage < totalPages ? (
+          <a class="blog-pagination__edge" href={withBase(blogArchiveHref(currentPage + 1))}>
+            次へ
+          </a>
+        ) : (
+          <span class="blog-pagination__edge blog-pagination__edge--disabled" aria-hidden="true">
+            次へ
+          </span>
+        )
+      }
+    </nav>
+  ) : null
+}

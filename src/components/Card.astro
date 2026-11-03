@@ -150,8 +150,9 @@ const linkHref = resolveHref(href);
               )
             }
           </h3>
+          {body && <p class="card__body">{body}</p>}
           {
-            nextPerformanceDate ? (
+            nextPerformanceDate || nextPerformanceDateText ? (
               <p class="card__next">
                 <span class="card__next-label">{nextDateLabel}</span>
                 <time class="card__next-date" datetime={nextDateDatetime()}>
@@ -227,6 +228,6 @@ const linkHref = resolveHref(href);
         label && <span class="card__label">{label}</span>
       ))
   }
-  {body && !classFlyerLayout && <p class="card__body">{body}</p>}
+  {body && !classFlyerLayout && !sidebarLayout && <p class="card__body">{body}</p>}
   <slot />
 </Tag>

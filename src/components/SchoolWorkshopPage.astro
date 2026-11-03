@@ -1,16 +1,15 @@
 ---
 import {
   schoolWorkshopAboutPoints,
-  schoolWorkshopFlowAfter,
-  schoolWorkshopFlowBefore,
-  schoolWorkshopLessonActivities,
-  schoolWorkshopLessonExample,
   schoolWorkshopPamphletHistory,
 } from '../data/school-workshop-page';
+import SchoolWorkshopFlow from './SchoolWorkshopFlow.astro';
+import SchoolWorkshopTeacherQuotes from './SchoolWorkshopTeacherQuotes.astro';
+import SchoolWorkshopActivityExamples from './SchoolWorkshopActivityExamples.astro';
 ---
 
 <section class="ws-page" aria-label="演劇ワークショップのご案内">
-  <h2>演劇ワークショップとは？</h2>
+  <h2>演劇ワークショップについて</h2>
   <div class="ws-page__about">
     {
       schoolWorkshopAboutPoints.map((point) => (
@@ -22,84 +21,11 @@ import {
     }
   </div>
 
-  <h2>ワークショップの流れ</h2>
-  <div class="ws-page__flow">
-    <div class="ws-page__flow-col ws-page__flow-col--before">
-      <p class="ws-page__flow-phase">授業実施前</p>
-      <ol class="ws-page__steps">
-        {
-          schoolWorkshopFlowBefore.map((step) => (
-            <li class="ws-page__step">
-              <span class="ws-page__step-num" aria-hidden="true">
-                {step.number}
-              </span>
-              <div class="ws-page__step-body">
-                <p class="ws-page__step-title">{step.title}</p>
-                {step.body ? <p class="ws-page__step-text">{step.body}</p> : null}
-              </div>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
+  <SchoolWorkshopFlow />
 
-    <div class="ws-page__flow-col ws-page__flow-col--main">
-      <p class="ws-page__flow-phase">授業実施</p>
-      <p class="ws-page__step-title ws-page__step-title--main">
-        <span class="ws-page__step-num" aria-hidden="true">4</span>
-        授業実施
-      </p>
-      <aside class="ws-page__example" aria-label="実施例">
-        <p class="ws-page__example-label">（例）</p>
-        <dl class="ws-page__example-list">
-          <div>
-            <dt>講師</dt>
-            <dd>{schoolWorkshopLessonExample.instructor}</dd>
-          </div>
-          <div>
-            <dt>教科・科目</dt>
-            <dd>{schoolWorkshopLessonExample.subject}</dd>
-          </div>
-          <div>
-            <dt>実施形式</dt>
-            <dd>{schoolWorkshopLessonExample.format}</dd>
-          </div>
-        </dl>
-      </aside>
-      <ul class="ws-page__activities">
-        {
-          schoolWorkshopLessonActivities.map((activity) => (
-            <li class="ws-page__activity">
-              <h3>{activity.title}</h3>
-              <p>{activity.body}</p>
-              {activity.note ? (
-                <p class="ws-page__activity-note">{activity.note}</p>
-              ) : null}
-            </li>
-          ))
-        }
-      </ul>
-    </div>
+  <SchoolWorkshopActivityExamples />
 
-    <div class="ws-page__flow-col ws-page__flow-col--after">
-      <p class="ws-page__flow-phase">授業実施後</p>
-      <div class="ws-page__step ws-page__step--after">
-        <span class="ws-page__step-num" aria-hidden="true">5</span>
-        <div class="ws-page__step-body">
-          <p class="ws-page__step-title">{schoolWorkshopFlowAfter.title}</p>
-          <p class="ws-page__step-text">{schoolWorkshopFlowAfter.body}</p>
-        </div>
-      </div>
-      <h3 class="ws-page__quotes-title">先生方より寄せられたご感想</h3>
-      <ul class="ws-page__quotes">
-        {
-          schoolWorkshopFlowAfter.quotes.map((quote) => (
-            <li class="ws-page__quote">{quote}</li>
-          ))
-        }
-      </ul>
-    </div>
-  </div>
+  <SchoolWorkshopTeacherQuotes />
 
   <h2>過去の活動実績</h2>
   <p class="ws-page__history-lead">

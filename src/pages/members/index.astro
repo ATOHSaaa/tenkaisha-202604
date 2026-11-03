@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
-import { getMembers, memberHref } from '../../utils/members-content';
+import { getMembers, memberHref, isMemberNameplate } from '../../utils/members-content';
 import { withBase } from '../../utils/path';
 import PageContactCta from '../../components/PageContactCta.astro';
 ---
@@ -16,12 +16,34 @@ import PageContactCta from '../../components/PageContactCta.astro';
           getMembers().map((m) => (
             <a class="member member--link" href={memberHref(m.slug)}>
               <div class="member__photo-wrap">
-                <img class="member__photo" src={withBase(m.photo)} alt="" loading="lazy" />
+                <div
+                  class:list={[
+                    'member__photo-frame',
+                    isMemberNameplate(m) && 'member__photo-frame--monogram',
+                  ]}
+                >
+                  {m.photoMonogram ? (
+                    <div class="member__photo member__photo--monogram" aria-hidden="true">
+                      <span class="member__monogram-label">{m.photoMonogram}</span>
+                    </div>
+                  ) : (
+                    <img
+                      class:list={[
+                        'member__photo',
+                        m.photo?.endsWith('.svg') && 'member__photo--nameplate',
+                        m.slug === 'komatsuno-nozomi' && 'member__photo--komatsuno',
+                        m.slug === 'sakaguchi-kanoko' && 'member__photo--sakaguchi',
+                      ]}
+                      src={withBase(m.photo!)}
+                      alt=""
+                      loading="lazy"
+                    />
+                  )}
+                </div>
               </div>
               <div class="member__body">
                 <p class="member__role">{m.role}</p>
                 <h2 class="member__name">{m.name}</h2>
-                <p class="member__bio">{m.bio}</p>
               </div>
             </a>
           ))

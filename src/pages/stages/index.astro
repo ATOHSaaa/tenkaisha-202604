@@ -55,6 +55,7 @@ const deferredArchiveGroups = archiveYearGroups.slice(INITIAL_ARCHIVE_YEARS);
                       <div class="grid-events grid-long-run">
                         {currentPerformances.map((p) => (
                           <Card
+                            layout="sidebar"
                             href={`/stages/${p.id}/`}
                             image={p.data.cover}
                             title={p.data.title}
@@ -63,6 +64,7 @@ const deferredArchiveGroups = archiveYearGroups.slice(INITIAL_ARCHIVE_YEARS);
                         ))}
                         {currentEvents.map((e) => (
                           <Card
+                            layout="sidebar"
                             href={`/stages/${e.id}/`}
                             image={e.data.cover}
                             title={e.data.title}

@@ -13,7 +13,9 @@ const blog = defineCollection({
     title: z.string(),
     date: z.date(),
     author: z.string().default("転回社"),
+    /** 旧モック記事用。新規 WP 取り込みは tags を使う */
     category: z.string().default("日々のこと"),
+    tags: z.array(z.string()).optional(),
     cover: z.string().optional(),
     excerpt: z.string().optional(),
   }),
@@ -35,6 +37,8 @@ export const eventClassSchema = z.enum(["junior"]);
 
 const eventCommon = {
   title: z.string(),
+  /** トップ2列カードなど一覧用のあらすじ（任意） */
+  summary: z.string().optional(),
   cover: z.string().optional(),
   performanceHistory: performanceHistorySchema,
   class: eventClassSchema.optional(),

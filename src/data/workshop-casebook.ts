@@ -45,6 +45,5 @@ export const workshopCasebookToc: WorkshopCasebookTocItem[] = [
   {
     label: '【付録】',
     title: '演劇ワークショップ 過去の活動実績（2014年度以降分）',
-    href: '/education/workshop/#ws-stats-title',
   },
 ];

@@ -33,7 +33,8 @@ function wordsForColumn(index: number): readonly string[] {
 }
 
 function getMeasureProbe(): HTMLDivElement {
-  if (!measureProbe) {
+  // ClientRouter は body を差し替える。前回の計測ノードは切り離され offsetWidth が 0 になる。
+  if (!measureProbe || !measureProbe.isConnected) {
     measureProbe = document.createElement('div');
     measureProbe.className = 'home-side-marquee__columns';
     measureProbe.setAttribute('aria-hidden', 'true');
@@ -87,27 +88,30 @@ function fillColumns(row: HTMLElement, columnCount: number, innerOnLeft: boolean
   }
 }
 
-function syncSideColumns(side: HTMLElement, force = false): void {
+function syncSideColumns(side: HTMLElement, force = false): boolean {
   const row = side.querySelector<HTMLElement>('.home-side-marquee__columns');
-  if (!row) return;
+  if (!row) return false;
 
   const { wordW, colGap } = measureColumnWidth();
-  if (wordW <= 0) return;
+  if (wordW <= 0) return false;
 
   const columnCount = Math.max(1, Math.floor((side.clientWidth + colGap) / (wordW + colGap)));
   const innerOnLeft = side.classList.contains('home-side-marquee--right');
   const signature = `inner-flow:${columnCount}:${innerOnLeft ? 'L' : 'R'}`;
   const hasTracks = row.querySelector('.home-side-marquee__col-track');
-  if (!force && row.dataset.columns === signature && hasTracks) return;
+  if (!force && row.dataset.columns === signature && hasTracks) return true;
   row.dataset.columns = signature;
 
   fillColumns(row, columnCount, innerOnLeft);
+  return true;
 }
 
-function syncMarqueeColumns(force = false): void {
+function syncMarqueeColumns(force = false): boolean {
+  let ok = true;
   document.querySelectorAll<HTMLElement>('.home-side-marquee').forEach((side) => {
-    syncSideColumns(side, force);
+    if (!syncSideColumns(side, force)) ok = false;
   });
+  return ok;
 }
 
 function restartMarqueeMotion(): void {
@@ -172,7 +176,8 @@ function syncHomeSideMarqueeLayout(options: { forceColumns?: boolean } = {}): vo
   layer.style.top = `${top}px`;
   layer.style.height = `${height}px`;
 
-  syncMarqueeColumns(options.forceColumns);
+  if (!syncMarqueeColumns(options.forceColumns)) return;
+
   applyMarqueeDurations();
   restartMarqueeMotion();
   bindMotionObserver();
@@ -242,6 +247,10 @@ function scheduleDeferredSync(): void {
     resyncTimer = null;
     syncHomeSideMarqueeLayout({ forceColumns: true });
   }, 120);
+  setTimeout(() => {
+    if (!document.querySelector('.home')) return;
+    syncHomeSideMarqueeLayout({ forceColumns: true });
+  }, 400);
 }
 
 function teardownHomeSideMarquees(): void {
@@ -260,6 +269,18 @@ function bindHomeSideMarqueeLifecycle(): void {
   document.addEventListener('astro:before-preparation', () => {
     if (document.querySelector('.home')) teardownHomeSideMarquees();
   });
+
+  document.addEventListener('astro:after-swap', () => {
+    if (!document.querySelector('.home')) return;
+    requestAnimationFrame(() => {
+      initHomeSideMarquees();
+    });
+  });
+
+  window.addEventListener('pageshow', (event) => {
+    if (!event.persisted || !document.querySelector('.home')) return;
+    initHomeSideMarquees();
+  });
 }
 
 /** トップ: 左右ガター縦マーキー（ClientRouter で戻ったときも再初期化） */
@@ -270,6 +291,10 @@ export function initHomeSideMarquees(): void {
   const guide = document.querySelector('.home-main-guide');
   const layer = document.querySelector('.home-side-marquees');
   if (!home || !guide || !layer) return;
+
+  layer.hidden = false;
+  layer.style.removeProperty('top');
+  layer.style.removeProperty('height');
 
   bindLayoutSync();
   setMarqueeReadyState(false);

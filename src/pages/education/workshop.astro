@@ -3,13 +3,19 @@ import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import RequestDetail from '../../components/RequestDetail.astro';
 import SchoolWorkshopStats from '../../components/SchoolWorkshopStats.astro';
+import SchoolWorkshopAbout from '../../components/SchoolWorkshopAbout.astro';
+import SchoolWorkshopFlow from '../../components/SchoolWorkshopFlow.astro';
+import SchoolWorkshopTeacherQuotes from '../../components/SchoolWorkshopTeacherQuotes.astro';
+import SchoolWorkshopActivityExamples from '../../components/SchoolWorkshopActivityExamples.astro';
 import {
   workshopCasebookCover,
   workshopCasebookPath,
 } from '../../data/workshop-casebook';
+import { schoolWorkshopCopy } from '../../data/school-workshop-copy';
 import { withBase } from '../../utils/path';
 
 const casebookHref = withBase(workshopCasebookPath);
+const { workshopPage } = schoolWorkshopCopy;
 
 const info = {
   slug: 'school-workshop',
@@ -20,11 +26,7 @@ const info = {
   path: '/education/workshop/',
 };
 
-const introLead = [
-  '転回社では、主に小学校〜高校向けの演劇ワークショップを行っています。',
-  '過去10年にわたるワークショップ活動を元に、事例をピックアップして紹介した冊子も制作しております。お問い合わせいただければ、冊子をお送りすることも可能です。',
-  '生徒・児童の状況、申請を検討している文化庁の学校向け事業などに合わせて提案が可能ですので、まずはご連絡ください。',
-];
+const introLead = workshopPage.intro;
 ---
 
 <Base title={info.name} description={info.summary}>
@@ -37,28 +39,44 @@ const introLead = [
     showSidebar={false}
   >
     <div slot="before-contact" class="ws-page-stack">
-      <div class="ws-intro">
-        <div class="ws-intro__lead-panel">
+      <div class="ws-page-stack__with-sidebar">
+        <div class="ws-page-stack__lead ws-intro__lead-panel">
           <div class="ws-intro__prose">
             {introLead.map((text) => <p>{text}</p>)}
           </div>
         </div>
-        <a class="ws-intro__cover-link" href={casebookHref}>
-          <figure class="ws-intro__cover">
-            <img
-              src={withBase(workshopCasebookCover)}
-              alt="演劇ワークショップ 事例集の表紙"
-              width={724}
-              height={1024}
-              loading="lazy"
-            />
-            <figcaption class="ws-intro__cover-caption">
-              演劇ワークショップ 事例集<span class="ws-intro__cover-hint">（内容を見る）</span>
-            </figcaption>
-          </figure>
-        </a>
+
+        <aside class="ws-page-stack__sidebar">
+          <a class="ws-intro__cover-link" href={casebookHref}>
+            <figure class="ws-intro__cover">
+              <img
+                src={withBase(workshopCasebookCover)}
+                alt="演劇ワークショップ事例集の表紙"
+                width={724}
+                height={1024}
+                loading="lazy"
+              />
+              <figcaption class="ws-intro__cover-caption">
+                演劇ワークショップ事例集
+              </figcaption>
+            </figure>
+          </a>
+        </aside>
+
+        <div class="ws-page-stack__about-slot">
+          <SchoolWorkshopAbout />
+        </div>
+
+        <div class="ws-page-stack__flow-slot">
+          <SchoolWorkshopFlow />
+          <SchoolWorkshopActivityExamples />
+          <SchoolWorkshopTeacherQuotes />
+        </div>
+
+        <div class="ws-page-stack__stats-slot">
+          <SchoolWorkshopStats />
+        </div>
       </div>
-      <SchoolWorkshopStats />
     </div>
   </RequestDetail>
 </Base>

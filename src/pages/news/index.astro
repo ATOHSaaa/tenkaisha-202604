@@ -10,20 +10,20 @@ const news = await getPublishedNews();
 
 <Base title="おしらせ" description="転回社からのおしらせ一覧。">
   <div class="news-page">
-  <PageHeader jp="おしらせ" />
+    <PageHeader jp="おしらせ" />
 
-  <section class="news">
-    <div class="container">
-      <NewsWithSidebar>
-        <NewsList
-          items={news.map((n) => ({
-            date: n.date,
-            title: n.title,
-            href: n.href,
-          }))}
-        />
-      </NewsWithSidebar>
-    </div>
-  </section>
+    <section class="news">
+      <div class="container">
+        <NewsWithSidebar>
+          <NewsList
+            items={news.map((n) => ({
+              date: n.date,
+              title: n.title,
+              href: n.href,
+            }))}
+          />
+        </NewsWithSidebar>
+      </div>
+    </section>
   </div>
 </Base>

@@ -1,0 +1,37 @@
+---
+import NotFoundPage from '../../../components/NotFoundPage.astro';
+import BlogArchivePage from '../../../components/BlogArchivePage.astro';
+import {
+  getBlogTotalPages,
+  getSortedBlogEntries,
+} from '../../../utils/blog-archive';
+
+export async function getStaticPaths() {
+  const entries = await getSortedBlogEntries();
+  const totalPages = getBlogTotalPages(entries.length);
+  if (totalPages <= 1) return [];
+
+  return Array.from({ length: totalPages - 1 }, (_, i) => ({
+    params: { page: String(i + 2) },
+  }));
+}
+
+export const prerender = true;
+
+const raw = Astro.params.page;
+const page = Number(Array.isArray(raw) ? raw[0] : raw);
+const entries = await getSortedBlogEntries();
+const totalPages = getBlogTotalPages(entries.length);
+
+if (!Number.isFinite(page) || page < 2 || page > totalPages) {
+  Astro.response.status = 404;
+}
+---
+
+{
+  !Number.isFinite(page) || page < 2 || page > totalPages ? (
+    <NotFoundPage />
+  ) : (
+    <BlogArchivePage page={page} />
+  )
+}

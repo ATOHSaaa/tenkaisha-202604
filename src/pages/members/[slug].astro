@@ -2,7 +2,7 @@
 import NotFoundPage from '../../components/NotFoundPage.astro';
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
-import { getMemberBySlug, getMembers } from '../../utils/members-content';
+import { getMemberBySlug, getMembers, isMemberNameplate } from '../../utils/members-content';
 import { withBase } from '../../utils/path';
 
 export function getStaticPaths() {
@@ -37,19 +37,41 @@ if (notFound) {
               member!.photoDetail && 'member-detail__layout--hi-res',
             ]}
           >
-            <div class="member-detail__photo-wrap">
-              <img
-                class:list={[
-                  'member-detail__photo',
-                  member!.photoDetail && 'member-detail__photo--hi-res',
-                ]}
-                src={withBase(member!.photoDetail ?? member!.photo)}
-                alt=""
-                width={member!.photoDetail ? 360 : 200}
-                height={member!.photoDetail ? 360 : 300}
-                loading="eager"
-                decoding="async"
-              />
+            <div
+              class:list={[
+                'member-detail__photo-wrap',
+                isMemberNameplate(member!) &&
+                  !member!.photoDetail &&
+                  'member-detail__photo-wrap--monogram',
+                !member!.photoMonogram &&
+                  !member!.photoDetail &&
+                  'member-detail__photo-wrap--clip',
+              ]}
+            >
+              {member!.photoMonogram ? (
+                <div
+                  class="member-detail__photo member-detail__photo--monogram"
+                  aria-hidden="true"
+                >
+                  <span class="member__monogram-label">{member!.photoMonogram}</span>
+                </div>
+              ) : (
+                <img
+                  class:list={[
+                    'member-detail__photo',
+                    member!.photoDetail && 'member-detail__photo--hi-res',
+                    member!.photo?.endsWith('.svg') && 'member-detail__photo--nameplate',
+                    member!.slug === 'komatsuno-nozomi' && 'member__photo--komatsuno',
+                    member!.slug === 'sakaguchi-kanoko' && 'member__photo--sakaguchi',
+                  ]}
+                  src={withBase(member!.photoDetail ?? member!.photo!)}
+                  alt=""
+                  width={member!.photoDetail ? 360 : 200}
+                  height={member!.photoDetail ? 360 : 300}
+                  loading="eager"
+                  decoding="async"
+                />
+              )}
             </div>
             <div class="member-detail__body prose">
               <p>{member!.bio}</p>

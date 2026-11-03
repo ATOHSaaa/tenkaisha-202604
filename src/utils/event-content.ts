@@ -36,6 +36,39 @@ export function isGeneralEventEntry(entry: EventEntry): entry is GeneralEventEnt
   return entry.data.type === 'event';
 }
 
+const SYNOPSIS_HEADING = /^##\s+あらすじ\s*$/;
+
+function stripMarkdownInline(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .trim();
+}
+
+/** 本文の「## あらすじ」〜次見出し手前をプレーンテキストに */
+export function synopsisFromEventBody(body: string): string {
+  const lines = body.split(/\r?\n/);
+  for (let i = 0; i < lines.length; i++) {
+    if (!SYNOPSIS_HEADING.test(lines[i]!.trim())) continue;
+    const parts: string[] = [];
+    for (i += 1; i < lines.length; i++) {
+      const line = lines[i]!.trim();
+      if (/^##\s/.test(line)) break;
+      if (!line) continue;
+      parts.push(stripMarkdownInline(line));
+    }
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+  return '';
+}
+
+/** トップ公演カード用（frontmatter summary → 本文あらすじ） */
+export function stageEntryCardSynopsis(entry: EventEntry): string {
+  if (entry.data.summary?.trim()) return entry.data.summary.trim();
+  return synopsisFromEventBody(entry.body ?? '');
+}
+
 export function scheduleFromData(data: EventData): EntrySchedule {
   return { performanceHistory: data.performanceHistory };
 }

@@ -1,0 +1,20 @@
+---
+import { schoolWorkshopTeacherQuotes } from '../data/school-workshop-page';
+
+const sectionTitle = '先生方より寄せられたご感想';
+---
+
+<section class="ws-teacher-quotes" aria-labelledby="ws-teacher-quotes-heading">
+  <h2 id="ws-teacher-quotes-heading">{sectionTitle}</h2>
+  <div class="ws-teacher-quotes__panel">
+    <ul class="ws-teacher-quotes__list">
+      {
+        schoolWorkshopTeacherQuotes.map((quote) => (
+          <li class="ws-teacher-quotes__item">
+            <p>{quote}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

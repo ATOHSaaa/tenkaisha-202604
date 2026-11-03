@@ -1,0 +1,17 @@
+---
+import { schoolWorkshopAboutPoints } from '../data/school-workshop-page';
+---
+
+<section class="ws-about" aria-labelledby="ws-about-heading">
+  <h2 id="ws-about-heading">演劇ワークショップについて</h2>
+  <div class="ws-about__panel">
+    {
+      schoolWorkshopAboutPoints.map((point) => (
+        <article class="ws-about__point">
+          <h3>{point.title}</h3>
+          <p>{point.body}</p>
+        </article>
+      ))
+    }
+  </div>
+</section>

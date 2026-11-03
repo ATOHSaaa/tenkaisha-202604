@@ -39,7 +39,10 @@ export type Member = {
   name: string;
   role: string;
   bio: string;
-  photo: string;
+  /** 顔写真。photoMonogram がある場合は一覧では未使用 */
+  photo?: string;
+  /** 一覧アイコン（縦書きの姓など） */
+  photoMonogram?: string;
   /** 詳細ページ用（幅 560px 以上推奨）。未指定時は photo */
   photoDetail?: string;
 };
@@ -72,6 +75,20 @@ export const members: Member[] = [
     role: '俳優',
     bio: '天草が生んだ元気娘。とぼけた顔で舞台中をパワフルに飛び跳ねる。',
     photo: '/images/members/fujino-minami.png',
+  },
+  {
+    slug: 'kamei-juntaro',
+    name: '亀井 純太郎',
+    role: '演出家',
+    bio: '2001年、劇団第七インターチェンジを旗揚げ。2015年に芸術性及び実験性の高い作品を継続して発信できる場としてstudio in.K.を設立。近年は小中学校の演劇ワークショップを、熊本県を中心に年間数百回実施。',
+    photoMonogram: '亀井',
+  },
+  {
+    slug: 'oshiyama-shiho',
+    name: '鴦山 史歩',
+    role: '作家',
+    bio: '「2015 くまもと高校生演劇祭」において多数の応募作品から2本が入賞。上演審査では演出・出演をつとめ、最優秀賞・脚本賞を受賞。2016年3月に演劇ユニット「おしどりスープ」を結成。',
+    photoMonogram: '鴦山',
   },
 ];
 
@@ -289,7 +306,6 @@ export const publications: Publication[] = [
   {
     slug: 'school-workshop',
     title: '演劇ワークショップ事例集',
-    subtitle: 'TENKAISHA PUBLICATIONS VOL.01',
     cover: '/images/education/workshop-casebook-cover.jpg',
     year: 2025,
     summary:

@@ -3,13 +3,18 @@ import {
   schoolWorkshopSummary,
   schoolWorkshopYearStats,
 } from '../data/school-workshop-stats';
+
+const yearRowsChronological = schoolWorkshopYearStats.toSorted(
+  (a, b) => a.year - b.year,
+);
+const maxSessions = Math.max(...schoolWorkshopYearStats.map((row) => row.sessions));
+const yMax = Math.ceil(maxSessions / 5) * 5;
+const yTickStep = 5;
+const yTicks = Array.from({ length: yMax / yTickStep + 1 }, (_, i) => i * yTickStep);
 ---
 
 <section class="ws-stats" aria-labelledby="ws-stats-title">
   <h2 id="ws-stats-title">年度別の実施件数</h2>
-  <p class="ws-stats__lead">
-    {schoolWorkshopSummary.firstYear}年度から熊本県内の小・中学校・支援学校等で演劇ワークショップを実施しています。同一校が複数の事業に参加した場合は、件数としてそれぞれ計上しています。
-  </p>
 
   <dl class="ws-stats__highlights">
     <div>
@@ -19,41 +24,69 @@ import {
         <span class="ws-stats__unit">件</span>
       </dd>
     </div>
-    <div>
-      <dt>携わった学校</dt>
-      <dd class="ws-stats__value">
-        <span class="ws-stats__num">{schoolWorkshopSummary.uniqueSchools}</span>
-        <span class="ws-stats__unit">校</span>
-      </dd>
-    </div>
   </dl>
 
-  <div class="ws-stats__table-wrap">
-    <table class="ws-stats__table">
-      <caption class="sr-only">年度別の実施件数と参加校数</caption>
-      <thead>
-        <tr>
-          <th scope="col">年度</th>
-          <th scope="col">実施件数</th>
-          <th scope="col">参加校数</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          schoolWorkshopYearStats.map((row) => (
-            <tr>
-              <th scope="row">
-                {row.year}年度{row.planned ? '（予定）' : ''}
-              </th>
-              <td>{row.sessions}件</td>
-              <td>{row.schools}校</td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
-  <p class="ws-stats__note">
-    実施件数は、国・自治体等の事業参加など、リスト上の実施回数を合計した数です。同一校が複数の事業に参加した年度は、件数が参加校数を上回ることがあります。
-  </p>
+  <figure class="ws-stats__chart" aria-labelledby="ws-stats-title">
+    <div class="ws-stats__vchart" style={`--ws-y-max: ${yMax}`}>
+      <p class="ws-stats__vchart-y-label">件</p>
+      <div class="ws-stats__vchart-body">
+        <div class="ws-stats__vchart-y-axis" aria-hidden="true">
+          {
+            [...yTicks].reverse().map((tick) => (
+              <span class="ws-stats__vchart-y-tick">{tick}</span>
+            ))
+          }
+        </div>
+        <div class="ws-stats__vchart-plot">
+          <div class="ws-stats__vchart-grid" aria-hidden="true">
+            {
+              yTicks.map((tick) => (
+                <span
+                  class="ws-stats__vchart-grid-line"
+                  style={`--ws-grid-y: ${tick / yMax}`}
+                />
+              ))
+            }
+          </div>
+          <div class="ws-stats__vchart-columns">
+            {
+              yearRowsChronological.map((row) => (
+                <div class="ws-stats__bar-col">
+                  <div
+                    class="ws-stats__bar-track"
+                    style={`--ws-bar-ratio: ${row.sessions / yMax}`}
+                  >
+                    <span class="ws-stats__bar-value">{row.sessions}</span>
+                    <span
+                      class:list={[
+                        'ws-stats__bar-fill',
+                        row.planned && 'ws-stats__bar-fill--planned',
+                      ]}
+                      title={`${row.year}年度 ${row.sessions}件${row.planned ? '（予定含む）' : ''}`}
+                    />
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+          <div class="ws-stats__vchart-x-ticks" aria-hidden="true">
+            {
+              yearRowsChronological.map((row) => (
+                <span class="ws-stats__bar-label">
+                  <span class="ws-stats__bar-year">{row.year}</span>
+                  {row.planned ? (
+                    <span class="ws-stats__bar-planned-mark">予定含む</span>
+                  ) : null}
+                </span>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+      <p class="ws-stats__vchart-x-label">年度</p>
+    </div>
+    <figcaption class="sr-only">
+      横軸を年度、縦軸を実施件数とした棒グラフ。目盛りは0から{yMax}件まで{yTickStep}件刻みです。
+    </figcaption>
+  </figure>
 </section>

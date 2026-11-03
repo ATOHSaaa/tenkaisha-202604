@@ -1,0 +1,22 @@
+---
+import { schoolWorkshopFlowSteps } from '../data/school-workshop-page';
+---
+
+<section class="ws-flow" aria-labelledby="ws-flow-heading">
+  <h2 id="ws-flow-heading">ワークショップの流れ</h2>
+  <ol class="ws-flow__steps">
+    {
+      schoolWorkshopFlowSteps.map((step) => (
+        <li class="ws-flow__step">
+          <div class="ws-flow__step-head">
+            <span class="ws-flow__step-num" aria-hidden="true">
+              {step.number}
+            </span>
+            <p class="ws-flow__step-title">{step.title}</p>
+          </div>
+          {step.body ? <p class="ws-flow__step-text">{step.body}</p> : null}
+        </li>
+      ))
+    }
+  </ol>
+</section>

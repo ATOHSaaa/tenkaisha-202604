@@ -20,9 +20,41 @@ import { normalizeEventBody } from './normalize-event-body.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
+
+/** リポジトリ直下の .env を読む（既に process.env にあれば上書きしない） */
+function loadDotEnv() {
+  const envPath = join(ROOT, '.env');
+  if (!existsSync(envPath)) return;
+  for (const line of readFileSync(envPath, 'utf8').split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eq = trimmed.indexOf('=');
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq).trim();
+    let val = trimmed.slice(eq + 1).trim();
+    if (
+      (val.startsWith('"') && val.endsWith('"')) ||
+      (val.startsWith("'") && val.endsWith("'"))
+    ) {
+      val = val.slice(1, -1);
+    }
+    if (process.env[key] === undefined) process.env[key] = val;
+  }
+}
+
+loadDotEnv();
+
 const EVENTS_DIR = join(ROOT, 'src/content/stages');
 const IMAGE_DIR = join(ROOT, 'public/images/events/stages');
-const WP = 'https://ink.tenkai.org/wp-json/wp/v2';
+const WP = (process.env.WP_REST_BASE ?? 'https://ink.tenkai.org/wp-json/wp/v2').replace(/\/$/, '');
+
+function wpAuthHeaders() {
+  const user = process.env.WP_USER;
+  const pass = process.env.WP_APP_PASSWORD;
+  if (!user || !pass) return {};
+  const auth = Buffer.from(`${user}:${pass}`).toString('base64');
+  return { Authorization: `Basic ${auth}` };
+}
 const dryRun = process.argv.includes('--dry-run');
 const stageFilter = process.argv.find((a) => a.startsWith('--stage='))?.slice('--stage='.length)?.padStart(3, '0');
 
@@ -152,14 +184,14 @@ function rewriteImageUrls(markdown, urlMap) {
 }
 
 async function wpGet(path) {
-  const res = await fetch(`${WP}${path}`);
+  const res = await fetch(`${WP}${path}`, { headers: { ...wpAuthHeaders() } });
   if (!res.ok) throw new Error(`${path} ${res.status}`);
   return res.json();
 }
 
 async function downloadImage(url, destPath) {
   if (existsSync(destPath)) return;
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: { ...wpAuthHeaders() } });
   if (!res.ok) throw new Error(`image ${url} ${res.status}`);
   const buf = Buffer.from(await res.arrayBuffer());
   if (!dryRun) writeFileSync(destPath, buf);

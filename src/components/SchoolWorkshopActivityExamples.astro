@@ -1,0 +1,21 @@
+---
+import { schoolWorkshopPairActivityExamples } from '../data/school-workshop-page';
+---
+
+<section class="ws-activities" aria-labelledby="ws-activities-heading">
+  <h2 id="ws-activities-heading">活動の例</h2>
+  <p class="ws-activities__lead">
+    授業の中で行うペア活動の一例です。学年や児童生徒の様子に合わせて、内容や順番は調整します。
+  </p>
+  <div class="ws-activities__panel">
+    {
+      schoolWorkshopPairActivityExamples.map((activity) => (
+        <article class="ws-activities__item">
+          <h3 class="ws-activities__item-title">ペア活動「{activity.name}」</h3>
+          <p>{activity.body}</p>
+          {activity.note ? <p class="ws-activities__item-note">{activity.note}</p> : null}
+        </article>
+      ))
+    }
+  </div>
+</section>

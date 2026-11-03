@@ -15,6 +15,7 @@
     "astro": "astro",
     "check": "astro check",
     "wp:import-stage": "node scripts/wp-import-stage-info.mjs",
+    "wp:import-posts": "node scripts/wp-import-posts.mjs",
     "events:normalize-bodies": "node scripts/apply-normalize-event-bodies.mjs",
     "css:wrap-hover": "node scripts/wrap-hover-media.mjs"
   },

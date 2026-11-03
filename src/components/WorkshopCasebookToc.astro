@@ -11,22 +11,25 @@ const { items = workshopCasebookToc } = Astro.props;
 ---
 
 <nav class="casebook-toc" aria-label="目次">
-  <ol class="casebook-toc__list">
+  <ul class="casebook-toc__list">
     {
       items.map((item) => (
         <li class="casebook-toc__item">
           <span class="casebook-toc__label">{item.label}</span>
           {item.title ? (
-            item.href ? (
-              <a class="casebook-toc__title casebook-toc__title--link" href={withBase(item.href)}>
-                {item.title}
-              </a>
-            ) : (
-              <span class="casebook-toc__title">{item.title}</span>
-            )
+            <>
+              {'　'}
+              {item.href ? (
+                <a class="casebook-toc__title casebook-toc__title--link" href={withBase(item.href)}>
+                  {item.title}
+                </a>
+              ) : (
+                <span class="casebook-toc__title">{item.title}</span>
+              )}
+            </>
           ) : null}
         </li>
       ))
     }
-  </ol>
+  </ul>
 </nav>

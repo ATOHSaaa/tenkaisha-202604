@@ -1,0 +1,32 @@
+---
+/** タイトル行（NEW・タグ） */
+interface TitleRowProps {
+  title: string;
+  isNew: boolean;
+  tags?: string[];
+}
+
+const { title, isNew, tags = [] } = Astro.props;
+---
+
+<div class="news-list__title-row">
+  <span class="news-list__title">{title}</span>
+  {
+    tags.length > 0 ? (
+      <ul class="news-list__tags">
+        {tags.map((tag) => (
+          <li>
+            <span class="news-list__tag">{tag}</span>
+          </li>
+        ))}
+      </ul>
+    ) : null
+  }
+  {
+    isNew ? (
+      <span class="news-list__new" lang="en">
+        NEW
+      </span>
+    ) : null
+  }
+</div>

@@ -12,7 +12,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   stages: '公演・イベント',
   performances: '公演・イベント',
   classes: '開講クラス',
-  blog: '日々のこと',
+  blog: '稽古日誌',
   publications: '刊行物',
   members: '劇団員紹介',
   'for-organizations': '法人の方向け',
@@ -74,6 +74,20 @@ export function buildBreadcrumbs(
       { label: 'Top', href: '/' },
       { label: SEGMENT_LABELS.stages!, href: '/stages/' },
     ]);
+  }
+
+  /** おしらせ・稽古日誌一覧（h1 は PageHeader、パンくずは Top のみ） */
+  if (segments[0] === 'news' && segments.length === 1) {
+    return withBaseOnItems([{ label: 'Top', href: '/' }]);
+  }
+
+  if (segments[0] === 'blog' && segments.length === 1) {
+    return withBaseOnItems([{ label: 'Top', href: '/' }]);
+  }
+
+  /** 稽古日誌一覧の2ページ目以降（おしらせ一覧と同じく Top のみ） */
+  if (segments[0] === 'blog' && segments[1] === 'page' && segments.length === 3) {
+    return withBaseOnItems([{ label: 'Top', href: '/' }]);
   }
 
   const items: BreadcrumbItem[] = [{ label: 'Top', href: '/' }];

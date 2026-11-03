@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from './PageHeader.astro';
+import NewsList from './NewsList.astro';
+import NewsWithSidebar from './NewsWithSidebar.astro';
+import BlogPagination from './BlogPagination.astro';
+import {
+  blogEntryTags,
+  getSortedBlogEntries,
+  paginateBlogEntries,
+} from '../utils/blog-archive';
+
+interface Props {
+  page: number;
+}
+
+const { page } = Astro.props;
+const all = await getSortedBlogEntries();
+const { items, currentPage, totalPages } = paginateBlogEntries(all, page);
+
+const metaTitle = currentPage > 1 ? `稽古日誌（${currentPage}ページ目）` : '稽古日誌';
+---
+
+<Base title={metaTitle} description="転回社の日々の活動、稽古の様子などを綴る稽古日誌。">
+  <div class="news-page blog-page">
+    <PageHeader jp="稽古日誌" />
+
+    <section class="news">
+      <div class="container">
+        <NewsWithSidebar>
+          <NewsList
+            items={items.map((b) => ({
+              date: b.data.date,
+              title: b.data.title,
+              href: `/blog/${b.id}/`,
+              image: b.data.cover,
+              tags: blogEntryTags(b.data),
+            }))}
+          />
+          <BlogPagination currentPage={currentPage} totalPages={totalPages} />
+        </NewsWithSidebar>
+      </div>
+    </section>
+  </div>
+</Base>

@@ -1,11 +1,16 @@
 ---
 import { withBase } from '../utils/path';
 import { isRecentNewsDate } from '../utils/news';
+import NewsListTitleRow from './NewsListTitleRow.astro';
 
 interface NewsItem {
   date: Date;
   title: string;
   href: string;
+  /** 一覧左の丸サムネ（ブログ cover など） */
+  image?: string;
+  /** タイトル右のタグ（ブログカテゴリーなど） */
+  tags?: string[];
 }
 
 interface Props {
@@ -16,6 +21,8 @@ interface Props {
 }
 
 const { items, showNewLabel = false, newWithinDays = 7 } = Astro.props;
+const withThumbs = items.some((item) => Boolean(item.image));
+const withTags = items.some((item) => (item.tags?.length ?? 0) > 0);
 
 const fmt = (d: Date) => {
   const y = d.getFullYear();
@@ -29,26 +36,48 @@ const fmt = (d: Date) => {
   items.length === 0 ? (
     <p class="empty">お知らせはまだありません。</p>
   ) : (
-    <ul class="news-list">
+    <ul
+      class:list={[
+        'news-list',
+        withThumbs && 'news-list--with-thumbs',
+        withTags && 'news-list--with-tags',
+      ]}
+    >
       {
         items.map((item) => {
           const isNew = showNewLabel && isRecentNewsDate(item.date, newWithinDays);
+          const tags = item.tags ?? [];
           return (
           <li class="news-list__item">
             <a class="news-list__link" href={withBase(item.href)}>
-              <div class="news-list__headline">
-                <time class="news-list__date" datetime={item.date.toISOString()}>
-                  {fmt(item.date)}
-                </time>
-                <div class="news-list__title-row">
-                  <span class="news-list__title">{item.title}</span>
-                  {isNew ? (
-                    <span class="news-list__new" lang="en">
-                      NEW
-                    </span>
-                  ) : null}
-                </div>
-              </div>
+              {
+                withThumbs ? (
+                  <div class="news-list__headline news-list__headline--with-thumb">
+                    {
+                      item.image ? (
+                        <span class="news-list__thumb" aria-hidden="true">
+                          <img src={withBase(item.image)} alt="" loading="lazy" decoding="async" />
+                        </span>
+                      ) : (
+                        <span class="news-list__thumb news-list__thumb--empty" aria-hidden="true" />
+                      )
+                    }
+                    <div class="news-list__stack">
+                      <time class="news-list__date" datetime={item.date.toISOString()}>
+                        {fmt(item.date)}
+                      </time>
+                      <NewsListTitleRow title={item.title} isNew={isNew} tags={tags} />
+                    </div>
+                  </div>
+                ) : (
+                  <div class="news-list__headline">
+                    <time class="news-list__date" datetime={item.date.toISOString()}>
+                      {fmt(item.date)}
+                    </time>
+                    <NewsListTitleRow title={item.title} isNew={isNew} tags={tags} />
+                  </div>
+                )
+              }
             </a>
           </li>
           );
