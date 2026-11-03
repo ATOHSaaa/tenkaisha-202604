@@ -2,160 +2,133 @@
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import Card from '../../components/Card.astro';
+import StagesArchiveYear from '../../components/StagesArchiveYear.astro';
 import { getCollection } from 'astro:content';
 import {
-  archiveEventEntryCardProps,
-  BADGE_FILTER_LABELS,
+  BADGE_FILTER_IDS,
   eventEntryCardProps,
-  filterEntriesByBadge,
   groupArchiveEntriesByYear,
-  parseBadgeFilter,
   partitionEventList,
   summarizeArchiveYearGroups,
 } from '../../utils/event-content';
+import { withBase } from '../../utils/path';
 
 const allStages = await getCollection('stages');
-const badgeFilter = parseBadgeFilter(Astro.url.searchParams.get('badge'));
-const all = badgeFilter ? filterEntriesByBadge(allStages, badgeFilter) : allStages;
-const { currentPerformances, currentEvents, archivePerformances, archiveEvents } =
-  partitionEventList(all);
-const archiveEntries = [...archivePerformances, ...archiveEvents];
-
+const { currentPerformances, currentEvents } = partitionEventList(allStages);
+const archiveYearGroups = groupArchiveEntriesByYear(allStages);
 const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
-const hasArchive = archiveEntries.length > 0;
-const filterLabel = badgeFilter ? BADGE_FILTER_LABELS[badgeFilter] : null;
-const showEmptyFilter = badgeFilter && !hasCurrent && !hasArchive;
-const isMainList = !badgeFilter;
-const archiveYearGroups = isMainList ? groupArchiveEntriesByYear(all) : [];
 const hasArchiveYears = archiveYearGroups.length > 0;
 const archiveSummary = summarizeArchiveYearGroups(archiveYearGroups);
+const badgeFilterIdsJson = JSON.stringify(BADGE_FILTER_IDS);
+const stagesFilterBase = withBase('/stages/filter/');
+
+/** 初回 HTML に含める「これまで」の年数（以降はスクロールで追加） */
+const INITIAL_ARCHIVE_YEARS = 2;
+const initialArchiveGroups = archiveYearGroups.slice(0, INITIAL_ARCHIVE_YEARS);
+const deferredArchiveGroups = archiveYearGroups.slice(INITIAL_ARCHIVE_YEARS);
 ---
 
 <Base
-  title={filterLabel ? `${filterLabel} | 公演・イベント` : '公演・イベント'}
+  title="公演・イベント"
   description="転回社の公演・イベント。これからの公演・イベントと、これまでの記録。"
   scrollReveal={false}
 >
   <div class="events-page">
-    <PageHeader jp={filterLabel ?? '公演・イベント'} />
+    <PageHeader jp="公演・イベント" />
 
     {
-      showEmptyFilter ? (
+      !hasCurrent && !hasArchiveYears ? (
         <section class="section">
           <div class="container">
-            <p class="empty">該当する公演・イベントはありません。</p>
+            <p class="empty">公演・イベントの情報はまだありません。</p>
           </div>
         </section>
       ) : (
         <section class="section">
           <div class="container">
-            {
-              badgeFilter ? (
-                !hasCurrent && !hasArchive ? (
-                  <p class="empty">公演・イベントの情報はまだありません。</p>
-                ) : (
-                  <div class="grid-events grid-long-run">
-                    {currentPerformances.map((p) => (
-                      <Card
-                        href={`/stages/${p.id}/`}
-                        image={p.data.cover}
-                        title={p.data.title}
-                        {...eventEntryCardProps(p.data)}
-                      />
-                    ))}
-                    {currentEvents.map((e) => (
-                      <Card
-                        href={`/stages/${e.id}/`}
-                        image={e.data.cover}
-                        title={e.data.title}
-                        {...eventEntryCardProps(e.data)}
-                      />
-                    ))}
-                    {archiveEntries.map((entry) => (
-                      <Card
-                        href={`/stages/${entry.id}/`}
-                        image={entry.data.cover}
-                        title={entry.data.title}
-                        {...archiveEventEntryCardProps(entry.data)}
-                      />
-                    ))}
-                  </div>
+            <>
+              {
+                hasCurrent && (
+                  <>
+                    <h2 class="section-title">これから</h2>
+                    <div class="subsection">
+                      <div class="grid-events grid-long-run">
+                        {currentPerformances.map((p) => (
+                          <Card
+                            href={`/stages/${p.id}/`}
+                            image={p.data.cover}
+                            title={p.data.title}
+                            {...eventEntryCardProps(p.data)}
+                          />
+                        ))}
+                        {currentEvents.map((e) => (
+                          <Card
+                            href={`/stages/${e.id}/`}
+                            image={e.data.cover}
+                            title={e.data.title}
+                            {...eventEntryCardProps(e.data)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </>
                 )
-              ) : !hasCurrent && !hasArchiveYears ? (
-                <p class="empty">公演・イベントの情報はまだありません。</p>
-              ) : (
-                <>
-                  {
-                    hasCurrent && (
-                      <>
-                        <h2 class="section-title">これから</h2>
-                        <div class="subsection">
-                          <div class="grid-events grid-long-run">
-                            {currentPerformances.map((p) => (
-                              <Card
-                                href={`/stages/${p.id}/`}
-                                image={p.data.cover}
-                                title={p.data.title}
-                                {...eventEntryCardProps(p.data)}
-                              />
-                            ))}
-                            {currentEvents.map((e) => (
-                              <Card
-                                href={`/stages/${e.id}/`}
-                                image={e.data.cover}
-                                title={e.data.title}
-                                {...eventEntryCardProps(e.data)}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </>
-                    )
-                  }
-                  {
-                    hasArchiveYears && (
-                      <>
-                        <h2 class="section-title events-archive__section-title">
-                          <span class="events-archive__heading-label">これまで</span>
-                          <span class="events-archive__year-stats">
-                            <span class="events-archive__year-stat-num">{archiveSummary.worksCount}</span>
-                            Works /
-                            <span class="events-archive__year-stat-num">{archiveSummary.stagesCount}</span>
-                            Stages
-                          </span>
-                        </h2>
-                        <div class="events-archive">
-                          {archiveYearGroups.map((group) => (
-                            <div class="events-archive__year">
-                              <h3 class="events-archive__year-title">
-                                <span class="events-archive__heading-label">{group.year}年</span>
-                                <span class="events-archive__year-stats">
-                                  <span class="events-archive__year-stat-num">{group.worksCount}</span>Works /
-                                  <span class="events-archive__year-stat-num">{group.stagesCount}</span>Stages
-                                </span>
-                              </h3>
-                              <div class="grid-events grid-long-run">
-                                {group.entries.map((entry) => (
-                                  <Card
-                                    href={`/stages/${entry.id}/`}
-                                    image={entry.data.cover}
-                                    title={entry.data.title}
-                                    {...archiveEventEntryCardProps(entry.data)}
-                                  />
-                                ))}
-                              </div>
-                            </div>
+              }
+              {
+                hasArchiveYears && (
+                  <>
+                    <h2 class="section-title events-archive__section-title">
+                      <span class="events-archive__heading-label">これまで</span>
+                      <span class="events-archive__year-stats">
+                        <span class="events-archive__year-stat-num">{archiveSummary.worksCount}</span>
+                        Works /
+                        <span class="events-archive__year-stat-num">{archiveSummary.stagesCount}</span>
+                        Stages
+                      </span>
+                    </h2>
+                    <div class="events-archive" data-stages-archive>
+                      {initialArchiveGroups.map((group) => (
+                        <StagesArchiveYear group={group} />
+                      ))}
+                    </div>
+                    {
+                      deferredArchiveGroups.length > 0 && (
+                        <>
+                          <div
+                            class="events-archive__sentinel"
+                            data-stages-archive-sentinel
+                            aria-hidden="true"
+                          />
+                          {deferredArchiveGroups.map((group) => (
+                            <template data-stages-archive-year>
+                              <StagesArchiveYear group={group} />
+                            </template>
                           ))}
-                        </div>
-                      </>
-                    )
-                  }
-                </>
-              )
-            }
+                        </>
+                      )
+                    }
+                  </>
+                )
+              }
+            </>
           </div>
         </section>
       )
     }
   </div>
+  <script is:inline define:vars={{ badgeFilterIdsJson, stagesFilterBase }}>
+    (() => {
+      const badge = new URLSearchParams(window.location.search).get('badge');
+      if (!badge) return;
+      const ids = JSON.parse(badgeFilterIdsJson);
+      if (!ids.includes(badge)) return;
+      window.location.replace(`${stagesFilterBase}${encodeURIComponent(badge)}/`);
+    })();
+  </script>
+  <script>
+    import { initStagesArchiveLazyLoad } from '../../scripts/stages-archive-lazy';
+
+    initStagesArchiveLazyLoad();
+    document.addEventListener('astro:page-load', initStagesArchiveLazyLoad);
+  </script>
 </Base>

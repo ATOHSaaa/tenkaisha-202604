@@ -1,33 +1,32 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import WorkshopCasebookToc from '../../components/WorkshopCasebookToc.astro';
 import { publications } from '../../data/site';
+import { workshopCasebookCover } from '../../data/workshop-casebook';
 import { withBase } from '../../utils/path';
 
 const p = publications.find((x) => x.slug === 'school-workshop')!;
+const coverSrc = withBase(workshopCasebookCover);
 ---
 
 <Base title={p.title} description={p.summary}>
-  <article class="pub">
-    <div class="pub__hero">
-      <div class="container pub__hero-inner">
-        <h1 class="pub__jp heading-section">{p.title}</h1>
-        <p class="pub__meta">刊行: {p.year}年 / 一般社団法人 転回社</p>
-      </div>
-    </div>
+  <PageHeader jp="『演劇ワークショップ事例集』" compact />
 
+  <article class="pub pub--casebook">
     <section class="container pub__body">
       <div class="pub__grid">
         <div class="prose">
-          <h2>刊行物について</h2>
           <p>
-            『学校ワークショップ事例集』は、転回社が熊本県内の小・中学校で行ってきた演劇ワークショップの事例を、
-            現場の記録と振り返りの言葉と合わせてまとめた一冊です。
+            『{p.title}』は、転回社が熊本県内の小・中学校などで行ってきた演劇ワークショップの事例を、現場の記録と振り返りの言葉と合わせてまとめた一冊です。
           </p>
           <p>
-            教育現場で演劇的アプローチをどのように活かせるのか。
-            実施内容・時間配分・子どもたちの反応・教員との連携の仕方など、
-            具体的な事例を通して紹介しています。
+            教育現場で演劇的アプローチをどのように活かせるのか。実施内容・時間配分・子どもたちの反応・教員との連携の仕方など、具体的な事例を通して紹介しています。
           </p>
+
+          <h2>目次</h2>
+          <WorkshopCasebookToc />
+
           <h2>想定読者</h2>
           <ul>
             <li>学校教員／教育関係者</li>
@@ -35,26 +34,26 @@ const p = publications.find((x) => x.slug === 'school-workshop')!;
             <li>アウトリーチ活動に関心のあるアーティスト</li>
             <li>社会教育・生涯学習関係の方</li>
           </ul>
+
           <h2>お問い合わせ</h2>
           <p>
-            ご関心のある方は <a href={withBase('/contact/')}>お問い合わせフォーム</a> よりご連絡ください。
-            閲覧希望や関連するご相談も承っています。
+            冊子の送付や内容に関するご質問は、
+            <a href={withBase('/contact/')}>お問い合わせフォーム</a>
+            よりご連絡ください。
           </p>
         </div>
 
         <aside class="pub__side">
-          <img class="pub__cover" src={withBase(p.cover)} alt="" />
+          <img class="pub__cover pub__cover--contain" src={coverSrc} alt="" width={724} height={1024} />
           <dl class="pub__spec">
             <div><dt>刊行</dt><dd>{p.year}年</dd></div>
             <div><dt>発行</dt><dd>一般社団法人 転回社</dd></div>
             <div><dt>分類</dt><dd>事例集 / 記録集</dd></div>
           </dl>
-          <a class="btn btn--pill" href={withBase('/contact/')}>刊行物について問い合わせる <span class="btn__arrow">→</span></a>
+          <a class="btn btn--pill" href={withBase('/contact/')}>
+            冊子の送付・ご相談 <span class="btn__arrow">→</span>
+          </a>
         </aside>
-      </div>
-
-      <div class="pub__back">
-        <a class="link-arrow" href={withBase('/publications/')}>← 刊行物一覧へ</a>
       </div>
     </section>
   </article>

@@ -1,0 +1,28 @@
+---
+import type { EducationProgramCard } from '../data/site';
+import { withBase } from '../utils/path';
+
+interface Props {
+  program: EducationProgramCard;
+}
+
+const { program } = Astro.props;
+const href = withBase(program.path);
+const imageSrc = withBase(program.image);
+---
+
+<a class="edu-block" href={href}>
+  <div class="edu-block__media">
+    <img class="edu-block__img" src={imageSrc} alt="" loading="lazy" />
+  </div>
+  <div class="edu-block__body">
+    <p class="edu-block__en">{program.english}</p>
+    <h2 class="edu-block__title">{program.title}</h2>
+    <p class="edu-block__text">{program.summary}</p>
+    {program.detail ? <p class="edu-block__text">{program.detail}</p> : null}
+    <p class="edu-block__more">
+      <span>詳しく見る</span>
+      <span class="edu-block__more-arrow" aria-hidden="true">→</span>
+    </p>
+  </div>
+</a>

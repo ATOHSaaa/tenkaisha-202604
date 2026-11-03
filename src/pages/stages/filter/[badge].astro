@@ -1,0 +1,88 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import Card from '../../../components/Card.astro';
+import { getCollection } from 'astro:content';
+import {
+  archiveEventEntryCardProps,
+  BADGE_FILTER_IDS,
+  BADGE_FILTER_LABELS,
+  eventEntryCardProps,
+  filterEntriesByBadge,
+  parseBadgeFilter,
+  partitionEventList,
+} from '../../../utils/event-content';
+
+export async function getStaticPaths() {
+  return BADGE_FILTER_IDS.map((badge) => ({
+    params: { badge },
+  }));
+}
+
+const badgeFilter = parseBadgeFilter(Astro.params.badge ?? null);
+if (!badgeFilter) {
+  return Astro.redirect('/stages/');
+}
+
+const allStages = await getCollection('stages');
+const all = filterEntriesByBadge(allStages, badgeFilter);
+const { currentPerformances, currentEvents, archivePerformances, archiveEvents } =
+  partitionEventList(all);
+const archiveEntries = [...archivePerformances, ...archiveEvents];
+
+const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
+const hasArchive = archiveEntries.length > 0;
+const filterLabel = BADGE_FILTER_LABELS[badgeFilter];
+const showEmptyFilter = !hasCurrent && !hasArchive;
+---
+
+<Base
+  title={`${filterLabel} | 公演・イベント`}
+  description="転回社の公演・イベント。これからの公演・イベントと、これまでの記録。"
+  scrollReveal={false}
+>
+  <div class="events-page">
+    <PageHeader jp={filterLabel} />
+
+    {
+      showEmptyFilter ? (
+        <section class="section">
+          <div class="container">
+            <p class="empty">該当する公演・イベントはありません。</p>
+          </div>
+        </section>
+      ) : (
+        <section class="section">
+          <div class="container">
+            <div class="grid-events grid-long-run">
+              {currentPerformances.map((p) => (
+                <Card
+                  href={`/stages/${p.id}/`}
+                  image={p.data.cover}
+                  title={p.data.title}
+                  {...eventEntryCardProps(p.data)}
+                />
+              ))}
+              {currentEvents.map((e) => (
+                <Card
+                  href={`/stages/${e.id}/`}
+                  image={e.data.cover}
+                  title={e.data.title}
+                  {...eventEntryCardProps(e.data)}
+                />
+              ))}
+              {archiveEntries.map((entry) => (
+                <Card
+                  href={`/stages/${entry.id}/`}
+                  image={entry.data.cover}
+                  title={entry.data.title}
+                  {...archiveEventEntryCardProps(entry.data)}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </div>
+</Base>

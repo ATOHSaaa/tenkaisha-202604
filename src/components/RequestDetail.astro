@@ -9,8 +9,6 @@ interface Props {
   /** description の直後に続く段落（学校公演ページなど） */
   descriptionExtra?: string;
   points?: string[];
-  backHref?: string;
-  backLabel?: string;
   /** false で黒帯ヒーローを出さない（PageHeader 等と併用） */
   showHero?: boolean;
   /** false で右カラム（画像・ボタン）を出さない */
@@ -22,12 +20,9 @@ const {
   description,
   descriptionExtra,
   points = [],
-  backHref = '/education/',
-  backLabel = '演劇と教育へ戻る',
   showHero = true,
   showSidebar = true,
 } = Astro.props;
-const resolvedBackHref = withBase(backHref);
 ---
 
 {
@@ -61,7 +56,7 @@ const resolvedBackHref = withBase(backHref);
             )
           }
           <slot name="before-contact" />
-          <PageContactCta />
+          <PageContactCta placement="requestDetail" />
         </div>
 
         <aside class="rd__side">
@@ -86,12 +81,8 @@ const resolvedBackHref = withBase(backHref);
           )
         }
         <slot name="before-contact" />
-        <PageContactCta />
+        <PageContactCta placement="requestDetail" />
       </div>
     )
   }
-
-  <div class="rd__back">
-    <a class="link-arrow" href={resolvedBackHref}>← {backLabel}</a>
-  </div>
 </section>

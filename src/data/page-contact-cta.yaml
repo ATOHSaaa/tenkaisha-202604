@@ -1,0 +1,28 @@
+# ページ末尾などのお問い合わせ CTA（PageContactCta）
+# default … 共通の既定値。placements の各キーで lines / href / formUrl / buttonLabel を部分上書き可。
+#
+# formUrl … Google フォーム等の外部 URL（指定時は CTA がここへ直接リンク・新しいタブ）
+# href    … formUrl 未指定時のリンク先（通常はサイト内 /contact/）
+
+default:
+  lines:
+    - 詳細資料の送付、お打ち合わせのご提案をいたします。
+    - まずはお気軽にお問い合わせください。
+  formUrl: https://docs.google.com/forms/d/e/XXXXXXX/viewform
+  href: /contact/
+  buttonLabel: お問い合わせ
+
+# placement キー → 使うページ
+#   classes        … 開講クラス一覧 /classes/
+#   education      … 演劇と教育 /education/
+#   members        … 劇団員紹介 /members/
+#   school         … 学校公演 演目詳細 /education/school/*/
+#   requestDetail  … 法人向け等 RequestDetail レイアウト
+placements:
+  classes:
+    lines:
+      - 体験参加・見学のご相談もお気軽にどうぞ。
+  education: {}
+  members: {}
+  school: {}
+  requestDetail: {}

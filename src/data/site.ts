@@ -204,7 +204,7 @@ export const homeActivities: HomeActivity[] = [
     number: '04',
     title: '外部講師',
     summary:
-      '企業・自治体・学校向けに、演劇ワークショップや教職員研修など、講師・ファシリテーターの派遣を承ります。',
+      '企業・自治体・学校向けに、演劇ワークショップなど、講師・ファシリテーターの派遣を承ります。',
     href: '/for-organizations/',
     linkLabel: '法人の方向け',
     image: '/images/education/school-performance.png',
@@ -226,15 +226,8 @@ export const organizationPrograms: OrganizationProgram[] = [
     slug: 'workshop',
     name: '演劇ワークショップ',
     summary: '企業・自治体・福祉施設向けに、演劇の手法を活かしたワークショップをご提案します。',
-    image: '/images/mocks/request-workshop.svg',
+    image: '/images/education/workshop-program.jpg',
     path: '/for-organizations/workshop/',
-  },
-  {
-    slug: 'training',
-    name: '学校の教職員向け研修',
-    summary: '授業づくりや学級経営に活かせる、演劇的手法を取り入れた教職員研修です。',
-    image: '/images/mocks/request-school.svg',
-    path: '/for-organizations/training/',
   },
 ];
 
@@ -242,6 +235,8 @@ export type EducationProgramCard = {
   title: string;
   english: string;
   summary: string;
+  /** 演劇と教育ページのリード下に続く説明 */
+  detail?: string;
   image: string;
   path: string;
 };
@@ -251,7 +246,10 @@ export const educationPrograms: EducationProgramCard[] = [
   {
     title: '学校公演',
     english: 'SCHOOL SHOW',
-    summary: '主に小学校を対象とした、学校公演を承ります。',
+    summary:
+      '熊本を中心に、主に小学校〜高校を対象とした学校公演を承ります。体育館・多目的室での上演にも対応可能です。',
+    detail:
+      '公演後に児童・生徒と交流する時間も設けられます。採択事業や学校の目的に合わせ、演目選びから当日の進行までご相談ください。',
     image: '/images/education/school-performance.png',
     path: '/education/school/',
   },
@@ -259,24 +257,11 @@ export const educationPrograms: EducationProgramCard[] = [
     title: '演劇ワークショップ',
     english: 'WORKSHOP',
     summary:
-      '小・中学校向けの演劇ワークショップ。学級活動や総合的な学習の時間など、学校のご要望に合わせて設計します。',
-    image: '/images/mocks/request-workshop.svg',
+      '小・中学校向けの演劇ワークショップを、学級活動や総合的な学習の時間など、学校のご要望に合わせて設計・実施します。',
+    detail:
+      '転回社は熊本県内を中心に、長年にわたり学校でのワークショップ実績を重ねてきました。事例集の送付や、文化庁の学校向け事業への応募を見据えたご提案も可能です。',
+    image: '/images/education/workshop-program.jpg',
     path: '/education/workshop/',
-  },
-  {
-    title: '学校教職員向け研修',
-    english: 'TEACHER TRAINING',
-    summary: '授業づくりや学級経営に活かせる、演劇的手法を取り入れた教職員研修です。',
-    image: '/images/mocks/request-school.svg',
-    path: '/for-organizations/training/',
-  },
-  {
-    title: '転回社ジュニアクラス',
-    english: 'JUNIOR CLASS',
-    summary:
-      '小学1年生〜中学3年生向け。毎週水曜、経験豊富な講師とオリジナルミュージカルづくりに取り組みます。',
-    image: '/images/classes/junior-flyer.png',
-    path: '/classes/junior/',
   },
 ];
 
@@ -303,9 +288,9 @@ export type Publication = {
 export const publications: Publication[] = [
   {
     slug: 'school-workshop',
-    title: '学校ワークショップ事例集',
+    title: '演劇ワークショップ事例集',
     subtitle: 'TENKAISHA PUBLICATIONS VOL.01',
-    cover: '/images/publications/school-workshop.svg',
+    cover: '/images/education/workshop-casebook-cover.jpg',
     year: 2025,
     summary:
       '転回社が熊本県内の学校で行ってきた演劇ワークショップの事例を、記録と合わせてまとめた一冊。',
@@ -313,8 +298,10 @@ export const publications: Publication[] = [
   },
 ];
 
-// Google フォームURLなどは後で差し替え可能に一箇所に集約
-export const contactFormUrl = 'https://docs.google.com/forms/d/e/XXXXXXX/viewform';
+import { getDefaultContactFormUrl } from './page-contact-cta';
+
+/** Google フォーム URL（page-contact-cta.yaml の default.formUrl） */
+export const contactFormUrl = getDefaultContactFormUrl();
 
 export const social = [
   { label: 'X', url: 'https://x.com/' },

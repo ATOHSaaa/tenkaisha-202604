@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
-import Card from '../components/Card.astro';
+import EducationProgramRow from '../components/EducationProgramRow.astro';
 import PageContactCta from '../components/PageContactCta.astro';
 import { educationPrograms } from '../data/site';
 ---
@@ -11,21 +11,15 @@ import { educationPrograms } from '../data/site';
 
   <section class="section education-programs">
     <div class="container">
-      <div class="grid grid--3 education-programs__grid">
+      <div class="education-programs__flow">
         {
           educationPrograms.map((program) => (
-            <Card
-              href={program.path}
-              image={program.image}
-              title={program.title}
-              body={program.summary}
-              imageAspect="4/3"
-            />
+            <EducationProgramRow program={program} />
           ))
         }
       </div>
 
-      <PageContactCta />
+      <PageContactCta placement="education" />
     </div>
   </section>
 </Base>

@@ -82,7 +82,7 @@ export function eventDetailBadges(data: EventData): EventBadge[] {
   return withClassBadges(data, DETAIL_BADGE_BY_TYPE[data.type]);
 }
 
-/** 一覧 `/stages/?badge=` 用 */
+/** 一覧 `/stages/filter/` 用 */
 export const BADGE_FILTER_IDS = ['long-run', 'performance', 'event', 'junior'] as const;
 export type BadgeFilterId = (typeof BADGE_FILTER_IDS)[number];
 
@@ -108,7 +108,7 @@ export function badgeFilterId(item: EventBadge): BadgeFilterId | null {
 
 export function stagesListHrefForBadge(item: EventBadge): string | undefined {
   const id = badgeFilterId(item);
-  return id ? withBase(`/stages/?badge=${id}`) : undefined;
+  return id ? withBase(`/stages/filter/${id}/`) : undefined;
 }
 
 export function entryMatchesBadgeFilter(data: EventData, filter: BadgeFilterId): boolean {

@@ -68,6 +68,13 @@ export function buildBreadcrumbs(
     return withBaseOnItems([{ label: 'Top', href: '/' }]);
   }
 
+  if (segments[0] === 'stages' && segments[1] === 'filter' && segments.length === 3) {
+    return withBaseOnItems([
+      { label: 'Top', href: '/' },
+      { label: SEGMENT_LABELS.stages!, href: '/stages/' },
+    ]);
+  }
+
   const items: BreadcrumbItem[] = [{ label: 'Top', href: '/' }];
   const lastSegmentIndex = segments.length - 1;
 

@@ -39,5 +39,7 @@ export default defineConfig({
     '/events/tipitaka-202503': '/stages/063/',
     '/events/tipitaka-202503/': '/stages/063/',
     '/education/school/ogawa-unmei/': '/education/school/ogawa-mimei/',
+    '/for-organizations/training/': '/for-organizations/',
+    '/for-organizations/training': '/for-organizations/',
   },
 });

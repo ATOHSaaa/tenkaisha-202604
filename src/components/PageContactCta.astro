@@ -1,19 +1,42 @@
 ---
-import { pageContactCtaLines } from '../data/page-contact-cta';
+import {
+  getPageContactCta,
+  isExternalContactUrl,
+  resolvePageContactCtaHref,
+  type PageContactCtaPlacement,
+} from '../data/page-contact-cta';
 import { withBase } from '../utils/path';
 
 interface Props {
-  /** 1 行ずつ上書き（未指定時は pageContactCtaLines） */
+  /** page-contact-cta.yaml の placements キー（未指定時は default） */
+  placement?: PageContactCtaPlacement;
+  /** 1 行ずつ上書き（YAML より優先） */
   lines?: readonly string[];
   href?: string;
+  /** Google フォーム URL（YAML より優先。formUrl は href より優先） */
+  formUrl?: string;
   buttonLabel?: string;
 }
 
 const {
-  lines = pageContactCtaLines,
-  href = '/contact/',
-  buttonLabel = 'お問い合わせ',
+  placement,
+  lines: linesProp,
+  href: hrefProp,
+  formUrl: formUrlProp,
+  buttonLabel: buttonLabelProp,
 } = Astro.props;
+
+const fromYaml = getPageContactCta(placement);
+const lines = linesProp ?? fromYaml.lines;
+const buttonLabel = buttonLabelProp ?? fromYaml.buttonLabel;
+const mergedForLink = {
+  ...fromYaml,
+  href: hrefProp ?? fromYaml.href,
+  formUrl: formUrlProp ?? fromYaml.formUrl,
+};
+const linkRaw = resolvePageContactCtaHref(mergedForLink);
+const resolvedHref = withBase(linkRaw);
+const external = isExternalContactUrl(linkRaw);
 ---
 
 <div class="page-contact-cta">
@@ -25,7 +48,11 @@ const {
       </>
     ))}
   </p>
-  <a class="btn btn--pill" href={withBase(href)}>
+  <a
+    class="btn btn--pill"
+    href={resolvedHref}
+    {...external ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
+  >
     {buttonLabel} <span class="btn__arrow">→</span>
   </a>
 </div>

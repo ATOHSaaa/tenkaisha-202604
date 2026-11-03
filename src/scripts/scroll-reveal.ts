@@ -76,6 +76,8 @@ function collectRevealTargets(main: HTMLElement): Element[] {
     if (el.closest('.footer-links__block')) return;
     if (el.closest('.section--home-activities')) return;
     if (el.closest('.section--classes')) return;
+    if (el.closest('.edu-program')) return;
+    if (el.closest('.edu-block')) return;
     targets.push(el);
   });
 

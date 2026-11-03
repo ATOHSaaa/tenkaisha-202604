@@ -1,0 +1,32 @@
+---
+import Card from './Card.astro';
+import { archiveEventEntryCardProps, type ArchiveYearGroup } from '../utils/event-content';
+
+interface Props {
+  group: ArchiveYearGroup;
+}
+
+const { group } = Astro.props;
+---
+
+<div class="events-archive__year">
+  <h3 class="events-archive__year-title">
+    <span class="events-archive__heading-label">{group.year}年</span>
+    <span class="events-archive__year-stats">
+      <span class="events-archive__year-stat-num">{group.worksCount}</span>Works /
+      <span class="events-archive__year-stat-num">{group.stagesCount}</span>Stages
+    </span>
+  </h3>
+  <div class="grid-events grid-long-run">
+    {
+      group.entries.map((entry) => (
+        <Card
+          href={`/stages/${entry.id}/`}
+          image={entry.data.cover}
+          title={entry.data.title}
+          {...archiveEventEntryCardProps(entry.data)}
+        />
+      ))
+    }
+  </div>
+</div>
