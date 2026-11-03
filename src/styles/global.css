@@ -1765,6 +1765,15 @@ a.card:focus-visible {
   max-height: none;
 }
 
+.school-piece__meta--header > div:last-child {
+  margin-top: var(--space-4);
+  gap: 0;
+}
+
+.school-piece__meta--header > div:last-child dt {
+  margin-bottom: 2px;
+}
+
 .school-piece__synopsis-block {
   display: flex;
   flex-direction: column;
@@ -1777,8 +1786,6 @@ a.card:focus-visible {
   margin: 0;
   max-width: none;
   width: 100%;
-  line-break: auto;
-  word-break: normal;
 }
 
 .school-piece__source {
@@ -1832,8 +1839,6 @@ a.card:focus-visible {
   text-align: left;
   color: var(--fg);
   background: color-mix(in srgb, var(--accent) 58%, var(--bg-alt));
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
-  border-radius: 4px;
 }
 
 .school-piece-sheet__label--sr {
@@ -1851,7 +1856,7 @@ a.card:focus-visible {
 .school-piece-sheet__people {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 var(--sheet-text-inset);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -1879,6 +1884,7 @@ a.card:focus-visible {
 .school-piece-sheet__lead,
 .school-piece-sheet__plain {
   margin: 0;
+  padding-left: var(--sheet-text-inset);
   font-size: clamp(14px, 1.55vw, 15px);
   line-height: 1.75;
 }
@@ -1937,9 +1943,19 @@ a.card:focus-visible {
 
 .school-piece-sheet__record {
   margin: var(--space-3) 0 0;
-  padding-left: 1.25em;
+  padding-left: calc(var(--sheet-text-inset) + 1.1em);
+  list-style: disc;
+  list-style-position: outside;
   font-size: clamp(14px, 1.55vw, 15px);
   line-height: 1.75;
+}
+
+.school-piece-sheet__record li {
+  display: list-item;
+}
+
+.school-piece-sheet__record li::marker {
+  color: var(--fg);
 }
 
 .school-piece-sheet__record li + li {
@@ -3256,6 +3272,12 @@ body.site-header-nav-open {
   width: 100%;
   line-break: strict;
   word-break: keep-all;
+}
+
+.page-header__lead.school-piece__synopsis {
+  line-break: auto;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .page-header__lead + .page-header__lead {

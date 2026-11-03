@@ -1,13 +1,14 @@
 ---
+import { pageContactCtaBody } from '../data/page-contact-cta';
 import { withBase } from '../utils/path';
 
 interface Props {
-  body: string;
+  body?: string;
   href?: string;
   buttonLabel?: string;
 }
 
-const { body, href = '/contact/', buttonLabel = 'お問い合わせへ' } = Astro.props;
+const { body = pageContactCtaBody, href = '/contact/', buttonLabel = 'お問い合わせへ' } = Astro.props;
 ---
 
 <div class="page-contact-cta">

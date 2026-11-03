@@ -6,30 +6,39 @@ import PageHeader from '../../../components/PageHeader.astro';
 import SchoolPiecePamphlet from '../../../components/SchoolPiecePamphlet.astro';
 import SchoolPieceSourceCredit from '../../../components/SchoolPieceSourceCredit.astro';
 import SchoolTargetPills from '../../../components/SchoolTargetPills.astro';
-import { getSchoolPieceExtra } from '../../../data/school-piece-content';
-import { schoolPerformanceRepertoire } from '../../../data/school-performance-repertoire';
-import { getSchoolPerformancePiece } from '../../../utils/school-performance-repertoire';
+import {
+  getSchoolEntries,
+  getSchoolEntry,
+  resolveSchoolPamphlet,
+  resolveSchoolSlug,
+  schoolEntrySynopsis,
+} from '../../../utils/school-content';
 import { withBase } from '../../../utils/path';
 
 export async function getStaticPaths() {
-  return schoolPerformanceRepertoire.map((piece) => ({
-    params: { slug: piece.slug },
+  const entries = await getSchoolEntries();
+  return entries.filter((entry) => entry.data.page).map((entry) => ({
+    params: { slug: entry.id },
   }));
 }
 
 export const prerender = true;
 
-const slug = Astro.params.slug ?? '';
-const piece = slug ? getSchoolPerformancePiece(slug) : undefined;
-const extra = slug ? getSchoolPieceExtra(slug) : undefined;
-const notFound = !piece;
+const rawSlug = Astro.params.slug ?? '';
+const slug = rawSlug ? resolveSchoolSlug(rawSlug) : '';
+const entry = slug ? await getSchoolEntry(slug) : undefined;
+const notFound = !entry || !entry.data.page;
 
 if (notFound) {
   Astro.response.status = 404;
 }
 
-const synopsis = extra?.synopsis ?? piece?.lead ?? '';
-const pageTitle = piece ? `${piece.work}｜学校公演` : '学校公演';
+const data = entry?.data;
+const synopsis = entry ? schoolEntrySynopsis(entry) : '';
+const pamphlet = data?.pamphlet
+  ? resolveSchoolPamphlet(data.pamphlet, { duration: data.duration })
+  : undefined;
+const pageTitle = data ? `${data.work}｜学校公演` : '学校公演';
 ---
 
 {
@@ -37,31 +46,31 @@ const pageTitle = piece ? `${piece.work}｜学校公演` : '学校公演';
     <NotFoundPage />
   ) : (
     <Base title={pageTitle} description={synopsis}>
-      <PageHeader jp={piece!.work} supertitle={piece!.overview} compact>
+      <PageHeader jp={data!.work} supertitle={data!.overview} compact>
         <div class="school-piece__header-row">
           <dl class="school-piece__meta school-piece__meta--header">
             <div>
               <dt>対象</dt>
               <dd>
-                <SchoolTargetPills targets={piece!.targets} />
+                <SchoolTargetPills targets={data!.targets} />
               </dd>
             </div>
             <div>
               <dt>公演時間</dt>
-              <dd>{piece!.duration}</dd>
+              <dd>{data!.duration}</dd>
             </div>
           </dl>
           <div class="school-piece__synopsis-block">
-            {extra?.sourceCredit ? <SchoolPieceSourceCredit credit={extra.sourceCredit} /> : null}
-            <p class="page-header__lead school-piece__synopsis">{synopsis}</p>
+            {data!.sourceCredit ? <SchoolPieceSourceCredit credit={data!.sourceCredit} /> : null}
+            <p class="page-header__lead school-piece__synopsis" lang="ja">{synopsis}</p>
           </div>
         </div>
       </PageHeader>
 
-      <section class:list={['container', 'school-piece', extra?.pamphlet && 'school-piece--pamphlet']}>
-        {extra?.pamphlet ? <SchoolPiecePamphlet pamphlet={extra.pamphlet} /> : null}
+      <section class:list={['container', 'school-piece', pamphlet && 'school-piece--pamphlet']}>
+        {pamphlet ? <SchoolPiecePamphlet pamphlet={pamphlet} /> : null}
 
-        <PageContactCta body="学校公演のご依頼・ご相談は、お問い合わせフォームよりお気軽にご連絡ください。学年・会場・時間に合わせた構成もご相談いただけます。" />
+        <PageContactCta />
 
         <p class="school-piece__back">
           <a class="link-arrow" href={withBase('/education/school/')}>← 学校公演・演目一覧へ</a>

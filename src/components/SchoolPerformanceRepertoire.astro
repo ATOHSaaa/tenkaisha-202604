@@ -1,7 +1,12 @@
 ---
-import { schoolPerformanceRepertoire } from '../data/school-performance-repertoire';
-import { schoolPerformancePieceHref } from '../utils/school-performance-repertoire';
+import {
+  getSchoolEntries,
+  schoolEntryHasPage,
+  schoolPieceHref,
+} from '../utils/school-content';
 import SchoolTargetPills from './SchoolTargetPills.astro';
+
+const entries = await getSchoolEntries();
 ---
 
 <h2>演目一覧</h2>
@@ -15,19 +20,32 @@ import SchoolTargetPills from './SchoolTargetPills.astro';
       <div class="school-repertoire__cell">演目</div>
       <div class="school-repertoire__cell">概要</div>
       <div class="school-repertoire__cell">対象</div>
-      <div class="school-repertoire__cell">上演時間</div>
+      <div class="school-repertoire__cell">公演時間</div>
     </div>
     {
-      schoolPerformanceRepertoire.map((piece) => (
-        <a class="school-repertoire__row school-repertoire__body" href={schoolPerformancePieceHref(piece)}>
-          <span class="school-repertoire__cell">{piece.work}</span>
-          <span class="school-repertoire__cell">{piece.overview}</span>
-          <span class="school-repertoire__cell">
-            <SchoolTargetPills targets={piece.targets} />
-          </span>
-          <span class="school-repertoire__cell">{piece.duration}</span>
-        </a>
-      ))
+      entries.map((entry) => {
+        const { work, overview, targets, duration } = entry.data;
+        const hasPage = schoolEntryHasPage(entry);
+        return hasPage ? (
+          <a class="school-repertoire__row school-repertoire__body" href={schoolPieceHref(entry)}>
+            <span class="school-repertoire__cell">{work}</span>
+            <span class="school-repertoire__cell">{overview}</span>
+            <span class="school-repertoire__cell">
+              <SchoolTargetPills targets={targets} />
+            </span>
+            <span class="school-repertoire__cell">{duration}</span>
+          </a>
+        ) : (
+          <div class="school-repertoire__row school-repertoire__body">
+            <span class="school-repertoire__cell">{work}</span>
+            <span class="school-repertoire__cell">{overview}</span>
+            <span class="school-repertoire__cell">
+              <SchoolTargetPills targets={targets} />
+            </span>
+            <span class="school-repertoire__cell">{duration}</span>
+          </div>
+        );
+      })
     }
   </div>
 </div>

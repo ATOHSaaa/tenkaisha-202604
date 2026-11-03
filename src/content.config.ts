@@ -1,5 +1,10 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { people } from "./src/data/people";
+
+const personIdSchema = z.enum(
+  people.map((person) => person.id) as [string, ...string[]],
+);
 
 // ブログ（ink.tenkai.org から統合）
 const blog = defineCollection({
@@ -136,4 +141,47 @@ const classes = defineCollection({
   }),
 });
 
-export const collections = { blog, stages, news, classes };
+/** 学校公演レパートリー（content/school/*.yaml） */
+export const schoolTargetSchema = z.enum(["小学生", "中学生", "高校生"]);
+
+const schoolSourceCreditSchema = z.object({
+  label: z.string().default("原作"),
+  name: z.string(),
+});
+
+const schoolSpecRowSchema = z.object({
+  label: z.string(),
+  value: z.string(),
+  note: z.string().optional(),
+});
+
+const schoolPamphletSchema = z.object({
+  script: z.array(personIdSchema),
+  direction: z.array(personIdSchema),
+  cast: z.array(personIdSchema),
+  castNote: z.string().optional(),
+  music: z.array(personIdSchema),
+  headcount: z.string(),
+  spec: z.union([z.literal('default'), z.array(schoolSpecRowSchema).min(1)]),
+  recordIntro: z.string().optional(),
+  recordItems: z.array(z.string()).optional(),
+  appreciationTitle: z.string().default("鑑賞の手引き"),
+  appreciationParagraphs: z.array(z.string()).min(1),
+});
+
+const school = defineCollection({
+  loader: glob({ pattern: "**/*.{yaml,yml}", base: "./src/content/school" }),
+  schema: z.object({
+    work: z.string(),
+    overview: z.string(),
+    synopsis: z.string().optional(),
+    sourceCredit: schoolSourceCreditSchema.optional(),
+    targets: z.array(schoolTargetSchema).min(1),
+    duration: z.string(),
+    order: z.number().default(0),
+    page: z.boolean().default(true),
+    pamphlet: schoolPamphletSchema.optional(),
+  }),
+});
+
+export const collections = { blog, stages, news, classes, school };

@@ -1,0 +1,33 @@
+work: "『小川未明作品集』"
+overview: 朗読ミュージカル
+synopsis: 敵同士の若い兵士と老兵は、国境を挟んで話をするうちに仲良しに。二人は故郷の様々な話を語ります。そんな折、二つの国の間で戦争がはじまって……。
+sourceCredit:
+  name: 小川未明
+targets:
+  - 小学生
+  - 中学生
+  - 高校生
+duration: 約60分
+order: 2
+page: true
+pamphlet:
+  script:
+    - oshiyama-shiho
+  direction:
+    - kamei-juntaro
+  cast:
+    - komatsuno-nozomi
+  castNote: ※ほか、転回社の俳優が出演します。
+  music:
+    - iwakiri-maiko
+  headcount: 約9名
+  spec: default
+  recordIntro: 熊本県内の小・中学校、高等学校等で上演してきた実績の一部です。
+  recordItems:
+    - 2018年　熊本市立ゼニガメ小学校／文化庁アーティスト派遣事業（熊本県立湧心館高校）
+    - 2019年　熊本市助成事業「ものの本物に触れて感性を育む授業をつくる」（熊本市立若葉小学校4・5・6学年、河内中学校）
+    - 2020年（予定）　令和2年度「いきいき芸術体験授業」（八代市立第六中学校、天草市市役倉和中学校）
+  appreciationTitle: 鑑賞の手引き
+  appreciationParagraphs:
+    - 「日本児童文学の父」として知られる小川未明の短編童話4篇を、ひとつのミュージカルに仕立てました。
+    - 叙情的な表現が多く含まれる作品のため、学年が上がるほど、より深く楽しめる作品です。朗読と音楽で、児童文学の世界に触れる入口としてご活用ください。

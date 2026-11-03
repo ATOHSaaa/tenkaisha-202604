@@ -1,17 +1,12 @@
 ---
-import type { SchoolPamphletContent } from '../data/school-piece-content';
-import { resolvePersonCredits } from '../data/people';
+import type { ResolvedSchoolPamphlet } from '../utils/school-content';
 import SchoolPieceCreditList from './SchoolPieceCreditList.astro';
 
 interface Props {
-  pamphlet: SchoolPamphletContent;
+  pamphlet: ResolvedSchoolPamphlet;
 }
 
 const { pamphlet } = Astro.props;
-const script = resolvePersonCredits(pamphlet.script);
-const direction = resolvePersonCredits(pamphlet.direction);
-const cast = resolvePersonCredits(pamphlet.cast);
-const music = resolvePersonCredits(pamphlet.music);
 ---
 
 <section class="school-piece-sheet" aria-label="公演概要">
@@ -19,23 +14,23 @@ const music = resolvePersonCredits(pamphlet.music);
     <div class="school-piece-sheet__col">
       <section class="school-piece-sheet__block">
         <h2 class="school-piece-sheet__label">脚本</h2>
-        <SchoolPieceCreditList items={script} />
+        <SchoolPieceCreditList items={pamphlet.script} />
       </section>
 
       <section class="school-piece-sheet__block">
         <h2 class="school-piece-sheet__label">演出</h2>
-        <SchoolPieceCreditList items={direction} />
+        <SchoolPieceCreditList items={pamphlet.direction} />
       </section>
 
       <section class="school-piece-sheet__block">
         <h2 class="school-piece-sheet__label">キャスト</h2>
-        <SchoolPieceCreditList items={cast} />
+        <SchoolPieceCreditList items={pamphlet.cast} />
         {pamphlet.castNote ? <p class="school-piece-sheet__note">{pamphlet.castNote}</p> : null}
       </section>
 
       <section class="school-piece-sheet__block">
         <h2 class="school-piece-sheet__label">演奏</h2>
-        <SchoolPieceCreditList items={music} />
+        <SchoolPieceCreditList items={pamphlet.music} />
       </section>
 
       <section class="school-piece-sheet__block">

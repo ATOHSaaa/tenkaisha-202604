@@ -38,5 +38,6 @@ export default defineConfig({
     '/events/saya-minami-farewell-20260731/': '/stages/077/',
     '/events/tipitaka-202503': '/stages/063/',
     '/events/tipitaka-202503/': '/stages/063/',
+    '/education/school/ogawa-unmei/': '/education/school/ogawa-mimei/',
   },
 });
