@@ -1,0 +1,35 @@
+work: "『やくもの冒険』"
+overview: 冒険奇譚ミュージカル
+synopsis: 漢字が大好きでちょっぴり内気な小学生・やくもが、ひょんなことから古代の日本へタイムスリップ！？不思議な力を持つ狐・コハクと一緒に日本神話の世界を旅します。
+targets:
+  - 小学生
+duration: 約100分
+order: 5
+page: true
+pamphlet:
+  script:
+    - oshiyama-shiho
+  direction:
+    - kamei-juntaro
+  cast:
+    - komatsuno-nozomi
+  castNote: ※ほか、転回社の俳優が出演します。
+  music:
+    - iwakiri-maiko
+  headcount: 約15名
+  spec:
+    - label: 公演場所
+      value: 体育館やホールなど、平らな空間
+    - label: 公演時間
+      value: 約100分
+    - label: 設営時間
+      value: 前日設営をお願いしています
+    - label: 撤去時間
+      value: 約3時間
+    - label: 料金
+      value: 50万円（定額・目安）
+      note: 規模・ご予算に合わせてご相談ください。
+  appreciationTitle: 鑑賞の手引き
+  appreciationParagraphs:
+    - 海幸彦・山幸彦や因幡の白兎など、日本神話をモチーフにした冒険奇譚ミュージカルです。漢字が好きな主人公・やくもの視点で物語の世界を旅します。
+    - 国語の単元（神話・説話）や総合的な学習の時間とあわせた鑑賞にも向いています。小学生向け・上演時間は約100分です。

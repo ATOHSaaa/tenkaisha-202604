@@ -8,24 +8,27 @@ const info = {
   slug: 'school',
   name: '学校公演',
   english: 'SCHOOL SHOW',
-  summary: '主に小学校を対象とした、学校公演を承ります。',
+  summary: '熊本を中心に、小学校〜高校向けの学校公演を承ります。',
   image: '/images/education/school-performance.png',
   path: '/education/school/',
 };
+
+const introLead = [
+  '熊本を中心に、主に小学校〜高校を対象とした学校公演を承ります。体育館・多目的室での上演にも対応可能で、公演後に児童・生徒と交流する時間も設けられます。',
+  'お問い合わせいただくと、過去の事例や上演実績をまとめた冊子をお送りいたします。',
+];
 ---
 
 <Base title={info.name} description={info.summary}>
-  <PageHeader jp={info.name} compact />
+  <PageHeader jp={info.name} compact introPanel leadParagraphs={introLead}>
+    <p slot="eyecatch">
+      地域<span class="page-header__eyecatch-hira">に</span>演劇<span class="page-header__eyecatch-hira">を</span>
+    </p>
+  </PageHeader>
 
   <RequestDetail
     info={info}
-    description="熊本を中心に、主に小学校を対象とした学校公演を承ります。体育館・多目的室での上演にも対応可能で、公演後に児童・生徒と交流する時間も設けられます。"
-    points={[
-      '体育館・多目的室での上演に対応',
-      '題材・時間・内容のカスタマイズ可',
-      '公演後の交流・ワークショップも対応可能',
-      '熊本県内での実績多数',
-    ]}
+    description=""
     backHref="/education/"
     backLabel="演劇と教育へ戻る"
     showHero={false}

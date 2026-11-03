@@ -1,10 +1,27 @@
 work: "『更級日記』"
 overview: エレクトロニック古典ミュージカル
-synopsis: >-
-  平安の女流日記を現代的な音で描くエレクトロニック古典ミュージカル。中高生向けに、古典と現代表現の接点を楽しめる構成です。
+sourceCredit:
+  name: 菅原孝標女
+synopsis: 国語の授業で習った日記文学の古典！千年前の少女の青春の日々がミュージカルで蘇る！地方在住の中流貴族・菅原孝標の娘は、憧れの源氏物語を読みたくて読みたくて、都へ帰る日を夢見ていた。東路の果てからはるばるたどり着いた都で、少女は源氏物語を読むことができるのか！
 targets:
   - 中学生
   - 高校生
 duration: 約100分
-order: 5
+order: 6
 page: true
+pamphlet:
+  script:
+    - oshiyama-shiho
+  direction:
+    - kamei-juntaro
+  cast:
+    - komatsuno-nozomi
+  castNote: ※ほか、転回社の俳優が出演します。
+  music:
+    - iwakiri-maiko
+  headcount: 約10名
+  spec: default
+  appreciationTitle: 鑑賞の手引き
+  appreciationParagraphs:
+    - 平安時代の少女・菅原孝標女が記した日記文学の名作を、エレクトロニックなサウンドと語りで再構成した作品です。源氏物語への憧れや都への旅路など、教科書で触れる古典の世界が音楽劇として立ち上がります。
+    - 国語科の古典読解や総合的な学習の時間とあわせた鑑賞にも向いています。中学生・高校生向けの上演時間（約100分）で、古典と現代表現の接点を楽しめる構成です。

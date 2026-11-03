@@ -1,7 +1,6 @@
 work: "『細川重賢一代記』"
 overview: 歴史発見ミュージカル
-synopsis: >-
-  熊本の歴史人物・細川重賢を題材にした歴史発見ミュージカル。郷土の人物を通して、歴史学習の入口となる学校公演プログラムです。
+synopsis: 父と兄の治世によって多額の借金を背負った熊本藩六代藩主・細川重賢。財政を立て直すために小姓頭の堀平太左衛門を一番頭に抜擢し、才気をふるって数々の政策を断行する。その業績から後に「肥後の鳳凰」と称された名君・重賢が肥後熊本藩再建に奔走する一代記！
 targets:
   - 小学生
   - 中学生
@@ -9,3 +8,21 @@ targets:
 duration: 約60分
 order: 3
 page: true
+pamphlet:
+  script:
+    - oshiyama-shiho
+  direction:
+    - kamei-juntaro
+  cast:
+    - komatsuno-nozomi
+  castNote: ※ほか、転回社の俳優が出演します。
+  music:
+    - iwakiri-maiko
+  headcount: 約9名
+  spec: default
+  recordIntro: 熊本県内の小・中学校、高等学校等で上演してきた実績の一部です。
+  recordItems:
+    - 2020年　熊本市立清和小学校
+  appreciationTitle: 鑑賞の手引き
+  appreciationParagraphs:
+    - 紀州藩第九代藩主・徳川治貞と「紀州の麒麟、肥後の鳳凰」と並び称された名君・細川重賢は、身分に関係なく実力のある者を取り立てました。歴史の勉強を本格的に始めた中学生・高校生におすすめの作品です。

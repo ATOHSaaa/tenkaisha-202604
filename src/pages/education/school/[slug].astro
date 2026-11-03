@@ -3,9 +3,9 @@ import NotFoundPage from '../../../components/NotFoundPage.astro';
 import Base from '../../../layouts/Base.astro';
 import PageContactCta from '../../../components/PageContactCta.astro';
 import PageHeader from '../../../components/PageHeader.astro';
+import SchoolPieceBriefSpec from '../../../components/SchoolPieceBriefSpec.astro';
 import SchoolPiecePamphlet from '../../../components/SchoolPiecePamphlet.astro';
 import SchoolPieceSourceCredit from '../../../components/SchoolPieceSourceCredit.astro';
-import SchoolTargetPills from '../../../components/SchoolTargetPills.astro';
 import {
   getSchoolEntries,
   getSchoolEntry,
@@ -48,18 +48,6 @@ const pageTitle = data ? `${data.work}｜学校公演` : '学校公演';
     <Base title={pageTitle} description={synopsis}>
       <PageHeader jp={data!.work} supertitle={data!.overview} compact>
         <div class="school-piece__header-row">
-          <dl class="school-piece__meta school-piece__meta--header">
-            <div>
-              <dt>対象</dt>
-              <dd>
-                <SchoolTargetPills targets={data!.targets} />
-              </dd>
-            </div>
-            <div>
-              <dt>公演時間</dt>
-              <dd>{data!.duration}</dd>
-            </div>
-          </dl>
           <div class="school-piece__synopsis-block">
             {data!.sourceCredit ? <SchoolPieceSourceCredit credit={data!.sourceCredit} /> : null}
             <p class="page-header__lead school-piece__synopsis" lang="ja">{synopsis}</p>
@@ -68,7 +56,13 @@ const pageTitle = data ? `${data.work}｜学校公演` : '学校公演';
       </PageHeader>
 
       <section class:list={['container', 'school-piece', pamphlet && 'school-piece--pamphlet']}>
-        {pamphlet ? <SchoolPiecePamphlet pamphlet={pamphlet} /> : null}
+        {
+          pamphlet ? (
+            <SchoolPiecePamphlet pamphlet={pamphlet} targets={data!.targets} />
+          ) : (
+            <SchoolPieceBriefSpec targets={data!.targets} duration={data!.duration} />
+          )
+        }
 
         <PageContactCta />
 

@@ -1574,11 +1574,16 @@ a.card:focus-visible {
 }
 
 /* 学校公演：演目一覧（prose の table スタイルとは独立） */
+.prose > h2 + .school-repertoire {
+  margin-top: clamp(16px, 2.5vw, 28px);
+}
+
 .school-repertoire {
   --school-targets-col: calc(3 * 4.35rem + 2 * var(--space-2) + 2 * var(--space-4) + 1px);
-  width: max-content;
+  width: 100%;
   max-width: 100%;
-  margin-top: 0.35em;
+  margin-top: 0;
+  margin-bottom: clamp(32px, 5vw, 56px);
   overflow-x: auto;
   overscroll-behavior-x: contain;
   border: 1px solid var(--line);
@@ -1589,8 +1594,13 @@ a.card:focus-visible {
 
 .school-repertoire__grid {
   display: grid;
-  width: max-content;
-  grid-template-columns: max-content max-content var(--school-targets-col) max-content;
+  width: 100%;
+  min-width: min(100%, 36rem);
+  grid-template-columns:
+    minmax(7.5rem, 1.05fr)
+    minmax(0, 2.4fr)
+    var(--school-targets-col)
+    minmax(4.5rem, max-content);
 }
 
 .school-repertoire__row {
@@ -1643,12 +1653,13 @@ a.card:focus-visible {
   white-space: nowrap;
 }
 
-.school-repertoire__cell:nth-child(2),
-.school-repertoire__cell:last-child {
-  white-space: nowrap;
+.school-repertoire__cell:nth-child(2) {
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
 
 .school-repertoire__cell:last-child {
+  white-space: nowrap;
   border-right: 0;
 }
 
@@ -1683,7 +1694,7 @@ a.card:focus-visible {
 
 @media (max-width: 900px) {
   .school-repertoire__grid {
-    min-width: 100%;
+    min-width: 36rem;
   }
 }
 
@@ -1701,77 +1712,14 @@ a.card:focus-visible {
   letter-spacing: 0.06em;
 }
 
-.school-piece__meta {
-  display: grid;
-  gap: var(--space-4);
-  margin: var(--space-6) 0;
-  padding: var(--space-4);
-  border: 2px solid var(--line);
-  border-radius: var(--radius-card);
-  background: var(--bg-alt);
-}
-
-.school-piece__meta > div {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.school-piece__meta dt {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-.school-piece__meta dd {
-  margin: 0;
-}
-
 .school-piece__header-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(16px, 3vw, 28px);
-  align-items: start;
   margin-top: clamp(12px, 2vw, 20px);
   width: 100%;
   max-width: none;
 }
 
-.school-piece__header-row > .school-piece__meta,
 .school-piece__header-row > .school-piece__synopsis-block {
   min-width: 0;
-}
-
-.school-piece__header-row > .school-piece__meta {
-  align-self: start;
-  justify-self: start;
-  width: max-content;
-  max-width: 100%;
-}
-
-@media (min-width: 960px) {
-  .school-piece__header-row {
-    grid-template-columns: minmax(280px, min(30%, 320px)) minmax(0, 1fr);
-    gap: clamp(24px, 4vw, 48px);
-  }
-}
-
-.school-piece__meta--header {
-  margin: 0;
-  padding: var(--space-3) var(--space-4) var(--space-2);
-  gap: var(--space-1);
-  align-self: start;
-  height: auto;
-  max-height: none;
-}
-
-.school-piece__meta--header > div:last-child {
-  margin-top: var(--space-4);
-  gap: 0;
-}
-
-.school-piece__meta--header > div:last-child dt {
-  margin-bottom: 2px;
 }
 
 .school-piece__synopsis-block {
@@ -1934,6 +1882,36 @@ a.card:focus-visible {
   background: var(--bg-alt);
 }
 
+.school-piece-sheet__spec dd .school-target-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  width: auto;
+  grid-template-columns: unset;
+  margin: 0;
+  justify-content: flex-start;
+}
+
+.school-piece-sheet__spec dd .school-target-pills__slot {
+  min-height: 0;
+  flex: 0 0 auto;
+}
+
+.school-piece-sheet__spec dd .school-target-pills__slot:empty {
+  display: none;
+}
+
+.school-piece-sheet__spec dd .school-target-pills__item {
+  width: auto;
+  min-width: 4.35rem;
+}
+
+.school-piece-sheet--brief {
+  margin-top: clamp(32px, 5vw, 56px);
+  margin-bottom: clamp(40px, 6vw, 72px);
+  max-width: min(100%, 28rem);
+}
+
 .school-piece-sheet__spec-note {
   display: block;
   margin-top: var(--space-1);
@@ -2007,6 +1985,24 @@ a.card:focus-visible {
   margin-top: var(--space-8);
   padding-top: var(--space-5);
   border-top: 1px solid var(--line);
+}
+
+/* 演目詳細：あらすじ直下〜パンフレットまでの余白を詰める */
+.page-header--with-body:has(.school-piece__header-row) .page-header__inner {
+  padding-bottom: clamp(8px, 1.5vw, 16px);
+}
+
+.page-header:has(.school-piece__header-row) + section.school-piece {
+  padding-top: 0;
+}
+
+.page-header:has(.school-piece__header-row) + section.school-piece .school-piece-sheet {
+  margin-top: clamp(12px, 2vw, 24px);
+  padding-top: clamp(12px, 2vw, 20px);
+}
+
+.page-header:has(.school-piece__header-row) + section.school-piece .school-piece-sheet--brief {
+  margin-top: clamp(12px, 2vw, 24px);
 }
 
 .prose img {
@@ -3196,6 +3192,74 @@ body.site-header-nav-open {
 .page-header--compact .page-header__jp {
   margin-bottom: 0;
 }
+
+.page-header--compact:has(.page-header__eyecatch) .page-header__jp {
+  margin-bottom: clamp(24px, 4.5vw, 40px);
+}
+
+.page-header__eyecatch {
+  margin: 0 0 clamp(20px, 4vw, 40px);
+  font-size: clamp(32px, 7.5vw, 72px);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.15;
+  color: var(--fg);
+  text-align: center;
+}
+
+.page-header__eyecatch p {
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.page-header__eyecatch-hira {
+  font-size: 0.88em;
+}
+
+.page-header--compact .page-header__eyecatch {
+  margin-bottom: clamp(16px, 3vw, 28px);
+}
+
+.page-header__intro-panel {
+  width: 100%;
+  margin: 0 0 clamp(16px, 3vw, 28px);
+  padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 40px);
+  background: var(--bg-alt);
+  border-radius: var(--radius-card);
+  text-align: center;
+}
+
+.page-header--intro-panel.page-header--compact .page-header__jp {
+  margin-bottom: clamp(20px, 3.5vw, 32px);
+}
+
+.page-header__intro-panel .page-header__eyecatch {
+  margin: 0 0 clamp(24px, 4vw, 40px);
+}
+
+.page-header__intro-panel .page-header__lead--intro-panel {
+  margin: 0 auto;
+  width: auto;
+  max-width: min(100%, 40rem);
+  text-align: center;
+  line-break: strict;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+.page-header__intro-panel
+  .page-header__lead--intro-panel
+  + .page-header__lead--intro-panel {
+  margin-top: 1.35em;
+}
+
+.page-header--intro-panel + .rd__body .prose > h2:first-child {
+  margin-top: clamp(18px, 2.8vw, 32px);
+}
+
 .page-header__badge {
   margin: var(--space-2) 0 0;
   align-self: flex-end;
@@ -3647,6 +3711,9 @@ a.perf-history__date--link:hover {
 .page-header--compact + .rd__body {
   padding-top: clamp(16px, 2.5vw, 28px);
 }
+.page-header--intro-panel.page-header--compact + .rd__body {
+  padding-top: clamp(6px, 1.2vw, 12px);
+}
 .rd__grid {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
@@ -3681,8 +3748,394 @@ a.perf-history__date--link:hover {
 }
 
 /* ---------- 学校演劇WS 活動実績 ---------- */
+.ws-page-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ws-page {
+  margin-bottom: clamp(32px, 5vw, 56px);
+  min-width: 0;
+}
+
+.prose .ws-page ul,
+.prose .ws-page ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose .ws-page__history-schools {
+  list-style: none;
+  padding-left: 0;
+}
+
+.ws-page > h2 {
+  margin-top: clamp(32px, 4vw, 52px);
+  margin-bottom: 0.35em;
+}
+
+.ws-page > h2:first-child {
+  margin-top: 0;
+}
+
+.ws-page__about {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  margin-top: clamp(16px, 2.5vw, 28px);
+}
+
+.ws-page__about-card {
+  min-width: 0;
+  padding: var(--space-5);
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.ws-page__about-card h3 {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(15px, 1.8vw, 17px);
+  font-weight: 800;
+  line-height: 1.55;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+
+.ws-page__about-card p {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.85;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.ws-page__flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  margin-top: clamp(16px, 2.5vw, 28px);
+  align-items: start;
+}
+
+.ws-page__flow-col {
+  min-width: 0;
+  padding: var(--space-5);
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.ws-page__flow-col--main {
+  background: var(--bg);
+}
+
+.ws-page__flow-phase {
+  margin: 0 0 var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--line);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+.ws-page__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ws-page__step {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.ws-page__step-num {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--font-en);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ws-page__step-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.ws-page__step-title--main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.ws-page__step-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.ws-page__step-text {
+  margin: var(--space-2) 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.8;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.ws-page__example {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-alt);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-card-inner);
+}
+
+.ws-page__example-label {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.ws-page__example-list {
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ws-page__example-list div {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: var(--space-2);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.ws-page__example-list dt {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.ws-page__example-list dd {
+  margin: 0;
+  font-weight: 500;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.ws-page__activities {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-5);
+}
+
+.ws-page__activity h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+}
+
+.ws-page__activity p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.85;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.ws-page__activity-note {
+  margin-top: var(--space-3) !important;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line-soft);
+  font-size: 13px !important;
+  line-height: 1.75 !important;
+}
+
+.ws-page__quotes-title {
+  margin: var(--space-5) 0 var(--space-3);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+}
+
+.ws-page__quotes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.ws-page__quote {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in srgb, var(--accent) 22%, var(--bg-alt));
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-card-inner);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.75;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.ws-page__history-lead {
+  margin: clamp(12px, 2vw, 20px) 0 clamp(16px, 2.5vw, 24px);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.8;
+}
+
+.ws-page__history-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg);
+  -webkit-overflow-scrolling: touch;
+}
+
+.ws-page__history {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(9.5rem, 1fr));
+  gap: 0;
+  width: max(100%, 56rem);
+  min-width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.ws-page__history-year {
+  min-width: 0;
+  padding: var(--space-3) var(--space-3);
+  border-right: 1px solid var(--line-soft);
+}
+
+.ws-page__history-year:last-child {
+  border-right: 0;
+}
+
+.ws-page__history-year-title {
+  margin: 0 0 var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.ws-page__history-block + .ws-page__history-block {
+  margin-top: var(--space-4);
+}
+
+.ws-page__history-sponsor {
+  margin: 0 0 var(--space-1);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.ws-page__history-program {
+  margin: 0 0 var(--space-2);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.ws-page__history-schools {
+  margin: 0;
+  padding-left: 0;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.65;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.ws-page__history-schools li + li {
+  margin-top: 0.35em;
+}
+
+@media (min-width: 1280px) {
+  .ws-page__about {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ws-page__flow {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.55fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  .ws-page__history {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-width: 0;
+  }
+
+  .ws-page__history-year:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .ws-page__history-year:nth-child(-n + 6) {
+    border-bottom: 1px solid var(--line-soft);
+  }
+}
+
+@media (max-width: 640px) {
+  .ws-page__history {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ws-page__history-year {
+    border-right: 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .ws-page__history-year:last-child {
+    border-bottom: 0;
+  }
+}
+
 .prose .ws-stats {
-  margin-top: var(--space-8);
+  margin-top: clamp(24px, 4vw, 40px);
 }
 .ws-stats__lead {
   font-size: clamp(16px, 2.1vw, 19px);

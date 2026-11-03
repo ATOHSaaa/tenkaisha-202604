@@ -10,8 +10,12 @@ interface Props {
   lead?: string;
   /** リードを複数段落で表示（lead より優先） */
   leadParagraphs?: string[];
+  /** h1 の直下（大きなキャッチコピー） */
+  eyecatch?: string;
   /** タイトルのみの詳細ページ向け（h1下の余白を詰める） */
   compact?: boolean;
+  /** アイキャッチ＋リードを白背景の角丸パネルに（学校公演トップなど） */
+  introPanel?: boolean;
   /** 旧API互換のため受け取るが、表示には使わない */
   en?: string;
   /** @deprecated badges を使用 */
@@ -28,7 +32,9 @@ const {
   supertitle,
   lead,
   leadParagraphs,
+  eyecatch,
   compact = false,
+  introPanel = false,
   badge,
   badgeVariant,
   badges: badgesProp,
@@ -37,13 +43,23 @@ const {
 const badgeList =
   badgesProp ?? (badge ? [{ badge, badgeVariant }] : []);
 const hasBody = Astro.slots.has('default');
+const hasEyecatchSlot = Astro.slots.has('eyecatch');
+const hasEyecatch = hasEyecatchSlot || Boolean(eyecatch);
+const useIntroPanel = introPanel && hasEyecatch;
 const hasBadges = badgeList.length > 0;
+
+/** パネル内リード：句読点の直後のみ折り返し可。「・」では折り返さない */
+function leadWithPunctuationBreaks(text: string): string {
+  const gluedNakaguro = text.replace(/・/g, '\u2060・\u2060');
+  return gluedNakaguro.replace(/([。、])/g, '$1\u200b');
+}
 ---
 
 <section
   class:list={[
     'page-header',
     compact && 'page-header--compact',
+    useIntroPanel && 'page-header--intro-panel',
     hasBody && 'page-header--with-body',
     hasBadges && badgeAlignCover && 'page-header--cover-align',
   ]}
@@ -51,6 +67,35 @@ const hasBadges = badgeList.length > 0;
   <div class="container page-header__inner">
     {supertitle && <p class="page-header__supertitle">{supertitle}</p>}
     <h1 class="page-header__jp heading-section">{jp}</h1>
+    {
+      useIntroPanel ? (
+        <div class="page-header__intro-panel">
+          {hasEyecatchSlot ? (
+            <div class="page-header__eyecatch">
+              <slot name="eyecatch" />
+            </div>
+          ) : (
+            <p class="page-header__eyecatch">{eyecatch}</p>
+          )}
+          {leadParagraphs?.map((paragraph) => (
+            <p class="page-header__lead page-header__lead--intro-panel">
+              {leadWithPunctuationBreaks(paragraph)}
+            </p>
+          ))}
+          {!leadParagraphs?.length && lead && (
+            <p class="page-header__lead page-header__lead--intro-panel">
+              {leadWithPunctuationBreaks(lead)}
+            </p>
+          )}
+        </div>
+      ) : hasEyecatchSlot ? (
+        <div class="page-header__eyecatch">
+          <slot name="eyecatch" />
+        </div>
+      ) : eyecatch ? (
+        <p class="page-header__eyecatch">{eyecatch}</p>
+      ) : null
+    }
     {
       hasBadges &&
         (badgeAlignCover ? (
@@ -80,11 +125,14 @@ const hasBadges = badgeList.length > 0;
         ))
     }
     {
-      leadParagraphs?.map((paragraph) => (
-        <p class="page-header__lead">{paragraph}</p>
-      ))
+      !useIntroPanel &&
+        leadParagraphs?.map((paragraph) => (
+          <p class="page-header__lead">{paragraph}</p>
+        ))
     }
-    {!leadParagraphs?.length && lead && <p class="page-header__lead">{lead}</p>}
+    {!useIntroPanel && !leadParagraphs?.length && lead && (
+      <p class="page-header__lead">{lead}</p>
+    )}
     {
       hasBody && (
         <div class="page-header__body">

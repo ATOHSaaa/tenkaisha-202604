@@ -1,0 +1,27 @@
+---
+import type { SchoolTargetLevel } from '../utils/school-content';
+import SchoolTargetPills from './SchoolTargetPills.astro';
+
+interface Props {
+  targets: SchoolTargetLevel[];
+  duration: string;
+}
+
+const { targets, duration } = Astro.props;
+---
+
+<section class="school-piece-sheet school-piece-sheet--brief" aria-label="公演条件">
+  <div class="school-piece-sheet__block">
+    <h2 class="school-piece-sheet__label school-piece-sheet__label--sr">公演条件</h2>
+    <dl class="school-piece-sheet__spec">
+      <div class="school-piece-sheet__spec-row">
+        <dt>対象</dt>
+        <dd><SchoolTargetPills targets={targets} /></dd>
+      </div>
+      <div class="school-piece-sheet__spec-row">
+        <dt>公演時間</dt>
+        <dd>{duration}</dd>
+      </div>
+    </dl>
+  </div>
+</section>

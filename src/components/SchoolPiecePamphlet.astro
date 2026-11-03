@@ -1,12 +1,14 @@
 ---
-import type { ResolvedSchoolPamphlet } from '../utils/school-content';
+import type { ResolvedSchoolPamphlet, SchoolTargetLevel } from '../utils/school-content';
 import SchoolPieceCreditList from './SchoolPieceCreditList.astro';
+import SchoolTargetPills from './SchoolTargetPills.astro';
 
 interface Props {
   pamphlet: ResolvedSchoolPamphlet;
+  targets: SchoolTargetLevel[];
 }
 
-const { pamphlet } = Astro.props;
+const { pamphlet, targets } = Astro.props;
 ---
 
 <section class="school-piece-sheet" aria-label="公演概要">
@@ -43,6 +45,10 @@ const { pamphlet } = Astro.props;
       <section class="school-piece-sheet__block">
         <h2 class="school-piece-sheet__label school-piece-sheet__label--sr">公演条件</h2>
         <dl class="school-piece-sheet__spec">
+          <div class="school-piece-sheet__spec-row">
+            <dt>対象</dt>
+            <dd><SchoolTargetPills targets={targets} /></dd>
+          </div>
           {
             pamphlet.spec.map((row) => (
               <div class="school-piece-sheet__spec-row">
