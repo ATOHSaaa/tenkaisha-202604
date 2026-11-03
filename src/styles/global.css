@@ -1693,7 +1693,7 @@ a.card:focus-visible {
   font-weight: 800;
   font-feature-settings: "palt" 1;
   letter-spacing: 0.04em;
-  line-height: 1.15;
+  line-height: 1.4;
   margin-top: 0;
   text-decoration: underline;
   text-underline-offset: 0.12em;
@@ -8178,6 +8178,20 @@ a.perf-history__date--link {
   display: block;
   max-width: 100%;
   height: auto;
+  margin-inline: auto;
+  border: none;
+}
+
+.news-detail .news-detail__prose p:has(> img:only-child) {
+  margin-block: clamp(32px, 4.5vw, 56px);
+}
+
+.news-detail .news-detail__prose > :first-child :is(img, picture) {
+  max-width: min(68%, 440px);
+}
+
+.news-detail .news-detail__prose p:has(> img:only-child) + * {
+  margin-top: 2.5em;
 }
 
 .news-detail__actions {
@@ -8355,6 +8369,7 @@ a.perf-history__date--link {
   font-weight: 800;
   font-feature-settings: "palt" 1;
   letter-spacing: 0.05em;
+  line-height: 1.4;
   text-decoration: underline;
   text-underline-offset: 0.15em;
 }
