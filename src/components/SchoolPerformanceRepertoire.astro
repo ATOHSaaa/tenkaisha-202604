@@ -9,9 +9,9 @@ import SchoolTargetPills from './SchoolTargetPills.astro';
 const entries = await getSchoolEntries();
 ---
 
-<h2>演目一覧</h2>
+<h2 id="school-repertoire-heading">演目一覧</h2>
 
-<div class="school-repertoire">
+<div class="school-repertoire" aria-labelledby="school-repertoire-heading">
   <div class="school-repertoire__grid">
     <div class="school-repertoire__row school-repertoire__head">
       <div class="school-repertoire__cell">演目</div>
@@ -46,3 +46,10 @@ const entries = await getSchoolEntries();
     }
   </div>
 </div>
+
+<script>
+  import { initSchoolRepertoireEnter } from '../scripts/school-repertoire-enter';
+
+  initSchoolRepertoireEnter();
+  document.addEventListener('astro:page-load', initSchoolRepertoireEnter);
+</script>

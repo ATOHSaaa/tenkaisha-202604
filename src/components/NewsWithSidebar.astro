@@ -9,43 +9,19 @@ interface Props {
 const { alignSidebarWithBody = false } = Astro.props;
 ---
 
-<div class:list={['news-layout', alignSidebarWithBody && 'news-layout--detail']}>
-  {
-    alignSidebarWithBody ? (
-      <>
-        <slot name="header" />
-        <slot name="body" />
-        <div
-          class="news-layout__side news-sidebar-root"
-          data-news-sidebar-root
-          aria-busy="true"
-        />
-        <div class="news-layout__after">
-          <slot name="after" />
-        </div>
-      </>
-    ) : (
-      <>
-        <div class="news-layout__main">
-          <slot />
-        </div>
-        <div
-          class="news-layout__side news-sidebar-root"
-          data-news-sidebar-root
-          aria-busy="true"
-        />
-      </>
-    )
-  }
-</div>
-
-<template data-news-sidebar>
-  <CurrentEventsSidebar />
-</template>
-
-<script>
-  import { initNewsSidebarDeferred } from '../scripts/news-sidebar-deferred';
-
-  initNewsSidebarDeferred();
-  document.addEventListener('astro:page-load', initNewsSidebarDeferred);
-</script>
+{
+  alignSidebarWithBody ? (
+    <div class="news-layout news-layout--detail">
+      <slot name="header" />
+      <slot name="body" />
+      <CurrentEventsSidebar />
+    </div>
+  ) : (
+    <div class="news-layout">
+      <div class="news-layout__main">
+        <slot />
+      </div>
+      <CurrentEventsSidebar />
+    </div>
+  )
+}

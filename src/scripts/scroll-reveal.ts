@@ -73,6 +73,7 @@ function collectRevealTargets(main: HTMLElement): Element[] {
   });
 
   main.querySelectorAll('h2:not([data-scroll-reveal])').forEach((el) => {
+    if (el.id === 'school-repertoire-heading') return;
     if (el.closest('.footer-links__block')) return;
     if (el.closest('.section--home-activities')) return;
     if (el.closest('.section--classes')) return;

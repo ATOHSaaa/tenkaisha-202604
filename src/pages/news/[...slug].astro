@@ -39,23 +39,25 @@ const fmtDate = (d: Date) =>
   ) : (
     <Base title={entry.data.title} description={entry.data.title}>
       <article class="news-detail">
-        <div class="container">
-          <NewsWithSidebar alignSidebarWithBody>
-            <header slot="header" class="news-detail__header news-detail__column">
-              <p class="news-detail__meta">
-                <time class="news-detail__date" datetime={entry.data.date.toISOString()}>
-                  {fmtDate(entry.data.date)}
-                </time>
-              </p>
-              <h1 class="news-detail__title heading-section">{entry.data.title}</h1>
-            </header>
-            <div slot="body" class="news-detail__frame news-detail__column">
-              <div class="prose news-detail__prose">
-                {Content && <Content />}
+        <section class="news">
+          <div class="container">
+            <NewsWithSidebar alignSidebarWithBody>
+              <header slot="header" class="news-detail__header">
+                <h1 class="news-detail__title heading-section">{entry.data.title}</h1>
+                <p class="news-detail__meta">
+                  <time class="news-detail__date" datetime={entry.data.date.toISOString()}>
+                    {fmtDate(entry.data.date)}
+                  </time>
+                </p>
+              </header>
+              <div slot="body" class="news-detail__frame news-detail__column">
+                <div class="prose news-detail__prose">
+                  {Content && <Content />}
+                </div>
               </div>
-            </div>
-          </NewsWithSidebar>
-        </div>
+            </NewsWithSidebar>
+          </div>
+        </section>
       </article>
     </Base>
   )

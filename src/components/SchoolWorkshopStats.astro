@@ -14,21 +14,16 @@ import {
   <dl class="ws-stats__highlights">
     <div>
       <dt>累計実施</dt>
-      <dd>
-        <span class="ws-stats__num">{schoolWorkshopSummary.totalSessions}</span>件
+      <dd class="ws-stats__value">
+        <span class="ws-stats__num">{schoolWorkshopSummary.totalSessions}</span>
+        <span class="ws-stats__unit">件</span>
       </dd>
     </div>
     <div>
       <dt>携わった学校</dt>
-      <dd>
-        <span class="ws-stats__num">{schoolWorkshopSummary.uniqueSchools}</span>校
-      </dd>
-    </div>
-    <div>
-      <dt>最多実施</dt>
-      <dd>
-        {schoolWorkshopSummary.peakYear}年度
-        <span class="ws-stats__num">{schoolWorkshopSummary.peakSessions}</span>件
+      <dd class="ws-stats__value">
+        <span class="ws-stats__num">{schoolWorkshopSummary.uniqueSchools}</span>
+        <span class="ws-stats__unit">校</span>
       </dd>
     </div>
   </dl>
