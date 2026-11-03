@@ -87,7 +87,7 @@ const news = defineCollection({
 
 /** 開講クラス（content/classes） */
 const classes = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/classes" }),
+  loader: glob({ pattern: "**/*.{md,yaml,yml}", base: "./src/content/classes" }),
   schema: z.object({
     title: z.string(),
     english: z.string(),

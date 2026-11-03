@@ -1597,8 +1597,8 @@ a.card:focus-visible {
   width: 100%;
   min-width: min(100%, 36rem);
   grid-template-columns:
-    minmax(7.5rem, 1.05fr)
-    minmax(0, 2.4fr)
+    minmax(11.5rem, 2.1fr)
+    minmax(6.5rem, 1fr)
     var(--school-targets-col)
     minmax(4.5rem, max-content);
 }

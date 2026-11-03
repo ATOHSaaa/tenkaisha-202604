@@ -1,4 +1,3 @@
----
 title: ジュニアクラス活動実績
 english: JUNIOR RECORDS
 summary: 内部用追記
@@ -89,7 +88,7 @@ mediaAppearances:
     program: 「Do You のうぎょう？合唱団」レギュラー出演
     outlet: KAB熊本朝日放送
   - period: "—"
-    program: 宇城市「"三角西港"でくまモンとかくれんぼ」出演
+    program: 宇城市「"三角西港"でくまもんとかくれんぼ」出演
     outlet: YouTubeで見る
   - period: "—"
     program: KKT開局40周年特別番組「いつまでも、野球少年」～熊本が生んだ三冠王・村上宗隆～（小学生時代の村上選手役）
@@ -97,6 +96,3 @@ mediaAppearances:
   - period: "—"
     program: 熊本県「おやこでまなぶ・みんなで学ぼう認知症」動画で学ぼう認知症 出演
     outlet: 熊本県公式動画
----
-
-<!-- 表は activityRecords / mediaAppearances から自動生成（sortKey の新しい順） -->
