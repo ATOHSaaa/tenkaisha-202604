@@ -1,0 +1,56 @@
+---
+import { withBase } from '../utils/path';
+
+interface Props {
+  href: string;
+  title: string;
+  body: string;
+}
+
+const { href, title, body } = Astro.props;
+const marqueeText = body ? `${title} / ${body}` : title;
+const separator = '　　';
+---
+
+<div class="home-news-marquee-wrap">
+  <div class="home-news-marquee__label-row">
+    <p class="home-news-marquee__label" lang="en">
+      info
+    </p>
+    <span class="home-news-marquee__label-line" aria-hidden="true"></span>
+  </div>
+  <a class="home-news-marquee" href={withBase(href)}>
+    <div class="home-news-marquee__viewport">
+      <div class="home-news-marquee__track">
+        {
+          [0, 1].map((copy) => (
+            <span
+              class="home-news-marquee__run"
+              aria-hidden={copy === 1 ? true : undefined}
+            >
+              <span class="home-news-marquee__chunk">
+                <span class="home-news-marquee__title">{title}</span>
+                {body ? ` / ${body}` : ''}
+                {separator}
+              </span>
+              <span class="home-news-marquee__chunk">
+                <span class="home-news-marquee__title">{title}</span>
+                {body ? ` / ${body}` : ''}
+                {separator}
+              </span>
+            </span>
+          ))
+        }
+      </div>
+    </div>
+    <span class="sr-only">{marqueeText}</span>
+  </a>
+  <span class="home-news-marquee__rule" aria-hidden="true"></span>
+</div>
+
+<script>
+  import { initHomeNewsMarquee } from '../scripts/home-news-marquee';
+
+  initHomeNewsMarquee();
+  document.addEventListener('astro:page-load', initHomeNewsMarquee);
+</script>

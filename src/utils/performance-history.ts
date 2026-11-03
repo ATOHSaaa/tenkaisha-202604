@@ -213,11 +213,25 @@ export function pastPerformanceHistoryItems(
   });
 }
 
-/** 履歴から次回公演日（今日以降の最早日） */
-export function resolveNextPerformanceDate(input: {
-  performanceHistory?: PerformanceHistoryItem[];
-}): Date | undefined {
-  return upcomingPerformanceDatesFromHistory(input.performanceHistory)[0];
+/** performanceHistory の並びで、最初の未来公演（詳細ページの履歴と同じソース） */
+export function resolveNextPerformanceHistoryItem(
+  items: PerformanceHistoryItem[] | undefined,
+  todayKey = calendarDayKeyInJST(),
+): PerformanceHistoryItem | undefined {
+  for (const item of items ?? []) {
+    const key = performanceHistoryDayKey(item);
+    if (key !== null && key >= todayKey) return item;
+  }
+  return undefined;
+}
+
+/** 履歴から次回公演日（並び順で最初の未来日） */
+export function resolveNextPerformanceDate(
+  input: { performanceHistory?: PerformanceHistoryItem[] },
+  todayKey = calendarDayKeyInJST(),
+): Date | undefined {
+  const item = resolveNextPerformanceHistoryItem(input.performanceHistory, todayKey);
+  return normalizePerformanceHistoryEntry(item)?.date;
 }
 
 /** スケジュール上の最終日（履歴の最大日） */

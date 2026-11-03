@@ -1,5 +1,6 @@
 ---
 import { withBase } from '../utils/path';
+import { isRecentNewsDate } from '../utils/news';
 
 interface NewsItem {
   date: Date;
@@ -9,9 +10,12 @@ interface NewsItem {
 
 interface Props {
   items: NewsItem[];
+  /** トップなど：掲載日が7日以内の項目に NEW を表示 */
+  showNewLabel?: boolean;
+  newWithinDays?: number;
 }
 
-const { items } = Astro.props;
+const { items, showNewLabel = false, newWithinDays = 7 } = Astro.props;
 
 const fmt = (d: Date) => {
   const y = d.getFullYear();
@@ -27,18 +31,28 @@ const fmt = (d: Date) => {
   ) : (
     <ul class="news-list">
       {
-        items.map((item) => (
+        items.map((item) => {
+          const isNew = showNewLabel && isRecentNewsDate(item.date, newWithinDays);
+          return (
           <li class="news-list__item">
             <a class="news-list__link" href={withBase(item.href)}>
-              <time class="news-list__date" datetime={item.date.toISOString()}>
-                {fmt(item.date)}
-              </time>
               <div class="news-list__headline">
-                <span class="news-list__title">{item.title}</span>
+                <time class="news-list__date" datetime={item.date.toISOString()}>
+                  {fmt(item.date)}
+                </time>
+                <div class="news-list__title-row">
+                  <span class="news-list__title">{item.title}</span>
+                  {isNew ? (
+                    <span class="news-list__new" lang="en">
+                      NEW
+                    </span>
+                  ) : null}
+                </div>
               </div>
             </a>
           </li>
-        ))
+          );
+        })
       }
     </ul>
   )

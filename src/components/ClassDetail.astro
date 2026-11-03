@@ -3,7 +3,16 @@ import type { ClassEntry } from '../utils/classes-content';
 import { getClassAppendEntries } from '../utils/classes-content';
 import { render } from 'astro:content';
 import ClassInstructors from './ClassInstructors.astro';
+import ClassAppendRecords from './ClassAppendRecords.astro';
+import PageHeader from './PageHeader.astro';
 import { withBase } from '../utils/path';
+
+function appendUsesRecordTables(entry: ClassEntry) {
+  return (
+    (entry.data.activityRecords?.length ?? 0) > 0 ||
+    (entry.data.mediaAppearances?.length ?? 0) > 0
+  );
+}
 
 interface Props {
   entry: ClassEntry;
@@ -15,27 +24,23 @@ const instructors = c.instructors ?? [];
 const appendEntries = await getClassAppendEntries(entry.id);
 const appendBlocks = await Promise.all(
   appendEntries.map(async (appendEntry) => {
+    if (appendUsesRecordTables(appendEntry)) {
+      return { kind: 'records' as const, entry: appendEntry };
+    }
     const { Content } = await render(appendEntry);
-    return Content;
+    return { kind: 'md' as const, Content };
   }),
 );
 const { Content } = await render(entry);
 const coverSrc = c.image ? withBase(c.image) : undefined;
 ---
 
+<PageHeader jp={c.title} />
 <section class="cd__body container">
-  <h1 class="cd__title">{c.title}</h1>
   <div class="cd__grid">
     <div class="prose cd__prose">
       <Content />
       {instructors.length > 0 && <ClassInstructors instructors={instructors} />}
-      {
-        appendBlocks.map((AppendContent) => (
-          <div class="cd__append">
-            <AppendContent />
-          </div>
-        ))
-      }
     </div>
 
     <aside class="cd__side">
@@ -56,6 +61,29 @@ const coverSrc = c.image ? withBase(c.image) : undefined;
       <a class="btn btn--pill" href={withBase('/contact/')}>体験参加を申し込む <span class="btn__arrow">→</span></a>
     </aside>
   </div>
+
+  {
+    appendBlocks.length > 0 ? (
+      <div class="cd__below prose">
+        {
+          appendBlocks.map((block) => (
+            <div class="cd__append">
+              {
+                block.kind === 'records' ? (
+                  <ClassAppendRecords
+                    activityRecords={block.entry.data.activityRecords}
+                    mediaAppearances={block.entry.data.mediaAppearances}
+                  />
+                ) : (
+                  <block.Content />
+                )
+              }
+            </div>
+          ))
+        }
+      </div>
+    ) : null
+  }
 
   <div class="cd__back">
     <a class="link-arrow" href={withBase('/classes/')}>← 開講クラスへ戻る</a>

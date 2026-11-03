@@ -111,6 +111,28 @@ const classes = defineCollection({
     showOnHome: z.boolean().default(true),
     /** 一覧の並び（昇順） */
     order: z.number().default(0),
+    activityRecords: z
+      .array(
+        z.object({
+          sortKey: z.string().regex(/^\d{4}-\d{2}$/),
+          event: z.string(),
+          venue: z.string(),
+        }),
+      )
+      .optional(),
+    mediaAppearances: z
+      .array(
+        z.object({
+          sortKey: z
+            .string()
+            .regex(/^\d{4}(-\d{2}){0,2}$/)
+            .optional(),
+          period: z.string(),
+          program: z.string(),
+          outlet: z.string(),
+        }),
+      )
+      .optional(),
   }),
 });
 

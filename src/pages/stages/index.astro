@@ -11,6 +11,7 @@ import {
   groupArchiveEntriesByYear,
   parseBadgeFilter,
   partitionEventList,
+  summarizeArchiveYearGroups,
 } from '../../utils/event-content';
 
 const allStages = await getCollection('stages');
@@ -27,6 +28,7 @@ const showEmptyFilter = badgeFilter && !hasCurrent && !hasArchive;
 const isMainList = !badgeFilter;
 const archiveYearGroups = isMainList ? groupArchiveEntriesByYear(all) : [];
 const hasArchiveYears = archiveYearGroups.length > 0;
+const archiveSummary = summarizeArchiveYearGroups(archiveYearGroups);
 ---
 
 <Base
@@ -113,12 +115,20 @@ const hasArchiveYears = archiveYearGroups.length > 0;
                   {
                     hasArchiveYears && (
                       <>
-                        <h2 class="section-title">これまで</h2>
+                        <h2 class="section-title events-archive__section-title">
+                          <span class="events-archive__heading-label">これまで</span>
+                          <span class="events-archive__year-stats">
+                            <span class="events-archive__year-stat-num">{archiveSummary.worksCount}</span>
+                            Works /
+                            <span class="events-archive__year-stat-num">{archiveSummary.stagesCount}</span>
+                            Stages
+                          </span>
+                        </h2>
                         <div class="events-archive">
                           {archiveYearGroups.map((group) => (
                             <div class="events-archive__year">
                               <h3 class="events-archive__year-title">
-                                <span class="events-archive__year-label">{group.year}年</span>
+                                <span class="events-archive__heading-label">{group.year}年</span>
                                 <span class="events-archive__year-stats">
                                   <span class="events-archive__year-stat-num">{group.worksCount}</span>Works /
                                   <span class="events-archive__year-stat-num">{group.stagesCount}</span>Stages

@@ -7,7 +7,8 @@ const { currentPerformances, currentEvents } = partitionEventList(await getColle
 const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
 ---
 
-<aside class="news-layout__side news-sidebar" aria-label="公演・イベント">
+<aside class="news-layout__side news-sidebar" aria-labelledby="news-sidebar-heading">
+  <h2 id="news-sidebar-heading" class="news-sidebar__heading">公演情報</h2>
   {
     !hasCurrent ? (
       <p class="news-sidebar__empty">現在、公演・イベントの情報はありません。</p>

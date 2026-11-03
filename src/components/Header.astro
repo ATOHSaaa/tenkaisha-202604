@@ -1,9 +1,10 @@
 ---
-import { siteHeaderNav } from '../data/site-nav';
-import { withBase } from '../utils/path';
+import { siteHeaderNav, isSiteNavCurrent } from '../data/site-nav';
+import { withBase, stripBasePath } from '../utils/path';
 import { THEME_USER_CHOICE_ENABLED } from '../scripts/theme';
 
 const navId = 'site-header-nav';
+const currentPath = stripBasePath(Astro.url.pathname);
 ---
 
 <div class="site-header-root">
@@ -62,13 +63,21 @@ const navId = 'site-header-nav';
           ) : null
         }
         {
-          siteHeaderNav.map((item) => (
+          siteHeaderNav.map((item) => {
+            const isCurrent = isSiteNavCurrent(currentPath, item.href);
+            return (
             <li class="site-header__nav-item">
-              <a class="site-header__link" href={withBase(item.href)}>
+              <a
+                class:list={['site-header__link', isCurrent && 'site-header__link--current']}
+                href={withBase(item.href)}
+                data-nav-href={item.href}
+                aria-current={isCurrent ? 'page' : undefined}
+              >
                 {item.label}
               </a>
             </li>
-          ))
+            );
+          })
         }
       </ul>
     </nav>
@@ -85,6 +94,27 @@ const navId = 'site-header-nav';
 </div>
 
 <script>
+  import { isSiteNavCurrent } from '../data/site-nav';
+  import { stripBasePath } from '../utils/path';
+
+  let snapNavIndicatorToCurrent: (() => void) | null = null;
+
+  function syncSiteHeaderNavCurrent(): void {
+    const nav = document.getElementById('site-header-nav');
+    if (!nav) return;
+    const path = stripBasePath(window.location.pathname);
+    nav.querySelectorAll<HTMLAnchorElement>('.site-header__link[data-nav-href]').forEach((link) => {
+      const href = link.dataset.navHref ?? '';
+      const isCurrent = isSiteNavCurrent(path, href);
+      link.classList.toggle('site-header__link--current', isCurrent);
+      if (isCurrent) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  }
+
   function setupSiteHeaderMenu() {
     const root = document.querySelector('.site-header-root');
     const toggle = document.querySelector('[data-site-header-toggle]');
@@ -146,8 +176,15 @@ const navId = 'site-header-nav';
     const nav = document.getElementById('site-header-nav');
     const list = nav?.querySelector('.site-header__nav-list');
     const indicator = nav?.querySelector('.site-header__nav-indicator');
-    if (!nav || !list || !indicator || !(indicator instanceof HTMLElement) || nav.hasAttribute('data-indicator-bound'))
+    if (!nav || !list || !indicator || !(indicator instanceof HTMLElement)) return;
+
+    const getCurrentLink = (): HTMLAnchorElement | null =>
+      list.querySelector<HTMLAnchorElement>('.site-header__link[aria-current="page"]');
+
+    if (nav.hasAttribute('data-indicator-bound')) {
+      snapNavIndicatorToCurrent?.();
       return;
+    }
     nav.setAttribute('data-indicator-bound', '');
 
     const desktopMq = window.matchMedia('(min-width: 901px)');
@@ -173,16 +210,29 @@ const navId = 'site-header-nav';
       requestAnimationFrame(() => indicator.classList.remove('is-instant'));
     };
 
+    const restoreCurrentOrHide = (): void => {
+      if (!desktopMq.matches) {
+        hideNow();
+        return;
+      }
+      const current = getCurrentLink();
+      if (current) {
+        moveTo(current, false);
+        return;
+      }
+      hideNow();
+    };
+
     const scheduleHide = (): void => {
       cancelScheduledHide();
       if (reducedMotion.matches) {
-        hideNow();
+        restoreCurrentOrHide();
         return;
       }
       hideTimer = setTimeout(() => {
         hideTimer = null;
         if (list.querySelector('.site-header__link:hover')) return;
-        hideNow();
+        restoreCurrentOrHide();
       }, hideDelayMs);
     };
 
@@ -239,11 +289,34 @@ const navId = 'site-header-nav';
         hideNow();
         return;
       }
-      if (activeLink) moveTo(activeLink, true);
+      const hovered = list.querySelector<HTMLAnchorElement>('.site-header__link:hover');
+      if (hovered) {
+        moveTo(hovered, true);
+        return;
+      }
+      if (activeLink) {
+        moveTo(activeLink, true);
+        return;
+      }
+      restoreCurrentOrHide();
+    };
+
+    snapNavIndicatorToCurrent = (): void => {
+      if (!desktopMq.matches) return;
+      const hovered = list.querySelector<HTMLAnchorElement>('.site-header__link:hover');
+      if (hovered) {
+        moveTo(hovered, true);
+        return;
+      }
+      const current = getCurrentLink();
+      if (current) moveTo(current, true);
+      else hideNow();
     };
 
     window.addEventListener('resize', onLayoutChange);
     desktopMq.addEventListener('change', onLayoutChange);
+
+    snapNavIndicatorToCurrent();
   }
 
   function setupSiteHeaderScrollProgress() {
@@ -277,10 +350,12 @@ const navId = 'site-header-nav';
   }
 
   setupSiteHeaderMenu();
+  syncSiteHeaderNavCurrent();
   setupSiteHeaderNavIndicator();
   setupSiteHeaderScrollProgress();
   document.addEventListener('astro:page-load', () => {
     setupSiteHeaderMenu();
+    syncSiteHeaderNavCurrent();
     setupSiteHeaderNavIndicator();
     setupSiteHeaderScrollProgress();
   });

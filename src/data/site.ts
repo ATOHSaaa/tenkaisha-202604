@@ -207,7 +207,8 @@ export const homeActivities: HomeActivity[] = [
       '企業・自治体・学校向けに、演劇ワークショップや教職員研修など、講師・ファシリテーターの派遣を承ります。',
     href: '/for-organizations/',
     linkLabel: '法人の方向け',
-    image: '/images/mocks/request-workshop.svg',
+    image: '/images/education/school-performance.png',
+    imageFocus: 'top',
   },
 ];
 

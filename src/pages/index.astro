@@ -2,10 +2,11 @@
 import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
 import NewsList from '../components/NewsList.astro';
+import HomeNewsMarquee from '../components/HomeNewsMarquee.astro';
 import Card from '../components/Card.astro';
 import BannerLink from '../components/BannerLink.astro';
 import StudioMapLink from '../components/StudioMapLink.astro';
-import { getPublishedNews } from '../utils/news';
+import { getHomeNews, getLatestNewsMarquee } from '../utils/news';
 import { getCollection } from 'astro:content';
 import { studios, homeBanners, corporateBanner, friendsIntro, homeActivities } from '../data/site';
 import HomeActivityCard from '../components/HomeActivityCard.astro';
@@ -16,20 +17,25 @@ import {
   partitionEventList,
   scheduleFromData,
 } from '../utils/event-content';
-import { compareEntriesUpcoming, resolveNextPerformanceDate } from '../utils/schedule';
-import { fmtDate } from '../utils/dates';
+import { compareEntriesUpcoming } from '../utils/schedule';
+import {
+  formatPerformanceHistoryDateLabel,
+  resolveNextPerformanceHistoryItem,
+} from '../utils/performance-history';
 import { withBase } from '../utils/path';
 import HomeHero from '../components/HomeHero.astro';
+import HomeSideMarquees from '../components/HomeSideMarquees.astro';
 import BadgeMoreLink from '../components/BadgeMoreLink.astro';
 
-// お知らせを日付降順ですべて取得
-const news = await getPublishedNews();
+// トップのおしらせ（最大5件）
+const news = await getHomeNews();
+const latestNewsMarquee = await getLatestNewsMarquee();
 
 const { currentPerformances, currentEvents } = partitionEventList(await getCollection('stages'));
 const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
-const homeStageCount = currentPerformances.length + currentEvents.length;
+const stageCards = [...currentPerformances, ...currentEvents];
 /** 3列グリッドの最終行に空きがあるとき More をセル内に置く（デスクトップ） */
-const stagesMoreInlineDesktop = homeStageCount > 0 && homeStageCount % 3 !== 0;
+const stagesMoreInlineDesktop = stageCards.length > 0 && stageCards.length % 3 !== 0;
 const homeClasses = await getHomeClassEntries();
 
 const heroMarqueeItems = currentPerformances
@@ -37,11 +43,13 @@ const heroMarqueeItems = currentPerformances
     compareEntriesUpcoming(scheduleFromData(a.data), scheduleFromData(b.data)),
   )
   .map((entry) => {
-    const next = resolveNextPerformanceDate(scheduleFromData(entry.data));
+    const nextItem = resolveNextPerformanceHistoryItem(entry.data.performanceHistory);
     return {
       href: `/stages/${entry.id}/`,
       title: entry.data.title,
-      dateLabel: next ? fmtDate(next) : '',
+      dateLabel: nextItem
+        ? formatPerformanceHistoryDateLabel(nextItem, { includeTime: true })
+        : '',
     };
   });
 
@@ -49,52 +57,53 @@ const heroMarqueeItems = currentPerformances
 
 <Base scrollReveal>
   <div class="home">
+  <HomeSideMarquees />
+  <div class="home-main-guide">
   <HomeHero marqueeItems={heroMarqueeItems} />
   {/* 公演・イベント */}
   <section class="section section--first">
     <div class="container">
-      <SectionHead jp="公演・イベント" />
-
-      <div class="subsection">
-        {
-          !hasCurrent ? (
-            <p class="empty">現在、公演・イベントの情報はありません。</p>
-          ) : (
-            <div class="grid-events grid-long-run">
-              {currentPerformances.map((p) => (
-                <Card
-                  href={`/stages/${p.id}/`}
-                  image={p.data.cover}
-                  title={p.data.title}
-                  {...eventEntryCardProps(p.data)}
-                />
-              ))}
-              {currentEvents.map((e) => (
-                <Card
-                  href={`/stages/${e.id}/`}
-                  image={e.data.cover}
-                  title={e.data.title}
-                  {...eventEntryCardProps(e.data)}
-                />
-              ))}
+      {
+        !hasCurrent ? (
+          <>
+            <SectionHead jp="公演・イベント" />
+            <div class="subsection">
+              <p class="empty">現在、公演・イベントの情報はありません。</p>
+            </div>
+          </>
+        ) : (
+          <div class="home-stages">
+            <div class="home-stages__legend">
+              <SectionHead jp="公演・イベント" />
+            </div>
+            <div class="home-stages__frame">
+              <div class="grid-events grid-long-run">
+                {stageCards.map((entry) => (
+                  <Card
+                    href={`/stages/${entry.id}/`}
+                    image={entry.data.cover}
+                    title={entry.data.title}
+                    {...eventEntryCardProps(entry.data)}
+                  />
+                ))}
+                {
+                  stagesMoreInlineDesktop ? (
+                    <div class="grid-events__more grid-events__more--in-grid">
+                      <BadgeMoreLink href="/stages/" label="過去の公演・イベント →" />
+                    </div>
+                  ) : null
+                }
+              </div>
               {
-                stagesMoreInlineDesktop ? (
-                  <div class="grid-events__more grid-events__more--in-grid">
+                !stagesMoreInlineDesktop ? (
+                  <div class="section__actions">
                     <BadgeMoreLink href="/stages/" label="過去の公演・イベント →" />
                   </div>
                 ) : null
               }
             </div>
-          )
-        }
-      </div>
-
-      {
-        hasCurrent && !stagesMoreInlineDesktop ? (
-          <div class="section__actions section__actions--news">
-            <BadgeMoreLink href="/stages/" label="過去の公演・イベント →" />
           </div>
-        ) : null
+        )
       }
     </div>
   </section>
@@ -102,25 +111,44 @@ const heroMarqueeItems = currentPerformances
   {/* おしらせ */}
   <section class="section section--home-news">
     <div class="container">
-      <SectionHead jp="おしらせ" />
-      <NewsList
-        items={news.map((n) => ({
-          date: n.date,
-          title: n.title,
-          href: n.href,
-        }))}
-      />
-      <div class="section__actions section__actions--news">
-        <BadgeMoreLink href="/news/" />
+      <div class="home-news">
+        <header class="home-news__head">
+          <h2 class="home-news__title heading-section">おしらせ</h2>
+        </header>
+        <div class="home-news__main">
+          {
+            latestNewsMarquee ? (
+              <HomeNewsMarquee
+                href={latestNewsMarquee.href}
+                title={latestNewsMarquee.title}
+                body={latestNewsMarquee.body}
+              />
+            ) : null
+          }
+          <NewsList
+            showNewLabel
+            items={news.map((n) => ({
+              date: n.date,
+              title: n.title,
+              href: n.href,
+            }))}
+          />
+          <div class="section__actions section__actions--news">
+            <BadgeMoreLink href="/news/" />
+          </div>
+        </div>
       </div>
     </div>
   </section>
+  </div>
 
   {/* 転回社の活動 */}
-  <section class="section section--home-activities">
+  <section class="section section--home-activities scroll-reveal-bg">
     <div class="container">
       <SectionHead
         jp="転回社の活動"
+        headingClass="section-head__jp--home-activities"
+        scrollReveal
         lead="演劇活動をベースに、さまざまな活動を行っています。"
       />
       <div class="home-activities">
@@ -139,21 +167,23 @@ const heroMarqueeItems = currentPerformances
   </section>
 
   {/* 開講クラス */}
-  <section class="section section--classes">
+  <section class="section section--classes scroll-reveal-bg">
     <div class="container">
-      <SectionHead jp="開講クラス" />
-      <div class="grid-center grid-center--3">
+      <SectionHead jp="開講クラス" scrollReveal lead="体験参加のお問い合わせもお気軽に！" />
+      <div class="grid-center grid-center--3 home-classes-grid">
         {
           homeClasses.map((entry) => {
             const c = entry.data;
             return (
-              <Card
-                href={classDetailHref(entry)}
-                image={c.image}
-                title={c.title}
-                body={c.summary}
-                layout="classFlyer"
-              />
+              <div class="home-classes-grid__cell">
+                <Card
+                  href={classDetailHref(entry)}
+                  image={c.image}
+                  title={c.title}
+                  body={c.summary}
+                  layout="classFlyer"
+                />
+              </div>
             );
           })
         }

@@ -1,0 +1,64 @@
+---
+import NotFoundPage from '../../../components/NotFoundPage.astro';
+import Base from '../../../layouts/Base.astro';
+import PageContactCta from '../../../components/PageContactCta.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import SchoolTargetPills from '../../../components/SchoolTargetPills.astro';
+import { schoolPerformanceRepertoire } from '../../../data/school-performance-repertoire';
+import { getSchoolPerformancePiece } from '../../../utils/school-performance-repertoire';
+import { withBase } from '../../../utils/path';
+
+export async function getStaticPaths() {
+  return schoolPerformanceRepertoire.map((piece) => ({
+    params: { slug: piece.slug },
+  }));
+}
+
+export const prerender = true;
+
+const slug = Astro.params.slug ?? '';
+const piece = slug ? getSchoolPerformancePiece(slug) : undefined;
+const notFound = !piece;
+
+if (notFound) {
+  Astro.response.status = 404;
+}
+
+const pageTitle = piece ? `${piece.work}｜学校公演` : '学校公演';
+---
+
+{
+  notFound ? (
+    <NotFoundPage />
+  ) : (
+    <Base title={pageTitle} description={piece!.lead}>
+      <PageHeader jp={piece!.work} compact />
+
+      <section class="container school-piece">
+        <div class="prose school-piece__prose">
+          <p class="school-piece__overview">{piece!.overview}</p>
+          <p>{piece!.lead}</p>
+
+          <dl class="school-piece__meta">
+            <div>
+              <dt>対象</dt>
+              <dd>
+                <SchoolTargetPills targets={piece!.targets} />
+              </dd>
+            </div>
+            <div>
+              <dt>上演時間</dt>
+              <dd>{piece!.duration}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <PageContactCta body="学校公演のご依頼・ご相談は、お問い合わせフォームよりお気軽にご連絡ください。学年・会場・時間に合わせた構成もご相談いただけます。" />
+
+        <p class="school-piece__back">
+          <a class="link-arrow" href={withBase('/education/school/')}>← 学校公演・演目一覧へ</a>
+        </p>
+      </section>
+    </Base>
+  )
+}

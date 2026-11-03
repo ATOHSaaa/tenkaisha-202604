@@ -5,8 +5,6 @@ import PageHeader from '../../components/PageHeader.astro';
 import PerformanceArticle from '../../components/PerformanceArticle.astro';
 import { getCollection, getEntry, render } from 'astro:content';
 import { eventDetailBadges, isPerformanceEntry } from '../../utils/event-content';
-import StageAdjacentNav from '../../components/StageAdjacentNav.astro';
-import { getStageAdjacentNav } from '../../utils/stage-adjacent';
 import { formatShowTitle } from '../../utils/titles';
 import { withBase } from '../../utils/path';
 
@@ -39,7 +37,6 @@ if (entry && !isPerformance) {
   ({ Content: EventContent } = await render(entry));
 }
 
-const adjacent = entry ? await getStageAdjacentNav(entry.id) : { prev: null, next: null };
 ---
 
 {
@@ -47,7 +44,7 @@ const adjacent = entry ? await getStageAdjacentNav(entry.id) : { prev: null, nex
     <NotFoundPage />
   ) : performanceEntry ? (
     <Base title={showTitle} scrollReveal={false}>
-      <PerformanceArticle entry={performanceEntry} adjacent={adjacent} />
+      <PerformanceArticle entry={performanceEntry} />
     </Base>
   ) : (
     <Base title={showTitle} scrollReveal={false}>
@@ -70,7 +67,6 @@ const adjacent = entry ? await getStageAdjacentNav(entry.id) : { prev: null, nex
               )
             }
           </div>
-          <StageAdjacentNav adjacent={adjacent} />
         </section>
       </article>
     </Base>

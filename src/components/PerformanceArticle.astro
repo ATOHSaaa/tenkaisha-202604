@@ -7,17 +7,14 @@ import type { PerformanceEntry } from '../utils/event-content';
 import { eventDetailBadges } from '../utils/event-content';
 import { pastPerformanceHistoryItems } from '../utils/performance-history';
 import { buildPeatixLinkResolver } from '../utils/peatix-history-links';
-import StageAdjacentNav from './StageAdjacentNav.astro';
 import { formatShowTitle } from '../utils/titles';
 import { withBase } from '../utils/path';
-import type { StageAdjacentNav as StageAdjacentNavData } from '../utils/stage-adjacent';
 
 interface Props {
   entry: PerformanceEntry;
-  adjacent: StageAdjacentNavData;
 }
 
-const { entry, adjacent } = Astro.props;
+const { entry } = Astro.props;
 
 const { Content } = await render(entry);
 
@@ -68,6 +65,5 @@ const typeBadges = eventDetailBadges(entry.data);
         )
       }
     </div>
-    <StageAdjacentNav adjacent={adjacent} />
   </section>
 </article>

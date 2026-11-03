@@ -2,17 +2,21 @@
 interface Props {
   jp: string;
   note?: string;
+  /** 見出し h2 に追加する class（例: トップ「転回社の活動」専用） */
+  headingClass?: string;
+  /** 見出しブロックをスクロール表示（fade + slide） */
+  scrollReveal?: boolean;
   /** 見出し直下の説明文（改行は \n） */
   lead?: string;
 }
 
-const { jp, note, lead } = Astro.props;
+const { jp, note, headingClass, scrollReveal, lead } = Astro.props;
 const leadLines = lead?.split('\n').filter(Boolean) ?? [];
 ---
 
-<header class="section-head">
+<header class:list={['section-head', scrollReveal && 'section-head--scroll-reveal']}>
   <div class="section-head__title-row">
-    <h2 class="section-head__jp heading-section">{jp}</h2>
+    <h2 class:list={['section-head__jp', 'heading-section', headingClass]}>{jp}</h2>
     {note && <span class="section-head__note">{note}</span>}
   </div>
   {

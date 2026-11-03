@@ -51,10 +51,10 @@ const srcAlt = withBase('/images/home-hero-alt.jpg');
             <span class="home-hero__vertical-address-part">国府</span>
           </p>
           <p class="home-hero__vertical-copy home-hero__vertical-copy--tagline-mobile">
-            おもしろいことは、転回社から
+            おもしろいことは、転回社から！
           </p>
           <p class="home-hero__vertical-copy home-hero__vertical-copy--tagline-part">おもしろいことは、</p>
-          <p class="home-hero__vertical-copy home-hero__vertical-copy--tagline-part">転回社から</p>
+          <p class="home-hero__vertical-copy home-hero__vertical-copy--tagline-part">転回社から！</p>
         </div>
         <p class="home-hero__vertical-access">電停から歩いて１分</p>
       </div>
@@ -90,3 +90,10 @@ const srcAlt = withBase('/images/home-hero-alt.jpg');
     </div>
   </div>
 </div>
+
+<script>
+  import { initHomeHeroParallax } from '../scripts/home-hero-parallax';
+
+  initHomeHeroParallax();
+  document.addEventListener('astro:page-load', initHomeHeroParallax);
+</script>

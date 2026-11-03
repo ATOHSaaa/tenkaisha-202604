@@ -1,0 +1,74 @@
+---
+import type { ClassActivityRecord, ClassMediaRecord } from '../utils/class-records';
+import { formatClassRecordMonth, sortClassRecordsByMonth, withYearSeparators } from '../utils/class-records';
+
+interface Props {
+  activityRecords?: ClassActivityRecord[];
+  mediaAppearances?: ClassMediaRecord[];
+}
+
+const { activityRecords = [], mediaAppearances = [] } = Astro.props;
+
+const activities = withYearSeparators(sortClassRecordsByMonth(activityRecords));
+const media = withYearSeparators(sortClassRecordsByMonth(mediaAppearances));
+---
+
+{
+  activities.length > 0 && (
+    <>
+      <h2>ジュニアクラス活動実績</h2>
+      <div class="prose-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">年月</th>
+              <th scope="col">公演名・内容</th>
+              <th scope="col">会場</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              activities.map(({ item: row, yearSep }) => (
+                <tr class:list={[{ 'class-records__year-sep': yearSep }]}>
+                  <td>{formatClassRecordMonth(row.sortKey)}</td>
+                  <td>{row.event}</td>
+                  <td>{row.venue}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </>
+  )
+}
+
+{
+  media.length > 0 && (
+    <>
+      <h2>メディア出演</h2>
+      <div class="prose-table-wrap">
+        <table class="class-records-table class-records-table--media">
+          <thead>
+            <tr>
+              <th scope="col">年月 / 期間</th>
+              <th scope="col">番組名・内容</th>
+              <th scope="col">放送局・詳細</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              media.map(({ item: row, yearSep }) => (
+                <tr class:list={[{ 'class-records__year-sep': yearSep }]}>
+                  <td>{row.period}</td>
+                  <td>{row.program}</td>
+                  <td>{row.outlet}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </>
+  )
+}

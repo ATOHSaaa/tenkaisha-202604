@@ -1,0 +1,30 @@
+---
+import type { SchoolTargetLevel } from '../data/school-performance-repertoire';
+import { schoolTargetOrder } from '../data/school-performance-repertoire';
+
+interface Props {
+  targets: SchoolTargetLevel[];
+}
+
+const { targets } = Astro.props;
+
+const itemClass: Record<SchoolTargetLevel, string> = {
+  小学生: 'school-target-pills__item--yellow',
+  中学生: 'school-target-pills__item--red',
+  高校生: 'school-target-pills__item--green',
+};
+---
+
+<ul class="school-target-pills" aria-label="対象学年">
+  {
+    schoolTargetOrder.map((level) => (
+      <li class="school-target-pills__slot">
+        {
+          targets.includes(level) ? (
+            <span class:list={['school-target-pills__item', itemClass[level]]}>{level}</span>
+          ) : null
+        }
+      </li>
+    ))
+  }
+</ul>

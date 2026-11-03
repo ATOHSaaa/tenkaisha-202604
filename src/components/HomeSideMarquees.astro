@@ -1,0 +1,49 @@
+---
+const MARQUEE_WORD = 'TENKAISHA';
+const MARQUEE_REPEAT = 8;
+const marqueeWords = Array.from({ length: MARQUEE_REPEAT }, () => MARQUEE_WORD);
+---
+
+<div class="home-side-marquees" aria-hidden="true">
+  <div class="home-side-marquee home-side-marquee--left">
+    <div class="home-side-marquee__viewport">
+      <div class="home-side-marquee__track">
+        <div class="home-side-marquee__run">
+          {marqueeWords.map((word) => (
+            <span class="home-side-marquee__word">{word}</span>
+          ))}
+        </div>
+        <div class="home-side-marquee__run">
+          {marqueeWords.map((word) => (
+            <span class="home-side-marquee__word">{word}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="home-side-marquee home-side-marquee--right">
+    <div class="home-side-marquee__viewport">
+      <div class="home-side-marquee__track home-side-marquee__track--reverse">
+        <div class="home-side-marquee__run">
+          {marqueeWords.map((word) => (
+            <span class="home-side-marquee__word">{word}</span>
+          ))}
+        </div>
+        <div class="home-side-marquee__run">
+          {marqueeWords.map((word) => (
+            <span class="home-side-marquee__word">{word}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initHomeSideMarquees } from '../scripts/home-side-marquee';
+
+  initHomeSideMarquees();
+  document.addEventListener('astro:page-load', () => {
+    initHomeSideMarquees();
+  });
+</script>

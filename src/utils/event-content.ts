@@ -1,8 +1,11 @@
 import type { CollectionEntry } from 'astro:content';
 import { performanceDateLabel } from './dates';
 import {
+  formatPerformanceHistoryDateLabel,
   pastPerformanceHistoryItems,
   performanceHistoryDayKey,
+  performanceHistoryDayKeyFromDate,
+  resolveNextPerformanceHistoryItem,
 } from './performance-history';
 import {
   calendarDayKeyInJST,
@@ -127,13 +130,22 @@ export function eventEntryCardProps(data: EventData) {
   const typeBadge = BADGE_BY_TYPE[data.type];
   const badges = withClassBadges(data, typeBadge);
   const schedule = scheduleFromData(data);
+  const nextItem = resolveNextPerformanceHistoryItem(data.performanceHistory);
   const nextPerformanceDate = resolveNextPerformanceDate(schedule);
+  const nextPerformanceDateText = nextItem
+    ? formatPerformanceHistoryDateLabel(nextItem, { includeTime: true })
+    : undefined;
+  const nextPerformanceDateTime = nextPerformanceDate
+    ? performanceHistoryDayKeyFromDate(nextPerformanceDate)
+    : undefined;
   const hasNextBlock = Boolean(nextPerformanceDate);
 
   if (data.type === 'event') {
     return {
       badges,
       nextPerformanceDate,
+      nextPerformanceDateText,
+      nextPerformanceDateTime,
       nextDateLabel: '上演日',
     };
   }
@@ -142,6 +154,8 @@ export function eventEntryCardProps(data: EventData) {
     badges,
     label: hasNextBlock ? undefined : performanceDateLabel(schedule),
     nextPerformanceDate,
+    nextPerformanceDateText,
+    nextPerformanceDateTime,
   };
 }
 
@@ -230,4 +244,20 @@ export function groupArchiveEntriesByYear(all: EventEntry[]): ArchiveYearGroup[]
         .map(({ entry }) => entry),
     }))
     .filter((group) => group.entries.length > 0);
+}
+
+/** 「これまで」見出し用。Works は年跨ぎの重複を除いた件数、Stages は上演日数の合計 */
+export function summarizeArchiveYearGroups(groups: ArchiveYearGroup[]): {
+  worksCount: number;
+  stagesCount: number;
+} {
+  const workIds = new Set<string>();
+  let stagesCount = 0;
+  for (const group of groups) {
+    stagesCount += group.stagesCount;
+    for (const entry of group.entries) {
+      workIds.add(entry.id);
+    }
+  }
+  return { worksCount: workIds.size, stagesCount };
 }

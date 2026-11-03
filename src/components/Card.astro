@@ -14,6 +14,10 @@ interface Props {
   badgeVariant?: 'long-run' | 'event' | 'junior';
   badges?: EventBadgeData[];
   nextPerformanceDate?: Date;
+  /** performanceHistory 由来の表示（例: 11月8日(土) 19:00） */
+  nextPerformanceDateText?: string;
+  /** time[datetime] 用（YYYY-MM-DD・JST 暦日） */
+  nextPerformanceDateTime?: string;
   /** 日付ブロックの見出し（既定: 次回公演） */
   nextDateLabel?: string;
   /** @deprecated nextPerformanceDate + nextDateLabel を使用 */
@@ -35,6 +39,8 @@ const {
   badgeVariant,
   badges: badgesProp,
   nextPerformanceDate,
+  nextPerformanceDateText,
+  nextPerformanceDateTime,
   nextDateLabel = '次回公演',
   scheduleText,
   title,
@@ -52,6 +58,18 @@ const extAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {
 
 const fmtDate = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+
+function nextDateDisplay() {
+  if (nextPerformanceDateText) return nextPerformanceDateText;
+  if (nextPerformanceDate) return fmtDate(nextPerformanceDate);
+  return '';
+}
+
+function nextDateDatetime() {
+  if (nextPerformanceDateTime) return nextPerformanceDateTime;
+  if (nextPerformanceDate) return nextPerformanceDate.toISOString();
+  return undefined;
+}
 
 const sidebarLayout = layout === 'sidebar' && Boolean(image);
 const classFlyerLayout = layout === 'classFlyer' && Boolean(image);
@@ -136,8 +154,8 @@ const linkHref = resolveHref(href);
             nextPerformanceDate ? (
               <p class="card__next">
                 <span class="card__next-label">{nextDateLabel}</span>
-                <time class="card__next-date" datetime={nextPerformanceDate.toISOString()}>
-                  {fmtDate(nextPerformanceDate)}
+                <time class="card__next-date" datetime={nextDateDatetime()}>
+                  {nextDateDisplay()}
                 </time>
               </p>
             ) : scheduleText ? (
@@ -197,8 +215,8 @@ const linkHref = resolveHref(href);
       (nextPerformanceDate ? (
         <p class="card__next">
           <span class="card__next-label">{nextDateLabel}</span>
-          <time class="card__next-date" datetime={nextPerformanceDate.toISOString()}>
-            {fmtDate(nextPerformanceDate)}
+          <time class="card__next-date" datetime={nextDateDatetime()}>
+            {nextDateDisplay()}
           </time>
         </p>
       ) : scheduleText ? (

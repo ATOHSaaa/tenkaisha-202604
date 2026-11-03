@@ -34,13 +34,14 @@ export function eventLastDayKey(schedule: EntrySchedule): string | null {
   return entryLastDayKey(schedule);
 }
 
-/** 最終日が今日以降なら「これから」 */
+/** 次回公演日（今日以降の最早日）があれば「これから」 */
 export function isEntryUpcoming(
   schedule: EntrySchedule,
   todayKey = calendarDayKeyInJST(),
 ): boolean {
-  const last = entryLastDayKey(schedule);
-  return last !== null && last >= todayKey;
+  return (
+    upcomingPerformanceDatesFromHistory(schedule.performanceHistory, todayKey).length > 0
+  );
 }
 
 export const isPerformanceUpcoming = isEntryUpcoming;

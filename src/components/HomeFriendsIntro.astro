@@ -11,7 +11,7 @@ const href = withBase(intro.href);
 const bgSrc = withBase(intro.backgroundImage);
 ---
 
-<div class="home-friends scroll-reveal">
+<a class="home-friends scroll-reveal" href={href}>
   <div class="home-friends__backdrop" aria-hidden="true">
     <img
       class="home-friends__backdrop-img"
@@ -34,10 +34,17 @@ const bgSrc = withBase(intro.backgroundImage);
         <p>{paragraph}</p>
       ))}
     </div>
-    <a class="badge-btn badge-btn--pill home-friends__cta" href={href}>
+    <span class="badge-btn badge-btn--pill home-friends__cta">
       <span class="badge-btn__label">
         {intro.linkLabel}<span class="home-friends__cta-arrow" aria-hidden="true"> →</span>
       </span>
-    </a>
+    </span>
   </div>
-</div>
+</a>
+
+<script>
+  import { initHomeHeroParallax } from '../scripts/home-hero-parallax';
+
+  initHomeHeroParallax();
+  document.addEventListener('astro:page-load', initHomeHeroParallax);
+</script>

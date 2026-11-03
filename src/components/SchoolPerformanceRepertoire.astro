@@ -1,0 +1,33 @@
+---
+import { schoolPerformanceRepertoire } from '../data/school-performance-repertoire';
+import { schoolPerformancePieceHref } from '../utils/school-performance-repertoire';
+import SchoolTargetPills from './SchoolTargetPills.astro';
+---
+
+<h2>演目一覧</h2>
+<p>
+  主に小学校向けに、下記のような演目をご提案しています。学年・時間・会場に合わせた構成のご相談も承ります。行をクリックすると各演目の詳細へ移動します。
+</p>
+
+<div class="school-repertoire">
+  <div class="school-repertoire__grid">
+    <div class="school-repertoire__row school-repertoire__head">
+      <div class="school-repertoire__cell">演目</div>
+      <div class="school-repertoire__cell">概要</div>
+      <div class="school-repertoire__cell">対象</div>
+      <div class="school-repertoire__cell">上演時間</div>
+    </div>
+    {
+      schoolPerformanceRepertoire.map((piece) => (
+        <a class="school-repertoire__row school-repertoire__body" href={schoolPerformancePieceHref(piece)}>
+          <span class="school-repertoire__cell">{piece.work}</span>
+          <span class="school-repertoire__cell">{piece.overview}</span>
+          <span class="school-repertoire__cell">
+            <SchoolTargetPills targets={piece.targets} />
+          </span>
+          <span class="school-repertoire__cell">{piece.duration}</span>
+        </a>
+      ))
+    }
+  </div>
+</div>

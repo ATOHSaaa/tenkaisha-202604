@@ -1,5 +1,6 @@
 ---
 import type { RequestInfo } from '../data/site';
+import PageContactCta from './PageContactCta.astro';
 import { withBase } from '../utils/path';
 
 interface Props {
@@ -8,11 +9,16 @@ interface Props {
   points?: string[];
   backHref?: string;
   backLabel?: string;
+  /** お問い合わせ CTA の本文（PageContactCta） */
+  contactBody?: string;
   /** false で黒帯ヒーローを出さない（PageHeader 等と併用） */
   showHero?: boolean;
   /** false で右カラム（画像・ボタン）を出さない */
   showSidebar?: boolean;
 }
+
+const defaultContactBody =
+  'ご依頼・ご相談は、お問い合わせフォームよりお気軽にご連絡ください。ご予算・ご希望の内容・対象人数等をお聞かせいただければ、詳しくご案内いたします。';
 
 const {
   info,
@@ -20,6 +26,7 @@ const {
   points = [],
   backHref = '/education/',
   backLabel = '演劇と教育へ戻る',
+  contactBody = defaultContactBody,
   showHero = true,
   showSidebar = true,
 } = Astro.props;
@@ -56,11 +63,7 @@ const resolvedBackHref = withBase(backHref);
             )
           }
           <slot name="before-contact" />
-          <h2>お問い合わせ</h2>
-          <p>
-            ご依頼・ご相談は <a href={withBase('/contact/')}>お問い合わせフォーム</a> よりお気軽にどうぞ。
-            ご予算・ご希望の内容・対象人数等をお聞かせいただければ、詳しくご案内いたします。
-          </p>
+          <PageContactCta body={contactBody} />
         </div>
 
         <aside class="rd__side">
@@ -84,11 +87,7 @@ const resolvedBackHref = withBase(backHref);
           )
         }
         <slot name="before-contact" />
-        <h2>お問い合わせ</h2>
-        <p>
-          ご依頼・ご相談は <a href={withBase('/contact/')}>お問い合わせフォーム</a> よりお気軽にどうぞ。
-          ご予算・ご希望の内容・対象人数等をお聞かせいただければ、詳しくご案内いたします。
-        </p>
+        <PageContactCta body={contactBody} />
       </div>
     )
   }
