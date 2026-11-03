@@ -5,6 +5,8 @@ export type ClassInstructor = {
   name: string;
   photo: string;
   bio: string;
+  photoScale?: number;
+  photoShiftY?: number;
 };
 
 interface Props {
@@ -25,14 +27,33 @@ const { instructors } = Astro.props;
           instructors.map((person) => (
             <li class="class-instructor">
               <p class="class-instructor__name">{person.name}</p>
-              <img
-                class="class-instructor__photo"
-                src={withBase(person.photo)}
-                alt=""
-                width={248}
-                height={300}
-                loading="lazy"
-              />
+              <div
+                class="class-instructor__photo-frame"
+                style={
+                  person.photoScale || person.photoShiftY != null
+                    ? {
+                        ...(person.photoScale != null && {
+                          '--photo-scale': String(person.photoScale),
+                        }),
+                        ...(person.photoShiftY != null && {
+                          '--photo-shift-y': `${person.photoShiftY}%`,
+                        }),
+                      }
+                    : undefined
+                }
+              >
+                <img
+                  class:list={[
+                    'class-instructor__photo',
+                    person.photoScale && 'class-instructor__photo--scaled',
+                  ]}
+                  src={withBase(person.photo)}
+                  alt=""
+                  width={248}
+                  height={300}
+                  loading="lazy"
+                />
+              </div>
               <p class="class-instructor__bio">{person.bio}</p>
             </li>
           ))

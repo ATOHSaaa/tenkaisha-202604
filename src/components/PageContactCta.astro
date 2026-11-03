@@ -1,18 +1,30 @@
 ---
-import { pageContactCtaBody } from '../data/page-contact-cta';
+import { pageContactCtaLines } from '../data/page-contact-cta';
 import { withBase } from '../utils/path';
 
 interface Props {
-  body?: string;
+  /** 1 行ずつ上書き（未指定時は pageContactCtaLines） */
+  lines?: readonly string[];
   href?: string;
   buttonLabel?: string;
 }
 
-const { body = pageContactCtaBody, href = '/contact/', buttonLabel = 'お問い合わせへ' } = Astro.props;
+const {
+  lines = pageContactCtaLines,
+  href = '/contact/',
+  buttonLabel = 'お問い合わせ',
+} = Astro.props;
 ---
 
 <div class="page-contact-cta">
-  <p>{body}</p>
+  <p class="page-contact-cta__lead">
+    {lines.map((line, i) => (
+      <>
+        {i > 0 && <br />}
+        {line}
+      </>
+    ))}
+  </p>
   <a class="btn btn--pill" href={withBase(href)}>
     {buttonLabel} <span class="btn__arrow">→</span>
   </a>

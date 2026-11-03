@@ -106,6 +106,10 @@ const classes = defineCollection({
           name: z.string(),
           photo: z.string(),
           bio: z.string(),
+          /** 顔サイズ合わせ（1より大きいと枠内で拡大） */
+          photoScale: z.number().min(1).max(2.5).optional(),
+          /** 拡大時の上下位置（%・負で上へ） */
+          photoShiftY: z.number().min(-20).max(20).optional(),
         }),
       )
       .optional(),
