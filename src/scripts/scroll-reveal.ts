@@ -1,3 +1,5 @@
+import { isScrollMotionEnabled, isUserScrollMotionOn } from './scroll-motion-prefs';
+
 let observer: IntersectionObserver | null = null;
 let lastScrollY = 0;
 let scrollingDown = true;
@@ -6,8 +8,35 @@ let scrollDirectionBound = false;
 const STAGGER_SELECTOR =
   '.card, .guide-link, .activity-card, .home-friends, .footer-links__block, .news-list__item, .home .section__actions .badge-btn, .grid-events__more .badge-btn';
 
-function prefersReducedMotion(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function scrollRevealPageEnabled(): boolean {
+  return document.body.dataset.scrollReveal !== 'off';
+}
+
+function forceShowScrollRevealContent(main: HTMLElement): void {
+  main.querySelectorAll('.scroll-reveal-bg').forEach((el) => {
+    el.classList.add('scroll-reveal-bg--visible');
+  });
+  main.querySelectorAll('.section-head--scroll-reveal').forEach((el) => {
+    el.classList.add('scroll-reveal', 'scroll-reveal--visible');
+  });
+  if (!isUserScrollMotionOn()) {
+    main.querySelectorAll('.scroll-reveal').forEach((el) => {
+      el.classList.add('scroll-reveal--visible');
+    });
+  }
+}
+
+/** ユーザーがアニメーションを再オンにしたあと、表示状態だけリセットして再観測できるようにする */
+export function rearmScrollRevealAfterMotionOn(): void {
+  const main = document.getElementById('main');
+  if (!main || !scrollRevealPageEnabled() || !isUserScrollMotionOn()) return;
+
+  main.querySelectorAll('.scroll-reveal--visible').forEach((el) => {
+    el.classList.remove('scroll-reveal--visible', 'scroll-reveal--no-motion');
+  });
+  main.querySelectorAll('.scroll-reveal-bg--visible').forEach((el) => {
+    el.classList.remove('scroll-reveal-bg--visible', 'scroll-reveal-bg--no-motion');
+  });
 }
 
 function bindScrollDirection(): void {
@@ -98,16 +127,13 @@ function shouldSkipScrollRevealObserve(el: Element): boolean {
 
 /** main 内の見出し・カード等にスクロール表示（astro:page-load でも再実行） */
 export function initScrollReveal(): void {
-  if (document.body.dataset.scrollReveal === 'off') {
+  const main = document.getElementById('main');
+  if (!main) return;
+
+  if (!scrollRevealPageEnabled() || !isUserScrollMotionOn()) {
     observer?.disconnect();
     observer = null;
-    document
-      .getElementById('main')
-      ?.querySelectorAll('.scroll-reveal-bg')
-      .forEach((el) => el.classList.add('scroll-reveal-bg--visible'));
-    document.getElementById('main')?.querySelectorAll('.section-head--scroll-reveal').forEach((el) => {
-      el.classList.add('scroll-reveal', 'scroll-reveal--visible');
-    });
+    forceShowScrollRevealContent(main);
     return;
   }
 
@@ -115,10 +141,7 @@ export function initScrollReveal(): void {
   lastScrollY = window.scrollY;
   scrollingDown = true;
 
-  const main = document.getElementById('main');
-  if (!main) return;
-
-  const reduced = prefersReducedMotion();
+  const reduced = !isScrollMotionEnabled();
 
   collectRevealTargets(main).forEach((el) => {
     el.setAttribute('data-scroll-reveal', '');

@@ -1,3 +1,5 @@
+import { isScrollMotionEnabled } from './scroll-motion-prefs';
+
 /** 1周（トラック高さの半分）あたりのスクロール速度 */
 const MARQUEE_PX_PER_SEC = 28;
 /** 内側から 1, 3, 5… 列目 */
@@ -115,7 +117,7 @@ function syncMarqueeColumns(force = false): boolean {
 }
 
 function restartMarqueeMotion(): void {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!isScrollMotionEnabled()) return;
   document.querySelectorAll<HTMLElement>('.home-side-marquee__col-track').forEach((track) => {
     track.style.animation = 'none';
     void track.offsetHeight;
@@ -135,7 +137,7 @@ function rightMarqueeHasMotion(): boolean {
   if (!right) return false;
   const tracks = right.querySelectorAll('.home-side-marquee__col-track');
   if (tracks.length === 0) return false;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!isScrollMotionEnabled()) {
     return tracks.length > 0;
   }
   return [...tracks].some((track) => {
@@ -206,7 +208,7 @@ function bindLayoutSync(): void {
 }
 
 function bindMotionObserver(): void {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!isScrollMotionEnabled()) return;
   const tracks = document.querySelectorAll<HTMLElement>('.home-side-marquee__col-track');
   if (tracks.length === 0) return;
 
@@ -289,7 +291,7 @@ export function initHomeSideMarquees(): void {
 
   const home = document.querySelector('.home');
   const guide = document.querySelector('.home-main-guide');
-  const layer = document.querySelector('.home-side-marquees');
+  const layer = document.querySelector<HTMLElement>('.home-side-marquees');
   if (!home || !guide || !layer) return;
 
   layer.hidden = false;

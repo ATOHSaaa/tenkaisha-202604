@@ -14,7 +14,7 @@ const { title, isNew, tags = [] } = Astro.props;
   {
     tags.length > 0 ? (
       <ul class="news-list__tags">
-        {tags.map((tag) => (
+        {tags.map((tag: string) => (
           <li>
             <span class="news-list__tag">{tag}</span>
           </li>

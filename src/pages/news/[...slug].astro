@@ -2,7 +2,7 @@
 import NotFoundPage from '../../components/NotFoundPage.astro';
 import Base from '../../layouts/Base.astro';
 import NewsWithSidebar from '../../components/NewsWithSidebar.astro';
-import { getCollection, getEntry, render } from 'astro:content';
+import { getCollection, getEntry, render, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const entries = await getCollection('news');
@@ -13,10 +13,16 @@ export async function getStaticPaths() {
 
 export const prerender = true;
 
-const slugParam = Astro.params.slug;
-const slug = Array.isArray(slugParam) ? slugParam.join('/') : slugParam;
+const slug = Astro.params?.slug;
 
-const entry = slug ? await getEntry('news', slug).catch(() => undefined) : undefined;
+let entry: CollectionEntry<'news'> | undefined;
+if (typeof slug === 'string' && slug.length > 0) {
+  try {
+    entry = await getEntry('news', slug);
+  } catch {
+    entry = undefined;
+  }
+}
 const notFound = !slug || !entry;
 
 if (notFound) {

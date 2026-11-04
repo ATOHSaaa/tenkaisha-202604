@@ -63,6 +63,42 @@ const breadcrumbJsonLd =
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <script is:inline define:vars={{ scrollMotionKey: 'tenkaisha-scroll-motion' }}>
+      (function () {
+        try {
+          var s = localStorage.getItem(scrollMotionKey);
+          document.documentElement.setAttribute('data-scroll-motion', s === 'off' ? 'off' : 'on');
+        } catch (e) {
+          document.documentElement.setAttribute('data-scroll-motion', 'on');
+        }
+      })();
+    </script>
+    <style is:inline>
+      html:not([data-scroll-motion='on']) .home-hero__marquee-track,
+      html:not([data-scroll-motion='on']) .home-news-marquee__track,
+      html:not([data-scroll-motion='on']) .home-side-marquee__col-track {
+        animation: none !important;
+      }
+      html:not([data-scroll-motion='on']) .home-hero__img--primary,
+      html:not([data-scroll-motion='on']) .home-hero__img--alt {
+        animation: none !important;
+      }
+      html:not([data-scroll-motion='on']) .scroll-reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+      html:not([data-scroll-motion='on']) .page-header__eyecatch,
+      html:not([data-scroll-motion='on']) .page-header__eyecatch.page-header__eyecatch--ready {
+        visibility: visible !important;
+      }
+      html:not([data-scroll-motion='on']) .page-header__eyecatch-char,
+      html:not([data-scroll-motion='on']) .page-header__eyecatch-char.page-header__eyecatch-char--enter {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+      }
+    </style>
     {
       THEME_USER_CHOICE_ENABLED ? (
         <script is:inline>
@@ -140,24 +176,34 @@ const breadcrumbJsonLd =
           if (!target) return;
           e.preventDefault();
           target.scrollIntoView({
-            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+            behavior:
+              document.documentElement.dataset.scrollMotion === 'off' ||
+              window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                ? 'auto'
+                : 'smooth',
           });
         },
         true,
       );
     </script>
     <script>
+      import { initScrollMotionToggle, syncScrollMotionToggleUI } from '../scripts/scroll-motion';
       import { initScrollReveal } from '../scripts/scroll-reveal';
       import { initTheme, initThemeToggle } from '../scripts/theme';
+      import { initScrollMotionFromStorage } from '../scripts/scroll-motion-prefs';
       import { initPageHeaderEyecatchEnter } from '../scripts/page-header-eyecatch-enter';
       import { initHomeSideMarquees } from '../scripts/home-side-marquee';
 
+      initScrollMotionFromStorage();
+      syncScrollMotionToggleUI();
       initTheme();
       initThemeToggle();
       initScrollReveal();
       initPageHeaderEyecatchEnter();
       initHomeSideMarquees();
       document.addEventListener('astro:page-load', () => {
+        initScrollMotionFromStorage();
+        syncScrollMotionToggleUI();
         initTheme();
         initThemeToggle();
         initScrollReveal();

@@ -1,3 +1,5 @@
+import { isScrollMotionEnabled } from './scroll-motion-prefs';
+
 /** 1周（トラック幅の半分）あたりのスクロール速度 */
 const MARQUEE_PX_PER_SEC = 20;
 
@@ -11,7 +13,7 @@ function applyMarqueeDuration(track: HTMLElement): void {
 }
 
 export function initHomeNewsMarquee(): void {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!isScrollMotionEnabled()) return;
 
   const tracks = document.querySelectorAll<HTMLElement>('.home-news-marquee__track');
   if (tracks.length === 0) return;

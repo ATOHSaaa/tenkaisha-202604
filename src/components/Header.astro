@@ -72,6 +72,43 @@ const currentPath = stripBasePath(Astro.url.pathname);
             </li>
           ) : null
         }
+        <li class="site-header__nav-item site-header__nav-item--motion">
+          <button
+            type="button"
+            class="site-header__motion-toggle"
+            data-scroll-motion-toggle
+            role="switch"
+            aria-checked="false"
+            aria-label="スクロールアニメーション: オフ（クリックでオン）"
+          >
+            <span class="site-header__motion-toggle-stack">
+              <span class="site-header__motion-switch" aria-hidden="true">
+                <span class="site-header__motion-switch-track">
+                  <span class="site-header__motion-switch-label site-header__motion-switch-label--on">ON</span>
+                  <span class="site-header__motion-switch-label site-header__motion-switch-label--off">OFF</span>
+                  <span class="site-header__motion-switch-fill"></span>
+                </span>
+              </span>
+              <span class="site-header__motion-toggle-label" lang="en">animation</span>
+            </span>
+          </button>
+          <script is:inline define:vars={{ scrollMotionKey: 'tenkaisha-scroll-motion' }}>
+            (function () {
+              try {
+                var on = localStorage.getItem(scrollMotionKey) !== 'off';
+                var btn = document.querySelector('[data-scroll-motion-toggle]');
+                if (!btn) return;
+                btn.setAttribute('aria-checked', String(on));
+                btn.setAttribute(
+                  'aria-label',
+                  on
+                    ? 'スクロールアニメーション: オン（クリックでオフ）'
+                    : 'スクロールアニメーション: オフ（クリックでオン）',
+                );
+              } catch (e) {}
+            })();
+          </script>
+        </li>
         {
           siteHeaderNav.map((item) => {
             const isCurrent = isSiteNavCurrent(currentPath, item.href);
@@ -115,6 +152,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
 <script>
   import { isSiteNavCurrent } from '../data/site-nav';
   import { stripBasePath } from '../utils/path';
+  import { initScrollMotionToggle } from '../scripts/scroll-motion';
 
   const HOVER_HOLD_CLASS = 'site-header__link--hover-hold';
   /** ポインタが乗っているメニュー（遷移で :hover が外れても見た目を維持する） */
@@ -438,6 +476,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
   setupSiteHeaderNavIndicator();
   setupSiteHeaderLinkHoverHold();
   setupSiteHeaderScrollProgress();
+  initScrollMotionToggle();
   if (!document.documentElement.hasAttribute('data-header-page-load')) {
     document.documentElement.setAttribute('data-header-page-load', '');
     document.addEventListener('astro:page-load', () => {
@@ -446,6 +485,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
       setupSiteHeaderNavIndicator();
       setupSiteHeaderLinkHoverHold();
       setupSiteHeaderScrollProgress();
+      initScrollMotionToggle();
       applyHeldNavHover(document);
       requestAnimationFrame(() => {
         navSwapSettled = true;

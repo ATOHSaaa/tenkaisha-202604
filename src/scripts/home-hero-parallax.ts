@@ -1,3 +1,5 @@
+import { isScrollMotionEnabled } from './scroll-motion-prefs';
+
 type ParallaxTarget = {
   container: HTMLElement;
   layer: HTMLElement;
@@ -67,7 +69,7 @@ export function initHomeHeroParallax(): void {
   abort = new AbortController();
   const { signal } = abort;
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!isScrollMotionEnabled()) {
     document.querySelectorAll<HTMLElement>('.home-hero__slides').forEach((el) => {
       el.style.setProperty('--home-hero-scroll-y', '0px');
     });

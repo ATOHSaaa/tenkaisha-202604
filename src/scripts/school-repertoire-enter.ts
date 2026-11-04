@@ -4,9 +4,7 @@ const TABLE_REVEAL_DELAY = '120ms';
 
 let observer: IntersectionObserver | null = null;
 
-function prefersReducedMotion(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
+import { isScrollMotionEnabled } from './scroll-motion-prefs';
 
 function prepare(el: HTMLElement): void {
   el.classList.add('scroll-reveal');
@@ -50,7 +48,7 @@ export function initSchoolRepertoireEnter(): void {
   const table = document.querySelector<HTMLElement>(TABLE_SELECTOR);
   if (!heading || !table) return;
 
-  const reduced = prefersReducedMotion();
+  const reduced = !isScrollMotionEnabled();
   prepare(heading);
   prepare(table);
   table.style.setProperty('--reveal-delay', TABLE_REVEAL_DELAY);

@@ -1,6 +1,4 @@
-function prefersReducedMotion(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
+import { isScrollMotionEnabled } from './scroll-motion-prefs';
 
 function segmentGraphemes(text: string): string[] {
   if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
@@ -11,7 +9,7 @@ function segmentGraphemes(text: string): string[] {
 }
 
 function collectEyecatchParagraph(eyecatch: HTMLElement): HTMLParagraphElement | null {
-  if (eyecatch.matches('p')) return eyecatch;
+  if (eyecatch instanceof HTMLParagraphElement) return eyecatch;
   return eyecatch.querySelector('p');
 }
 
@@ -79,7 +77,7 @@ export function initPageHeaderEyecatchEnter(): void {
   const targets = document.querySelectorAll<HTMLElement>('.page-header__eyecatch');
   if (targets.length === 0) return;
 
-  const reduced = prefersReducedMotion();
+  const reduced = !isScrollMotionEnabled();
 
   targets.forEach((eyecatch) => {
     const p = splitEyecatchChars(eyecatch);

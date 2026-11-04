@@ -1,9 +1,9 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
-import { people } from "./src/data/people";
+import { people, type Person } from "./data/people";
 
 const personIdSchema = z.enum(
-  people.map((person) => person.id) as [string, ...string[]],
+  people.map((person: Person) => person.id) as [string, ...string[]],
 );
 
 // ブログ（ink.tenkai.org から統合）

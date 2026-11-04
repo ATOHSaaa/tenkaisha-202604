@@ -231,6 +231,7 @@ export function resolveNextPerformanceDate(
   todayKey = calendarDayKeyInJST(),
 ): Date | undefined {
   const item = resolveNextPerformanceHistoryItem(input.performanceHistory, todayKey);
+  if (!item) return undefined;
   return normalizePerformanceHistoryEntry(item)?.date;
 }
 
