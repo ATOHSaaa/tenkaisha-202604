@@ -1094,7 +1094,7 @@ a.card:focus-visible {
     --card-pad-effective: var(--space-5);
     align-self: stretch;
     height: 100%;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
     align-content: start;
     padding: var(--space-5);
     box-sizing: border-box;
@@ -1137,7 +1137,7 @@ a.card:focus-visible {
     --card-pad-effective: var(--space-4);
     align-self: stretch;
     height: 100%;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
     padding: var(--space-4);
     box-sizing: border-box;
   }
@@ -1562,21 +1562,39 @@ a.card:focus-visible {
 .grid-long-run .card--sidebar,
 .grid-events .card--sidebar {
   --event-card-flyer-col: clamp(120px, 50%, 280px);
-  --event-card-tag-gap: clamp(10px, 1.4vw, 16px);
+  --event-card-tag-gap: clamp(12px, 1.6vw, 18px);
   --event-card-flyer-max-h: clamp(140px, 17vw, 260px);
   display: grid;
   grid-template-columns: var(--event-card-flyer-col) minmax(0, 1fr);
   column-gap: var(--space-3);
-  grid-template-rows: auto auto;
-  row-gap: var(--event-card-tag-gap);
+  grid-template-rows: auto;
+  row-gap: 0;
   align-content: start;
   align-self: start;
   height: auto;
   min-height: 0;
 }
 
-.grid-long-run .card--sidebar .card__badges,
-.grid-events .card--sidebar .card__badges {
+.grid-long-run .card--sidebar .card__meta .card__badges--meta,
+.grid-events .card--sidebar .card__meta .card__badges--meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--space-1);
+  width: 100%;
+  margin: 0 0 var(--event-card-tag-gap);
+  padding: 0;
+}
+
+.grid-long-run .card--sidebar .card__meta .card__badges--meta .card__badge,
+.grid-events .card--sidebar .card__meta .card__badges--meta .card__badge {
+  margin: 0;
+  text-align: left;
+}
+
+.grid-long-run .card--sidebar > .card__badges,
+.grid-events .card--sidebar > .card__badges {
   grid-column: 1;
   grid-row: 1;
   display: flex;
@@ -1610,7 +1628,7 @@ a.card:focus-visible {
 .grid-long-run .card--sidebar .card__visual--sidebar,
 .grid-events .card--sidebar .card__visual--sidebar {
   grid-column: 1 / -1;
-  grid-row: 2;
+  grid-row: 1;
   display: grid;
   grid-template-columns: var(--event-card-flyer-col) minmax(0, 1fr);
   grid-template-rows: auto;
@@ -1706,16 +1724,13 @@ a.card:focus-visible {
     --event-card-flyer-max-h: clamp(120px, 20vw, 220px);
   }
 
-  .grid-long-run .card--sidebar .card__badges,
-  .grid-events .card--sidebar .card__badges {
+  .grid-long-run .card--sidebar .card__meta .card__badges--meta,
+  .grid-events .card--sidebar .card__meta .card__badges--meta {
     justify-content: flex-start;
-    align-self: start;
-    width: auto;
   }
 
-  .grid-long-run .card--sidebar .card__badges .card__badge,
-  .grid-events .card--sidebar .card__badges .card__badge {
-    align-self: flex-start;
+  .grid-long-run .card--sidebar .card__meta .card__badges--meta .card__badge,
+  .grid-events .card--sidebar .card__meta .card__badges--meta .card__badge {
     margin-inline: 0;
     text-align: left;
   }
@@ -1728,21 +1743,14 @@ a.card:focus-visible {
     --event-card-flyer-max-h: clamp(100px, 32vw, 180px);
     grid-template-columns: var(--event-card-flyer-col) minmax(0, 1fr);
     column-gap: var(--space-2);
-    grid-template-rows: auto auto;
-    row-gap: var(--event-card-tag-gap);
+    grid-template-rows: auto;
+    row-gap: 0;
     padding: var(--space-3);
     align-items: stretch;
   }
 
-  .grid-long-run .card--sidebar .card__badges,
-  .grid-events .card--sidebar .card__badges {
-    grid-column: 1;
-    grid-row: 1;
-    justify-content: flex-start;
-  }
-
-  .grid-long-run .card--sidebar .card__badges .card__badge,
-  .grid-events .card--sidebar .card__badges .card__badge {
+  .grid-long-run .card--sidebar .card__meta .card__badges--meta .card__badge,
+  .grid-events .card--sidebar .card__meta .card__badges--meta .card__badge {
     margin-inline: 0;
     text-align: left;
     font-size: 11px;
@@ -1754,7 +1762,7 @@ a.card:focus-visible {
   .grid-long-run .card--sidebar .card__visual--sidebar,
   .grid-events .card--sidebar .card__visual--sidebar {
     grid-column: 1 / -1;
-    grid-row: 2;
+    grid-row: 1;
     grid-template-columns: var(--event-card-flyer-col) minmax(0, 1fr);
     column-gap: var(--space-2);
   }
@@ -8142,6 +8150,7 @@ a.perf-history__date--link {
 }
 .news-detail__title.heading-section {
   letter-spacing: 0;
+  line-height: 1.5;
 }
 .news-page .news-list__title {
   font-family: var(--font-news-title);

@@ -113,7 +113,7 @@ export const homeBanners: BannerInfo[] = [
 ];
 
 export const corporateBanner: BannerInfo = {
-  title: '法人の方向け',
+  title: '法人の方へ',
   english: 'FOR ORGANIZATIONS',
   href: '/for-organizations/',
 };
@@ -223,7 +223,7 @@ export const homeActivities: HomeActivity[] = [
     summary:
       '企業・自治体・学校向けに、演劇ワークショップなど、講師・ファシリテーターの派遣を承ります。',
     href: '/for-organizations/',
-    linkLabel: '法人の方向け',
+    linkLabel: '法人の方へ',
     image: '/images/education/school-performance.png',
     imageFocus: 'top',
   },
@@ -237,7 +237,7 @@ export type OrganizationProgram = {
   path: string;
 };
 
-/** 法人の方向けプログラム */
+/** 法人の方へプログラム */
 export const organizationPrograms: OrganizationProgram[] = [
   {
     slug: 'workshop',

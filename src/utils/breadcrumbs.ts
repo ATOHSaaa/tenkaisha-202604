@@ -15,7 +15,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   blog: '稽古日誌',
   publications: '刊行物',
   members: '劇団員紹介',
-  'for-organizations': '法人の方向け',
+  'for-organizations': '法人の方へ',
   contact: 'お問い合わせ',
   education: '演劇と教育',
   school: '学校公演',

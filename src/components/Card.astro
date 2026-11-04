@@ -90,7 +90,7 @@ const linkHref = resolveHref(href);
   {...extAttrs}
 >
   {
-    badgeList.length > 0 && (
+    badgeList.length > 0 && !sidebarLayout && (
       <div class="card__badges">
         {badgeList.map((item) => (
           <EventBadge badge={item.badge} badgeVariant={item.badgeVariant} />
@@ -137,6 +137,15 @@ const linkHref = resolveHref(href);
           />
         </div>
         <div class="card__meta">
+          {
+            badgeList.length > 0 && (
+              <div class="card__badges card__badges--meta">
+                {badgeList.map((item) => (
+                  <EventBadge badge={item.badge} badgeVariant={item.badgeVariant} />
+                ))}
+              </div>
+            )
+          }
           <h3 class="card__title">
             {
               titleParts ? (
