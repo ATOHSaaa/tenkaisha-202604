@@ -1,0 +1,531 @@
+---
+import { getCollection } from 'astro:content';
+import {
+  schoolPerformanceSummary,
+  schoolPerformanceYearStats,
+} from '../data/school-performance-stats';
+import {
+  schoolWorkshopSummary,
+  schoolWorkshopYearStats,
+} from '../data/school-workshop-stats';
+import {
+  groupArchiveEntriesByYear,
+  summarizeArchiveYearGroups,
+} from '../utils/event-content';
+
+const stages = await getCollection('stages');
+const archiveYears = groupArchiveEntriesByYear(stages).toSorted((a, b) =>
+  a.year.localeCompare(b.year),
+);
+const archiveSummary = summarizeArchiveYearGroups(archiveYears);
+
+type BarPoint = { label: string; value: number; planned?: boolean };
+
+let schoolPerfRunning = 0;
+const schoolPerformanceCumulative: BarPoint[] = schoolPerformanceYearStats.map((row) => {
+  schoolPerfRunning += row.performances;
+  return {
+    label: String(row.year).slice(2),
+    value: schoolPerfRunning,
+    planned: row.planned,
+  };
+});
+
+let workshopRunning = 0;
+const workshopCumulative: BarPoint[] = schoolWorkshopYearStats.map((row) => {
+  workshopRunning += row.sessions;
+  return {
+    label: String(row.year).slice(2),
+    value: workshopRunning,
+  };
+});
+
+type StackSegment = {
+  year: string;
+  value: number;
+  fill: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+};
+
+type StackedColumn = {
+  label: string;
+  x: number;
+  w: number;
+  total: number;
+  segments: StackSegment[];
+};
+
+type StackedChart = {
+  width: number;
+  height: number;
+  pad: { l: number; r: number; t: number; b: number };
+  plotH: number;
+  columns: StackedColumn[];
+  grid: { y: number; label: number }[];
+  yMax: number;
+};
+
+/**
+ * サイトの黄・橙・緑（#ffec22 / #e85c2a / #3a9468）と同じ濃さのバリエーション。
+ * 隣り合う年が別の色相になるよう、3系統を交互に配る。
+ */
+const YEAR_COLOR_FAMILIES = [
+  ['#ffec22', '#ffe014', '#fff04a', '#f5c400'],
+  ['#e85c2a', '#ff6a1f', '#ff9348', '#d04718'],
+  ['#3a9468', '#2f7352', '#449a6e', '#1f8f5f'],
+] as const;
+
+function buildYearStackPalette(count: number): string[] {
+  if (count <= 0) return [];
+  const colors: string[] = [];
+  let round = 0;
+  while (colors.length < count) {
+    for (const family of YEAR_COLOR_FAMILIES) {
+      colors.push(family[round % family.length]!);
+      if (colors.length >= count) break;
+    }
+    round += 1;
+  }
+  return colors;
+}
+
+function cumulativeSeries(counts: number[]): number[] {
+  return counts.map((_, i) => counts.slice(0, i + 1).reduce((sum, n) => sum + n, 0));
+}
+
+function scaleYMax(max: number): number {
+  const step =
+    max <= 20 ? 5 : max <= 50 ? 10 : max <= 150 ? 25 : max <= 300 ? 50 : 100;
+  return Math.ceil(Math.max(max, 1) / step) * step;
+}
+
+type ComboChart = StackedChart & {
+  worksLine: { x: number; y: number; value: number }[];
+  worksPath: string;
+  worksYMax: number;
+  worksGrid: { y: number; label: number }[];
+};
+
+function buildArchiveComboChart(
+  years: typeof archiveYears,
+  stageCounts: number[],
+  workCounts: number[],
+  colors: string[],
+  width: number,
+  height = 260,
+): ComboChart {
+  const pad = { l: 40, r: 44, t: 12, b: 46 };
+  const plotW = width - pad.l - pad.r;
+  const plotH = height - pad.t - pad.b;
+  const stageCumulative = cumulativeSeries(stageCounts);
+  const worksCumulative = cumulativeSeries(workCounts);
+  const yMax = scaleYMax(Math.max(...stageCumulative, 1));
+  const worksYMax = scaleYMax(Math.max(...worksCumulative, 1));
+  const tickCount = 4;
+  const yTicks = Array.from({ length: tickCount + 1 }, (_, i) =>
+    Math.round((yMax / tickCount) * i),
+  );
+  const worksYTicks = Array.from({ length: tickCount + 1 }, (_, i) =>
+    Math.round((worksYMax / tickCount) * i),
+  );
+  const slot = plotW / Math.max(years.length, 1);
+  const barW = slot * 0.62;
+
+  const columns: StackedColumn[] = years.map((row, colIndex) => {
+    const x = pad.l + colIndex * slot + (slot - barW) / 2;
+    let stackBottom = pad.t + plotH;
+    const segments: StackSegment[] = [];
+    for (let yearIndex = 0; yearIndex <= colIndex; yearIndex++) {
+      const value = stageCounts[yearIndex] ?? 0;
+      if (value <= 0) continue;
+      const h = (value / yMax) * plotH;
+      stackBottom -= h;
+      segments.push({
+        year: years[yearIndex]!.year,
+        value,
+        fill: colors[yearIndex] ?? colors[0] ?? 'var(--accent)',
+        x,
+        y: stackBottom,
+        w: barW,
+        h,
+      });
+    }
+    return {
+      label: row.year.slice(2),
+      x,
+      w: barW,
+      total: stageCumulative[colIndex] ?? 0,
+      segments,
+    };
+  });
+
+  const worksLine = columns.map((col, i) => {
+    const value = worksCumulative[i] ?? 0;
+    const cx = col.x + col.w / 2;
+    const y = pad.t + plotH - (value / worksYMax) * plotH;
+    return { x: cx, y, value };
+  });
+  const worksPath = worksLine.map((p) => `${p.x},${p.y}`).join(' ');
+
+  const grid = yTicks.map((label) => ({
+    y: pad.t + plotH - (label / yMax) * plotH,
+    label,
+  }));
+  const worksGrid = worksYTicks.map((label) => ({
+    y: pad.t + plotH - (label / worksYMax) * plotH,
+    label,
+  }));
+
+  return {
+    width,
+    height,
+    pad,
+    plotH,
+    columns,
+    grid,
+    yMax,
+    worksLine,
+    worksPath,
+    worksYMax,
+    worksGrid,
+  };
+}
+
+/** その年に初めて記録に載った作品数（年跨ぎの重複は除く） */
+function newUniqueWorksPerYear(years: typeof archiveYears): number[] {
+  const seen = new Set<string>();
+  return years.map((group) => {
+    let added = 0;
+    for (const entry of group.entries) {
+      if (seen.has(entry.id)) continue;
+      seen.add(entry.id);
+      added += 1;
+    }
+    return added;
+  });
+}
+
+type Chart = {
+  width: number;
+  height: number;
+  pad: { l: number; r: number; t: number; b: number };
+  plotH: number;
+  bars: (BarPoint & { x: number; y: number; w: number; h: number })[];
+  grid: { y: number; label: number }[];
+  yMax: number;
+};
+
+function buildChart(points: BarPoint[], width = 560, height = 250): Chart {
+  const pad = { l: 40, r: 12, t: 12, b: 28 };
+  const plotW = width - pad.l - pad.r;
+  const plotH = height - pad.t - pad.b;
+  const max = Math.max(...points.map((p) => p.value), 1);
+  const step = max <= 20 ? 5 : max <= 80 ? 10 : 50;
+  const yMax = Math.ceil(max / step) * step;
+  const tickCount = 4;
+  const yTicks = Array.from({ length: tickCount + 1 }, (_, i) =>
+    Math.round((yMax / tickCount) * i),
+  );
+  const slot = plotW / points.length;
+  const barW = slot * 0.62;
+  const bars = points.map((p, i) => {
+    const h = (p.value / yMax) * plotH;
+    const x = pad.l + i * slot + (slot - barW) / 2;
+    const y = pad.t + plotH - h;
+    return { ...p, x, y, w: barW, h };
+  });
+  const grid = yTicks.map((label) => ({
+    y: pad.t + plotH - (label / yMax) * plotH,
+    label,
+  }));
+  return { width, height, pad, plotH, bars, grid, yMax };
+}
+
+const schoolPerformanceChart = buildChart(schoolPerformanceCumulative);
+const workshopCumulativeChart = buildChart(workshopCumulative);
+const stageCounts = archiveYears.map((row) => row.stagesCount);
+const workCounts = newUniqueWorksPerYear(archiveYears);
+const yearStackColors = buildYearStackPalette(archiveYears.length);
+const archiveChartWidth = Math.max(680, archiveYears.length * 48);
+const archiveComboChart = buildArchiveComboChart(
+  archiveYears,
+  stageCounts,
+  workCounts,
+  yearStackColors,
+  archiveChartWidth,
+);
+
+/** 解説へ引く線の始点。2022年は2024年以降の解説へつなぐ */
+const CALLOUT_STARTS = [
+  { year: '2015', target: '2015' },
+  { year: '2019', target: '2019' },
+  { year: '2022', target: '2024' },
+  { year: '2024', target: '2024' },
+] as const;
+
+function calloutStartForLabel(label: string) {
+  return CALLOUT_STARTS.find((item) => item.year.slice(2) === label);
+}
+---
+
+<section class="about-figures" aria-labelledby="about-figures-title">
+  <h2 id="about-figures-title" class="about-figures__title">数字で見る転回社</h2>
+
+  <div class="about-figures__grid">
+    <article class="about-figures__card">
+      <h3 class="about-figures__card-title">学校公演（累計）</h3>
+      <svg
+        class="about-figures__svg"
+        viewBox={`0 0 ${schoolPerformanceChart.width} ${schoolPerformanceChart.height}`}
+        role="img"
+        aria-label={`学校公演の累計上演回数。${schoolPerformanceSummary.totalPerformances}回。`}
+      >
+        {
+          schoolPerformanceChart.grid.map((tick) => (
+            <g>
+              <line
+                x1={schoolPerformanceChart.pad.l}
+                x2={schoolPerformanceChart.width - schoolPerformanceChart.pad.r}
+                y1={tick.y}
+                y2={tick.y}
+                class="about-figures__grid-line"
+              />
+              <text
+                x={schoolPerformanceChart.pad.l - 8}
+                y={tick.y + 4}
+                class="about-figures__tick"
+                text-anchor="end"
+              >
+                {tick.label}
+              </text>
+            </g>
+          ))
+        }
+        {
+          schoolPerformanceChart.bars.map((bar) => (
+            <g>
+              <rect
+                x={bar.x}
+                y={bar.y}
+                width={bar.w}
+                height={Math.max(bar.h, 0)}
+                rx="3"
+                class:list={[
+                  'about-figures__bar',
+                  'about-figures__bar--green',
+                  bar.planned && 'about-figures__bar--planned',
+                ]}
+              >
+                <title>{`20${bar.label}年度までの累計 ${bar.value}回${bar.planned ? '（予定含む）' : ''}`}</title>
+              </rect>
+              <text
+                x={bar.x + bar.w / 2}
+                y={schoolPerformanceChart.height - 8}
+                class="about-figures__xlabel"
+                text-anchor="middle"
+              >
+                {bar.label}
+              </text>
+            </g>
+          ))
+        }
+      </svg>
+      <p class="about-figures__note">2014年度からの累計。2026年度は予定を含みます。</p>
+    </article>
+
+    <article class="about-figures__card">
+      <h3 class="about-figures__card-title">学校ワークショップ（累計）</h3>
+      <svg
+        class="about-figures__svg"
+        viewBox={`0 0 ${workshopCumulativeChart.width} ${workshopCumulativeChart.height}`}
+        role="img"
+        aria-label={`学校ワークショップの累計実施件数。${schoolWorkshopSummary.totalSessions}件。`}
+      >
+        {
+          workshopCumulativeChart.grid.map((tick) => (
+            <g>
+              <line
+                x1={workshopCumulativeChart.pad.l}
+                x2={workshopCumulativeChart.width - workshopCumulativeChart.pad.r}
+                y1={tick.y}
+                y2={tick.y}
+                class="about-figures__grid-line"
+              />
+              <text
+                x={workshopCumulativeChart.pad.l - 8}
+                y={tick.y + 4}
+                class="about-figures__tick"
+                text-anchor="end"
+              >
+                {tick.label}
+              </text>
+            </g>
+          ))
+        }
+        {
+          workshopCumulativeChart.bars.map((bar) => (
+            <g>
+              <rect
+                x={bar.x}
+                y={bar.y}
+                width={bar.w}
+                height={Math.max(bar.h, 0)}
+                rx="3"
+                class:list={[
+                  'about-figures__bar',
+                  'about-figures__bar--ink',
+                  bar.planned && 'about-figures__bar--planned',
+                ]}
+              >
+                <title>{`20${bar.label}年度までの累計 ${bar.value}件`}</title>
+              </rect>
+              <text
+                x={bar.x + bar.w / 2}
+                y={workshopCumulativeChart.height - 8}
+                class="about-figures__xlabel"
+                text-anchor="middle"
+              >
+                {bar.label}
+              </text>
+            </g>
+          ))
+        }
+      </svg>
+      <p class="about-figures__note">2014年度からの積み上げです。</p>
+    </article>
+
+    <article class="about-figures__card about-figures__card--wide">
+      <div class="about-figures__wide-inner">
+        <div class="about-figures__chart-col">
+      <h3 class="about-figures__card-title">公演・イベント（累計）</h3>
+      <ul class="about-figures__legend">
+        <li>
+          <span class="about-figures__swatch about-figures__swatch--line" />
+          総作品数
+        </li>
+      </ul>
+
+      <svg
+        class="about-figures__svg about-figures__svg--wide"
+        viewBox={`0 0 ${archiveComboChart.width} ${archiveComboChart.height}`}
+        role="img"
+        aria-label={`上演日数の累計積み上げ棒と総作品数${archiveSummary.worksCount}の折れ線。累計上演${archiveSummary.stagesCount}日。`}
+      >
+          {
+            archiveComboChart.grid.map((tick) => (
+              <g>
+                <line
+                  x1={archiveComboChart.pad.l}
+                  x2={archiveComboChart.width - archiveComboChart.pad.r}
+                  y1={tick.y}
+                  y2={tick.y}
+                  class="about-figures__grid-line"
+                />
+                <text
+                  x={archiveComboChart.pad.l - 8}
+                  y={tick.y + 4}
+                  class="about-figures__tick"
+                  text-anchor="end"
+                >
+                  {tick.label}
+                </text>
+              </g>
+            ))
+          }
+          {
+            archiveComboChart.worksGrid.map((tick) => (
+              <text
+                x={archiveComboChart.width - archiveComboChart.pad.r + 8}
+                y={tick.y + 4}
+                class="about-figures__tick about-figures__tick--right"
+                text-anchor="start"
+              >
+                {tick.label}
+              </text>
+            ))
+          }
+          {
+            archiveComboChart.columns.map((col) => (
+              <g>
+                {
+                  col.segments.map((seg) => (
+                    <rect
+                      x={seg.x}
+                      y={seg.y}
+                      width={seg.w}
+                      height={Math.max(seg.h, 0)}
+                      class="about-figures__stack"
+                      fill={seg.fill}
+                    >
+                      <title>{`${seg.year}年 ${seg.value}日`}</title>
+                    </rect>
+                  ))
+                }
+                <text
+                  x={col.x + col.w / 2}
+                  y={archiveComboChart.height - 24}
+                  class="about-figures__xlabel"
+                  text-anchor="middle"
+                  data-callout-year={calloutStartForLabel(col.label)?.year}
+                  data-callout-target={calloutStartForLabel(col.label)?.target}
+                >
+                  {col.label}
+                </text>
+              </g>
+            ))
+          }
+          <polyline points={archiveComboChart.worksPath} class="about-figures__line" />
+          {
+            archiveComboChart.worksLine.map((pt) => (
+              <circle cx={pt.x} cy={pt.y} r="4" class="about-figures__dot">
+                <title>{`総作品数 ${pt.value}`}</title>
+              </circle>
+            ))
+          }
+      </svg>
+      <p class="about-figures__note about-figures__note--chart">
+        左軸：上演日数（棒・年ごとの色）。右軸：総作品数（折れ線・その年に初めて記録された作品の累計）。
+      </p>
+        </div>
+
+        <div class="about-figures__notes">
+          <ul class="about-figures__notes-list">
+            <li class="about-figures__note-item" data-callout-year="2015">
+              <span class="about-figures__note-anchor" aria-hidden="true" />
+              <p>
+                <span class="about-figures__note-year">2015年</span>
+                の設立から、ほぼ月1回以上の公演を行っています！
+              </p>
+            </li>
+            <li class="about-figures__note-item" data-callout-year="2019">
+              <span class="about-figures__note-anchor" aria-hidden="true" />
+              <p>
+                <span class="about-figures__note-year">2019年</span>
+                〜2021年は、新型コロナウイルスの影響で上演が停滞……。できる範囲で活動を行いました。
+              </p>
+            </li>
+            <li class="about-figures__note-item" data-callout-year="2024">
+              <span class="about-figures__note-anchor" aria-hidden="true" />
+              <p>
+                <span class="about-figures__note-year">2024年</span>
+                以降は、特にロングラン公演に力を入れています。1つの作品を改作して何度も上演。レパートリーも増え、作品数を増やさなくても安定して上演することができるようになりました。
+              </p>
+            </li>
+          </ul>
+        </div>
+
+        <svg class="about-figures__callouts" aria-hidden="true" />
+      </div>
+    </article>
+  </div>
+</section>
+
+<script>
+  import { initAboutFigureCallouts } from '../scripts/about-figures-callouts';
+
+  initAboutFigureCallouts();
+  document.addEventListener('astro:page-load', initAboutFigureCallouts);
+</script>

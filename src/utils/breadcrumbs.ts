@@ -17,6 +17,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   members: '劇団員紹介',
   'for-organizations': '法人の方へ',
   contact: 'お問い合わせ',
+  about: '転回社について',
   education: '演劇と教育',
   school: '学校公演',
   supporter: '友の会',

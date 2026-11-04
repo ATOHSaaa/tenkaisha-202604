@@ -21,8 +21,9 @@ const imageSrc = withBase(program.image);
     <p class="edu-block__text">{program.summary}</p>
     {program.detail ? <p class="edu-block__text">{program.detail}</p> : null}
     <p class="edu-block__more">
-      <span>詳しく見る</span>
-      <span class="edu-block__more-arrow" aria-hidden="true">→</span>
+      <span class="edu-block__more-label">
+        詳しく見る<span class="edu-block__more-arrow" aria-hidden="true">→</span>
+      </span>
     </p>
   </div>
 </a>

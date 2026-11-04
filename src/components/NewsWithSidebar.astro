@@ -1,27 +1,10 @@
 ---
 import CurrentEventsSidebar from './CurrentEventsSidebar.astro';
-
-interface Props {
-  /** 記事詳細: サイドバー上端を本文枠に揃える */
-  alignSidebarWithBody?: boolean;
-}
-
-const { alignSidebarWithBody = false } = Astro.props;
 ---
 
-{
-  alignSidebarWithBody ? (
-    <div class="news-layout news-layout--detail">
-      <slot name="header" />
-      <slot name="body" />
-      <CurrentEventsSidebar />
-    </div>
-  ) : (
-    <div class="news-layout">
-      <div class="news-layout__main">
-        <slot />
-      </div>
-      <CurrentEventsSidebar />
-    </div>
-  )
-}
+<div class="news-layout">
+  <div class="news-layout__main">
+    <slot />
+  </div>
+  <CurrentEventsSidebar placement="side" />
+</div>

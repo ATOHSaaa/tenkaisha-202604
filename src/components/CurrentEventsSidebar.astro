@@ -3,11 +3,25 @@ import Card from './Card.astro';
 import { getCollection } from 'astro:content';
 import { eventEntryCardProps, partitionEventList } from '../utils/event-content';
 
+interface Props {
+  /** 詳細ページ右カラム。一覧では `below` */
+  placement?: 'side' | 'below';
+}
+
+const { placement = 'side' } = Astro.props;
+
 const { currentPerformances, currentEvents } = partitionEventList(await getCollection('stages'));
 const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
 ---
 
-<aside class="news-layout__side news-sidebar" aria-labelledby="news-sidebar-heading">
+<aside
+  class:list={[
+    'news-sidebar',
+    placement === 'side' && 'news-layout__side',
+    placement === 'below' && 'news-sidebar--below',
+  ]}
+  aria-labelledby="news-sidebar-heading"
+>
   <h2 id="news-sidebar-heading" class="news-sidebar__heading">公演情報</h2>
   {
     !hasCurrent ? (

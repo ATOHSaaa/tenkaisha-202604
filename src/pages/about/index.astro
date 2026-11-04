@@ -1,0 +1,65 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import AboutFigures from '../../components/AboutFigures.astro';
+import PageContactCta from '../../components/PageContactCta.astro';
+import { withBase } from '../../utils/path';
+---
+
+<Base
+  title="転回社について"
+  description="一般社団法人転回社の沿革と活動内容、団体概要。熊本を拠点に演劇制作と演劇教育を行う劇団です。"
+>
+  <PageHeader jp="転回社について" />
+
+  <section class="about">
+    <div class="container">
+      <div class="about__grid">
+        <aside class="about__panel" aria-labelledby="about-org-heading">
+          <h2 id="about-org-heading" class="about__panel-title">団体概要</h2>
+          <dl class="meta about__meta">
+            <div>
+              <dt>名称</dt>
+              <dd>一般社団法人 転回社</dd>
+            </div>
+            <div>
+              <dt>所在地</dt>
+              <dd>〒862-0950<br />熊本県熊本市中央区<br />水前寺1-32-28-202</dd>
+            </div>
+            <div>
+              <dt>電話</dt>
+              <dd><a href="tel:08017708318">080-1770-8318</a></dd>
+            </div>
+            <div>
+              <dt>FAX</dt>
+              <dd>096-323-7267</dd>
+            </div>
+            <div>
+              <dt>E-mail</dt>
+              <dd><a href="mailto:office@tenkai.org">office@tenkai.org</a></dd>
+            </div>
+          </dl>
+          <p class="about__panel-foot">
+            <a class="btn btn--pill" href={withBase('/contact/')}>
+              お問い合わせ <span class="btn__arrow">→</span>
+            </a>
+          </p>
+        </aside>
+
+        <div class="about__main prose">
+          <h2>転回社とは？</h2>
+          <p>
+            転回社は、2001年に旗揚げした劇団第七インターチェンジの制作団体として組織されました。2015年に元劇団四季の小松野希海をプロデューサーとして迎え、継続的な演劇活動を行うために転回社スタジオを設立。国府に常設の稽古場兼小劇場を構え、月1回以上の公演を行っています。
+          </p>
+          <p>
+            舞台制作に加え、熊本県内を中心とした学校公演・演劇ワークショップ、ジュニアクラスや発声表現の教室、企業・自治体向けのプログラムなど、子どもから大人まで演劇に触れ・学べる場づくりにも取り組んでいます。
+          </p>
+        </div>
+      </div>
+
+      <AboutFigures />
+
+      <PageContactCta />
+    </div>
+  </section>
+</Base>
