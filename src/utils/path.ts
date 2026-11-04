@@ -9,6 +9,10 @@ export function withBase(path: string): string {
   const base = import.meta.env.BASE_URL;
   const root = base.endsWith('/') ? base.slice(0, -1) : base;
 
+  if (root && (path === root || path.startsWith(`${root}/`))) {
+    return path;
+  }
+
   if (path.startsWith('/')) {
     return root ? `${root}${path}` : path;
   }

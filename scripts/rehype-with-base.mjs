@@ -9,6 +9,10 @@ function applyBase(path, baseUrl) {
   const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
   const root = base.endsWith('/') ? base.slice(0, -1) : base;
 
+  if (root && (path === root || path.startsWith(`${root}/`))) {
+    return path;
+  }
+
   if (path.startsWith('/')) {
     return root ? `${root}${path}` : path;
   }

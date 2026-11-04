@@ -1,6 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
-import { withBase } from './path';
 
 export type ClassEntry = CollectionEntry<'classes'>;
 
@@ -8,9 +7,10 @@ export function isStandaloneClassEntry(entry: ClassEntry): boolean {
   return !entry.data.appendTo;
 }
 
+/** サイトルート相対（Card 等が withBase する） */
 export function classDetailHref(entry: ClassEntry | string): string {
   const id = typeof entry === 'string' ? entry : entry.id;
-  return withBase(`/classes/${id}/`);
+  return `/classes/${id}/`;
 }
 
 export async function getClassEntries(): Promise<ClassEntry[]> {
