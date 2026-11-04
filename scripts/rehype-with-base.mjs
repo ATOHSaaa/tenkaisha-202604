@@ -9,12 +9,22 @@ function applyBase(path, baseUrl) {
   const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
   const root = base.endsWith('/') ? base.slice(0, -1) : base;
 
-  if (root && (path === root || path.startsWith(`${root}/`))) {
-    return path;
-  }
-
   if (path.startsWith('/')) {
-    return root ? `${root}${path}` : path;
+    let internal = path;
+    if (root) {
+      for (;;) {
+        if (internal === root || internal === `${root}/`) {
+          internal = '/';
+          break;
+        }
+        if (internal.startsWith(`${root}/`)) {
+          internal = internal.slice(root.length) || '/';
+          continue;
+        }
+        break;
+      }
+    }
+    return root ? `${root}${internal}` : internal;
   }
   return `${base}${path}`;
 }

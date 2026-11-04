@@ -22,14 +22,6 @@ const currentPath = stripBasePath(Astro.url.pathname);
     </div>
 
     <div class="site-header__end">
-      <a
-        class="site-header__link site-header__link--cta site-header__contact-bar"
-        href={withBase('/contact/')}
-        data-nav-href="/contact/"
-        aria-current={isSiteNavCurrent(currentPath, '/contact/') ? 'page' : undefined}
-      >
-        お問い合わせ
-      </a>
       <button
         type="button"
         class="site-header__menu-toggle"
@@ -71,6 +63,32 @@ const currentPath = stripBasePath(Astro.url.pathname);
               </button>
             </li>
           ) : null
+        }
+        {
+          siteHeaderNav.map((item) => {
+            const isCurrent = isSiteNavCurrent(currentPath, item.href);
+            return (
+            <li
+              class:list={[
+                'site-header__nav-item',
+                item.href === '/contact/' && 'site-header__nav-item--contact',
+              ]}
+            >
+              <a
+                class:list={[
+                  'site-header__link',
+                  item.href === '/contact/' && 'site-header__link--cta',
+                  isCurrent && 'site-header__link--current',
+                ]}
+                href={withBase(item.href)}
+                data-nav-href={item.href}
+                aria-current={isCurrent ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+            );
+          })
         }
         <li class="site-header__nav-item site-header__nav-item--motion">
           <button
@@ -117,32 +135,6 @@ const currentPath = stripBasePath(Astro.url.pathname);
             })();
           </script>
         </li>
-        {
-          siteHeaderNav.map((item) => {
-            const isCurrent = isSiteNavCurrent(currentPath, item.href);
-            return (
-            <li
-              class:list={[
-                'site-header__nav-item',
-                item.href === '/contact/' && 'site-header__nav-item--contact',
-              ]}
-            >
-              <a
-                class:list={[
-                  'site-header__link',
-                  item.href === '/contact/' && 'site-header__link--cta',
-                  isCurrent && 'site-header__link--current',
-                ]}
-                href={withBase(item.href)}
-                data-nav-href={item.href}
-                aria-current={isCurrent ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-            );
-          })
-        }
       </ul>
     </nav>
   </div>
@@ -239,7 +231,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
     const path = stripBasePath(window.location.pathname);
     document
       .querySelectorAll<HTMLAnchorElement>(
-        '#site-header-nav a.site-header__link[data-nav-href], a.site-header__contact-bar[data-nav-href]',
+        '#site-header-nav a.site-header__link[data-nav-href]',
       )
       .forEach((link) => {
       const href = link.dataset.navHref ?? '';
@@ -320,16 +312,12 @@ const currentPath = stripBasePath(Astro.url.pathname);
       const target = event.target;
       if (!(target instanceof Node)) return;
       if (nav.contains(target) || toggle.contains(target)) return;
-      const contactBar = root.querySelector('.site-header__contact-bar');
-      if (contactBar instanceof Node && contactBar.contains(target)) return;
       setOpen(false);
     });
 
     nav.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => setOpen(false));
     });
-
-    root.querySelector('.site-header__contact-bar')?.addEventListener('click', () => setOpen(false));
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && root.classList.contains('is-nav-open')) setOpen(false);

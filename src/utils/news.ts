@@ -53,6 +53,7 @@ export async function getHomeNews(): Promise<NewsListItem[]> {
 /** マーキー用：Markdown 本文を1行のプレーンテキストに */
 export function newsBodyToPlainText(body: string): string {
   return body
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
     .replace(/[*_#>`~]/g, '')
     .replace(/\n+/g, ' ')
