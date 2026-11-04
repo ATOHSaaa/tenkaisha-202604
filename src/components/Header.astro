@@ -94,18 +94,26 @@ const currentPath = stripBasePath(Astro.url.pathname);
           </button>
           <script is:inline define:vars={{ scrollMotionKey: 'tenkaisha-scroll-motion' }}>
             (function () {
-              try {
-                var on = localStorage.getItem(scrollMotionKey) !== 'off';
-                var btn = document.querySelector('[data-scroll-motion-toggle]');
-                if (!btn) return;
-                btn.setAttribute('aria-checked', String(on));
-                btn.setAttribute(
-                  'aria-label',
-                  on
-                    ? 'スクロールアニメーション: オン（クリックでオフ）'
-                    : 'スクロールアニメーション: オフ（クリックでオン）',
-                );
-              } catch (e) {}
+              function syncMotionToggleFromStorage() {
+                try {
+                  var on = localStorage.getItem(scrollMotionKey) !== 'off';
+                  document.documentElement.setAttribute(
+                    'data-scroll-motion',
+                    on ? 'on' : 'off',
+                  );
+                  var btn = document.querySelector('[data-scroll-motion-toggle]');
+                  if (!btn) return;
+                  btn.setAttribute('aria-checked', String(on));
+                  btn.setAttribute(
+                    'aria-label',
+                    on
+                      ? 'スクロールアニメーション: オン（クリックでオフ）'
+                      : 'スクロールアニメーション: オフ（クリックでオン）',
+                  );
+                } catch (e) {}
+              }
+              syncMotionToggleFromStorage();
+              document.addEventListener('astro:before-swap', syncMotionToggleFromStorage);
             })();
           </script>
         </li>
@@ -255,7 +263,30 @@ const currentPath = stripBasePath(Astro.url.pathname);
 
     const isMobileNav = () => window.matchMedia('(max-width: 900px)').matches;
 
+    let menuScrollLockY = 0;
+
+    const lockMenuScroll = () => {
+      menuScrollLockY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${menuScrollLockY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    };
+
+    const unlockMenuScroll = () => {
+      const y = menuScrollLockY;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      menuScrollLockY = 0;
+      window.scrollTo(0, y);
+    };
+
     const setOpen = (open: boolean) => {
+      const wasOpen = root.classList.contains('is-nav-open');
       root.classList.toggle('is-nav-open', open);
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
@@ -266,8 +297,11 @@ const currentPath = stripBasePath(Astro.url.pathname);
       }
       if (isMobileNav()) {
         nav.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if (open && !wasOpen) lockMenuScroll();
+        if (!open && wasOpen) unlockMenuScroll();
       } else {
         nav.removeAttribute('aria-hidden');
+        if (!open && wasOpen) unlockMenuScroll();
       }
       document.body.classList.toggle('site-header-nav-open', open);
     };

@@ -35,11 +35,10 @@ const latestNewsMarquee = await getLatestNewsMarquee();
 const { currentPerformances, currentEvents } = partitionEventList(await getCollection('stages'));
 const hasCurrent = currentPerformances.length > 0 || currentEvents.length > 0;
 const stageCards = [...currentPerformances, ...currentEvents];
-/** 2件のときは2列で横幅いっぱい（More は下段） */
+/** 2件: 2列・あらすじ付き sidebar（従来のトップ PC レイアウト） */
 const stagesGridPair = stageCards.length === 2;
-/** 3列グリッドの最終行に空きがあるとき More をセル内に置く（デスクトップ） */
-const stagesMoreInlineDesktop =
-  stageCards.length > 0 && stageCards.length % 3 !== 0 && !stagesGridPair;
+/** 奇数枚: 空きセルに More（偶数枚は下段） */
+const stagesMoreInlineDesktop = stageCards.length > 0 && stageCards.length % 2 === 1;
 const homeClasses = await getHomeClassEntries();
 
 const heroMarqueeItems = currentPerformances
@@ -164,7 +163,7 @@ const heroMarqueeItems = currentPerformances
         jp="転回社の活動"
         headingClass="section-head__jp--home-activities"
         scrollReveal
-        lead="演劇活動をベースに、さまざまな活動を行っています。"
+        lead="演劇活動をベースに、|さまざまな活動を行っています。"
       />
       <div class="home-activities">
         {homeActivities.map((activity) => (

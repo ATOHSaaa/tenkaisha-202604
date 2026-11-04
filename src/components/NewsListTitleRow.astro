@@ -10,7 +10,19 @@ const { title, isNew, tags = [] } = Astro.props;
 ---
 
 <div class="news-list__title-row">
-  <span class="news-list__title">{title}</span>
+  <span class="news-list__title">
+    <span class="news-list__title-text">{title}</span>
+    {
+      isNew ? (
+        <>
+          {' '}
+          <span class="news-list__new" lang="en">
+            NEW
+          </span>
+        </>
+      ) : null
+    }
+  </span>
   {
     tags.length > 0 ? (
       <ul class="news-list__tags">
@@ -20,13 +32,6 @@ const { title, isNew, tags = [] } = Astro.props;
           </li>
         ))}
       </ul>
-    ) : null
-  }
-  {
-    isNew ? (
-      <span class="news-list__new" lang="en">
-        NEW
-      </span>
     ) : null
   }
 </div>

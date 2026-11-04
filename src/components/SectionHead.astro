@@ -11,7 +11,11 @@ interface Props {
 }
 
 const { jp, note, headingClass, scrollReveal, lead } = Astro.props;
-const leadLines = lead?.split('\n').filter(Boolean) ?? [];
+/** `|` で preferred break（狭い幅ではここで改行、広い幅では1行） */
+const leadBreakParts =
+  lead && lead.includes('|') ? (lead.split('|', 2) as [string, string]) : null;
+const leadLines =
+  lead && !leadBreakParts ? lead.split('\n').filter(Boolean) : [];
 ---
 
 <header class:list={['section-head', scrollReveal && 'section-head--scroll-reveal']}>
@@ -19,6 +23,14 @@ const leadLines = lead?.split('\n').filter(Boolean) ?? [];
     <h2 class:list={['section-head__jp', 'heading-section', headingClass]}>{jp}</h2>
     {note && <span class="section-head__note">{note}</span>}
   </div>
+  {
+    leadBreakParts && (
+      <p class="section-head__lead section-head__lead--pref-break">
+        <span class="section-head__lead-before">{leadBreakParts[0]}</span>
+        <span class="section-head__lead-after">{leadBreakParts[1]}</span>
+      </p>
+    )
+  }
   {
     leadLines.length > 0 && (
       <p class="section-head__lead">

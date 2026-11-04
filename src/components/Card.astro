@@ -18,7 +18,7 @@ interface Props {
   nextPerformanceDateText?: string;
   /** time[datetime] 用（YYYY-MM-DD・JST 暦日） */
   nextPerformanceDateTime?: string;
-  /** 日付ブロックの見出し（既定: 次回公演） */
+  /** 日付ブロックの見出し（既定: 次回） */
   nextDateLabel?: string;
   /** @deprecated nextPerformanceDate + nextDateLabel を使用 */
   scheduleText?: string;
@@ -41,7 +41,7 @@ const {
   nextPerformanceDate,
   nextPerformanceDateText,
   nextPerformanceDateTime,
-  nextDateLabel = '次回公演',
+  nextDateLabel = '次回',
   scheduleText,
   title,
   body,

@@ -149,7 +149,7 @@ const breadcrumbJsonLd =
     />
     <ClientRouter />
   </head>
-  <body data-scroll-reveal={scrollReveal ? 'on' : 'off'}>
+  <body class:list={[isHome && 'page-home']} data-scroll-reveal={scrollReveal ? 'on' : 'off'}>
     <a class="skip-link" href="#main">本文へスキップ</a>
     <Header />
     <main id="main">
@@ -194,21 +194,26 @@ const breadcrumbJsonLd =
       import { initPageHeaderEyecatchEnter } from '../scripts/page-header-eyecatch-enter';
       import { initHomeSideMarquees } from '../scripts/home-side-marquee';
 
-      initScrollMotionFromStorage();
-      syncScrollMotionToggleUI();
-      initTheme();
-      initThemeToggle();
-      initScrollReveal();
-      initPageHeaderEyecatchEnter();
-      initHomeSideMarquees();
-      document.addEventListener('astro:page-load', () => {
+      function syncScrollMotionForNavigation() {
         initScrollMotionFromStorage();
         syncScrollMotionToggleUI();
+      }
+
+      function initAfterNavigation() {
+        syncScrollMotionForNavigation();
         initTheme();
         initThemeToggle();
         initScrollReveal();
         initPageHeaderEyecatchEnter();
         initHomeSideMarquees();
+      }
+
+      initAfterNavigation();
+      initScrollMotionToggle();
+      document.addEventListener('astro:before-swap', syncScrollMotionForNavigation);
+      document.addEventListener('astro:page-load', () => {
+        initAfterNavigation();
+        initScrollMotionToggle();
       });
     </script>
 

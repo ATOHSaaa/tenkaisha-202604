@@ -29,7 +29,7 @@ type ScheduleInput = {
 /** カード等に表示する公演日付ラベル（次回が無いときのフォールバック） */
 export function performanceDateLabel(schedule: ScheduleInput): string {
   const next = resolveNextPerformanceDate(schedule);
-  return next ? `次回公演 ${fmtDate(next)}` : '';
+  return next ? `次回 ${fmtDate(next)}` : '';
 }
 
 /** イベントカード等に表示する日付（次回＝直近の未来日） */
@@ -41,5 +41,5 @@ export function eventScheduleLabel(schedule: ScheduleInput): string {
 /** 公演詳細ページの日付表示 */
 export function performancePeriodLabel(schedule: ScheduleInput): string {
   const next = resolveNextPerformanceDate(schedule);
-  return next ? `次回公演 ${fmtDate(next)}` : '';
+  return next ? `次回 ${fmtDate(next)}` : '';
 }
