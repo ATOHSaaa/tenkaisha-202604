@@ -50,7 +50,7 @@
   RewriteRule ^requests/?$ /education/ [L,R=301]
   RewriteRule ^requests/school/?$ /education/school/ [L,R=301]
   RewriteRule ^education/school/ogawa-unmei/?$ /education/school/ogawa-mimei/ [L,R=301]
-  RewriteRule ^requests/workshop/?$ /for-organizations/workshop/ [L,R=301]
+  RewriteRule ^requests/workshop/?$ /for-organizations/ [L,R=301]
   RewriteRule ^requests/members/?$ /members/ [L,R=301]
 
   # 旧 /events/・/stage/ を /stages/ へ

@@ -20,6 +20,7 @@ export type PageContactCtaPlacement =
   | 'classes'
   | 'education'
   | 'members'
+  | 'forOrganizations'
   | 'school'
   | 'requestDetail';
 

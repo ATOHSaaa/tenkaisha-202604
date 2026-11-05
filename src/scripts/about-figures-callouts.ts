@@ -20,8 +20,7 @@ function drawCallouts(): void {
   const overlay = card.querySelector(CALLOUT_OVERLAY) as SVGSVGElement | null;
   const chartSvg = card.querySelector('.about-figures__chart-col .about-figures__svg');
   const notes = card.querySelector('.about-figures__notes');
-  const caption = card.querySelector('.about-figures__chart-col .about-figures__note');
-  if (!overlay || !chartSvg || !notes || !caption) return;
+  if (!overlay || !chartSvg || !notes) return;
 
   overlay.replaceChildren();
   if (!calloutEnabled()) return;
@@ -57,11 +56,11 @@ function drawCallouts(): void {
   if (links.length === 0) return;
 
   const chartRight = chartSvg.getBoundingClientRect().right - origin.left;
+  const chartBottom = chartSvg.getBoundingClientRect().bottom - origin.top;
   const notesLeft = notes.getBoundingClientRect().left - origin.left;
   const spineX = (chartRight + notesLeft) / 2;
-  const captionTop = caption.getBoundingClientRect().top - origin.top;
   const stemBottom = Math.max(...links.map((link) => link.y1 + START_R + 1));
-  const laneY = Math.min(stemBottom + 8, captionTop - 4);
+  const laneY = Math.min(stemBottom + 8, chartBottom - 4);
 
   for (const link of links) {
     const path = document.createElementNS(SVG_NS, 'path');

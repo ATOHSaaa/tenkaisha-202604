@@ -41,5 +41,7 @@ export default defineConfig({
     '/education/school/ogawa-unmei/': '/education/school/ogawa-mimei/',
     '/for-organizations/training/': '/for-organizations/',
     '/for-organizations/training': '/for-organizations/',
+    '/for-organizations/workshop/': '/for-organizations/',
+    '/for-organizations/workshop': '/for-organizations/',
   },
 });

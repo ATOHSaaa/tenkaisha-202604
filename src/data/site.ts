@@ -229,25 +229,6 @@ export const homeActivities: HomeActivity[] = [
   },
 ];
 
-export type OrganizationProgram = {
-  slug: string;
-  name: string;
-  summary: string;
-  image: string;
-  path: string;
-};
-
-/** 法人の方へプログラム */
-export const organizationPrograms: OrganizationProgram[] = [
-  {
-    slug: 'workshop',
-    name: '演劇ワークショップ',
-    summary: '企業・自治体・福祉施設向けに、演劇の手法を活かしたワークショップをご提案します。',
-    image: '/images/education/workshop-program.jpg',
-    path: '/for-organizations/workshop/',
-  },
-];
-
 export type EducationProgramCard = {
   title: string;
   english: string;

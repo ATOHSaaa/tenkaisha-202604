@@ -21,24 +21,17 @@ const archiveSummary = summarizeArchiveYearGroups(archiveYears);
 
 type BarPoint = { label: string; value: number; planned?: boolean };
 
-let schoolPerfRunning = 0;
-const schoolPerformanceCumulative: BarPoint[] = schoolPerformanceYearStats.map((row) => {
-  schoolPerfRunning += row.performances;
-  return {
-    label: String(row.year).slice(2),
-    value: schoolPerfRunning,
-    planned: row.planned,
-  };
-});
+const schoolPerformanceAnnual: BarPoint[] = schoolPerformanceYearStats.map((row) => ({
+  label: String(row.year).slice(2),
+  value: row.performances,
+  planned: row.planned,
+}));
 
-let workshopRunning = 0;
-const workshopCumulative: BarPoint[] = schoolWorkshopYearStats.map((row) => {
-  workshopRunning += row.sessions;
-  return {
-    label: String(row.year).slice(2),
-    value: workshopRunning,
-  };
-});
+const workshopAnnual: BarPoint[] = schoolWorkshopYearStats.map((row) => ({
+  label: String(row.year).slice(2),
+  value: row.sessions,
+  planned: row.planned,
+}));
 
 type StackSegment = {
   year: string;
@@ -117,7 +110,7 @@ function buildArchiveComboChart(
   width: number,
   height = 260,
 ): ComboChart {
-  const pad = { l: 40, r: 44, t: 12, b: 46 };
+  const pad = { l: 40, r: 44, t: 20, b: 46 };
   const plotW = width - pad.l - pad.r;
   const plotH = height - pad.t - pad.b;
   const stageCumulative = cumulativeSeries(stageCounts);
@@ -219,16 +212,13 @@ type Chart = {
 };
 
 function buildChart(points: BarPoint[], width = 560, height = 250): Chart {
-  const pad = { l: 40, r: 12, t: 12, b: 28 };
+  const pad = { l: 40, r: 12, t: 20, b: 36 };
   const plotW = width - pad.l - pad.r;
   const plotH = height - pad.t - pad.b;
   const max = Math.max(...points.map((p) => p.value), 1);
-  const step = max <= 20 ? 5 : max <= 80 ? 10 : 50;
+  const step = 5;
   const yMax = Math.ceil(max / step) * step;
-  const tickCount = 4;
-  const yTicks = Array.from({ length: tickCount + 1 }, (_, i) =>
-    Math.round((yMax / tickCount) * i),
-  );
+  const yTicks = Array.from({ length: yMax / step + 1 }, (_, i) => i * step);
   const slot = plotW / points.length;
   const barW = slot * 0.62;
   const bars = points.map((p, i) => {
@@ -244,8 +234,18 @@ function buildChart(points: BarPoint[], width = 560, height = 250): Chart {
   return { width, height, pad, plotH, bars, grid, yMax };
 }
 
-const schoolPerformanceChart = buildChart(schoolPerformanceCumulative);
-const workshopCumulativeChart = buildChart(workshopCumulative);
+const schoolPerformanceChart = buildChart(schoolPerformanceAnnual);
+const workshopAnnualChart = buildChart(workshopAnnual);
+
+function annualChartLabels(chart: Chart) {
+  return {
+    yearY: chart.height - 17,
+    plannedY: chart.height - 5,
+  };
+}
+
+const schoolBarLabels = annualChartLabels(schoolPerformanceChart);
+const workshopBarLabels = annualChartLabels(workshopAnnualChart);
 const stageCounts = archiveYears.map((row) => row.stagesCount);
 const workCounts = newUniqueWorksPerYear(archiveYears);
 const yearStackColors = buildYearStackPalette(archiveYears.length);
@@ -276,12 +276,21 @@ function calloutStartForLabel(label: string) {
 
   <div class="about-figures__grid">
     <article class="about-figures__card">
-      <h3 class="about-figures__card-title">学校公演（累計）</h3>
+      <h3 class="about-figures__card-title">学校公演</h3>
+      <dl class="about-figures__highlights">
+        <div>
+          <dt>累計上演</dt>
+          <dd class="about-figures__highlights-value">
+            <span class="about-figures__highlights-num">{schoolPerformanceSummary.totalPerformances}</span>
+            <span class="about-figures__highlights-unit">回</span>
+          </dd>
+        </div>
+      </dl>
       <svg
         class="about-figures__svg"
         viewBox={`0 0 ${schoolPerformanceChart.width} ${schoolPerformanceChart.height}`}
         role="img"
-        aria-label={`学校公演の累計上演回数。${schoolPerformanceSummary.totalPerformances}回。`}
+        aria-label={`学校公演の年度別上演回数。累計${schoolPerformanceSummary.totalPerformances}回。`}
       >
         {
           schoolPerformanceChart.grid.map((tick) => (
@@ -313,49 +322,73 @@ function calloutStartForLabel(label: string) {
                 width={bar.w}
                 height={Math.max(bar.h, 0)}
                 rx="3"
-                class:list={[
-                  'about-figures__bar',
-                  'about-figures__bar--green',
-                  bar.planned && 'about-figures__bar--planned',
-                ]}
+                class:list={['about-figures__bar', 'about-figures__bar--green']}
               >
-                <title>{`20${bar.label}年度までの累計 ${bar.value}回${bar.planned ? '（予定含む）' : ''}`}</title>
+                <title>{`20${bar.label}年度 ${bar.value}回${bar.planned ? '（予定含む）' : ''}`}</title>
               </rect>
+              {bar.value > 0 ? (
+                <text
+                  x={bar.x + bar.w / 2}
+                  y={bar.y - 4}
+                  class="about-figures__bar-value"
+                  text-anchor="middle"
+                >
+                  {bar.value}
+                </text>
+              ) : null}
               <text
                 x={bar.x + bar.w / 2}
-                y={schoolPerformanceChart.height - 8}
+                y={schoolBarLabels.yearY}
                 class="about-figures__xlabel"
                 text-anchor="middle"
               >
                 {bar.label}
               </text>
+              {bar.planned ? (
+                <text
+                  x={bar.x + bar.w / 2}
+                  y={schoolBarLabels.plannedY}
+                  class="about-figures__xlabel about-figures__xlabel--planned"
+                  text-anchor="middle"
+                >
+                  予定含む
+                </text>
+              ) : null}
             </g>
           ))
         }
       </svg>
-      <p class="about-figures__note">2014年度からの累計。2026年度は予定を含みます。</p>
     </article>
 
     <article class="about-figures__card">
-      <h3 class="about-figures__card-title">学校ワークショップ（累計）</h3>
+      <h3 class="about-figures__card-title">学校ワークショップ</h3>
+      <dl class="about-figures__highlights">
+        <div>
+          <dt>累計実施</dt>
+          <dd class="about-figures__highlights-value">
+            <span class="about-figures__highlights-num">{schoolWorkshopSummary.totalSessions}</span>
+            <span class="about-figures__highlights-unit">件</span>
+          </dd>
+        </div>
+      </dl>
       <svg
         class="about-figures__svg"
-        viewBox={`0 0 ${workshopCumulativeChart.width} ${workshopCumulativeChart.height}`}
+        viewBox={`0 0 ${workshopAnnualChart.width} ${workshopAnnualChart.height}`}
         role="img"
-        aria-label={`学校ワークショップの累計実施件数。${schoolWorkshopSummary.totalSessions}件。`}
+        aria-label={`学校ワークショップの年度別実施件数。累計${schoolWorkshopSummary.totalSessions}件。`}
       >
         {
-          workshopCumulativeChart.grid.map((tick) => (
+          workshopAnnualChart.grid.map((tick) => (
             <g>
               <line
-                x1={workshopCumulativeChart.pad.l}
-                x2={workshopCumulativeChart.width - workshopCumulativeChart.pad.r}
+                x1={workshopAnnualChart.pad.l}
+                x2={workshopAnnualChart.width - workshopAnnualChart.pad.r}
                 y1={tick.y}
                 y2={tick.y}
                 class="about-figures__grid-line"
               />
               <text
-                x={workshopCumulativeChart.pad.l - 8}
+                x={workshopAnnualChart.pad.l - 8}
                 y={tick.y + 4}
                 class="about-figures__tick"
                 text-anchor="end"
@@ -366,7 +399,7 @@ function calloutStartForLabel(label: string) {
           ))
         }
         {
-          workshopCumulativeChart.bars.map((bar) => (
+          workshopAnnualChart.bars.map((bar) => (
             <g>
               <rect
                 x={bar.x}
@@ -374,37 +407,70 @@ function calloutStartForLabel(label: string) {
                 width={bar.w}
                 height={Math.max(bar.h, 0)}
                 rx="3"
-                class:list={[
-                  'about-figures__bar',
-                  'about-figures__bar--ink',
-                  bar.planned && 'about-figures__bar--planned',
-                ]}
+                class:list={['about-figures__bar', 'about-figures__bar--ink']}
               >
-                <title>{`20${bar.label}年度までの累計 ${bar.value}件`}</title>
+                <title>{`20${bar.label}年度 ${bar.value}件${bar.planned ? '（予定含む）' : ''}`}</title>
               </rect>
+              {bar.value > 0 ? (
+                <text
+                  x={bar.x + bar.w / 2}
+                  y={bar.y - 4}
+                  class="about-figures__bar-value"
+                  text-anchor="middle"
+                >
+                  {bar.value}
+                </text>
+              ) : null}
               <text
                 x={bar.x + bar.w / 2}
-                y={workshopCumulativeChart.height - 8}
+                y={workshopBarLabels.yearY}
                 class="about-figures__xlabel"
                 text-anchor="middle"
               >
                 {bar.label}
               </text>
+              {bar.planned ? (
+                <text
+                  x={bar.x + bar.w / 2}
+                  y={workshopBarLabels.plannedY}
+                  class="about-figures__xlabel about-figures__xlabel--planned"
+                  text-anchor="middle"
+                >
+                  予定含む
+                </text>
+              ) : null}
             </g>
           ))
         }
       </svg>
-      <p class="about-figures__note">2014年度からの積み上げです。</p>
     </article>
 
     <article class="about-figures__card about-figures__card--wide">
       <div class="about-figures__wide-inner">
         <div class="about-figures__chart-col">
       <h3 class="about-figures__card-title">公演・イベント（累計）</h3>
+      <dl class="about-figures__highlights about-figures__highlights--pair">
+        <div>
+          <dt>累計上演</dt>
+          <dd class="about-figures__highlights-value">
+            <span class="about-figures__highlights-num">{archiveSummary.stagesCount}</span>
+          </dd>
+        </div>
+        <div>
+          <dt>総作品</dt>
+          <dd class="about-figures__highlights-value">
+            <span class="about-figures__highlights-num">{archiveSummary.worksCount}</span>
+          </dd>
+        </div>
+      </dl>
       <ul class="about-figures__legend">
         <li>
+          <span class="about-figures__swatch about-figures__swatch--stack" aria-hidden="true" />
+          総上演数（棒・累計）
+        </li>
+        <li>
           <span class="about-figures__swatch about-figures__swatch--line" />
-          総作品数
+          総作品数（折れ線）
         </li>
       </ul>
 
@@ -412,7 +478,7 @@ function calloutStartForLabel(label: string) {
         class="about-figures__svg about-figures__svg--wide"
         viewBox={`0 0 ${archiveComboChart.width} ${archiveComboChart.height}`}
         role="img"
-        aria-label={`上演日数の累計積み上げ棒と総作品数${archiveSummary.worksCount}の折れ線。累計上演${archiveSummary.stagesCount}日。`}
+        aria-label={`棒は累計上演（${archiveSummary.stagesCount}）。折れ線は総作品数${archiveSummary.worksCount}。`}
       >
           {
             archiveComboChart.grid.map((tick) => (
@@ -464,6 +530,16 @@ function calloutStartForLabel(label: string) {
                     </rect>
                   ))
                 }
+                {col.total > 0 && col.segments.length > 0 ? (
+                  <text
+                    x={col.x + col.w / 2}
+                    y={Math.min(...col.segments.map((seg) => seg.y)) - 4}
+                    class="about-figures__bar-value"
+                    text-anchor="middle"
+                  >
+                    {col.total}
+                  </text>
+                ) : null}
                 <text
                   x={col.x + col.w / 2}
                   y={archiveComboChart.height - 24}
@@ -486,9 +562,6 @@ function calloutStartForLabel(label: string) {
             ))
           }
       </svg>
-      <p class="about-figures__note about-figures__note--chart">
-        左軸：上演日数（棒・年ごとの色）。右軸：総作品数（折れ線・その年に初めて記録された作品の累計）。
-      </p>
         </div>
 
         <div class="about-figures__notes">
@@ -496,22 +569,19 @@ function calloutStartForLabel(label: string) {
             <li class="about-figures__note-item" data-callout-year="2015">
               <span class="about-figures__note-anchor" aria-hidden="true" />
               <p>
-                <span class="about-figures__note-year">2015年</span>
-                の設立から、ほぼ月1回以上の公演を行っています！
+                <span class="about-figures__note-year">2015年</span>の設立から、ほぼ月1回以上の公演を行っています！
               </p>
             </li>
             <li class="about-figures__note-item" data-callout-year="2019">
               <span class="about-figures__note-anchor" aria-hidden="true" />
               <p>
-                <span class="about-figures__note-year">2019年</span>
-                〜2021年は、新型コロナウイルスの影響で上演が停滞……。できる範囲で活動を行いました。
+                <span class="about-figures__note-year">2019年〜2021年</span>は、新型コロナウイルスの影響で上演が停滞……。できる範囲で活動を行いました。
               </p>
             </li>
             <li class="about-figures__note-item" data-callout-year="2024">
               <span class="about-figures__note-anchor" aria-hidden="true" />
               <p>
-                <span class="about-figures__note-year">2024年</span>
-                以降は、特にロングラン公演に力を入れています。1つの作品を改作して何度も上演。レパートリーも増え、作品数を増やさなくても安定して上演することができるようになりました。
+                <span class="about-figures__note-year">2024年</span>以降は、特にロングラン公演に力を入れています。1つの作品を改作して何度も上演。レパートリーも増え、作品数を増やさなくても安定して上演することができるようになりました。
               </p>
             </li>
           </ul>

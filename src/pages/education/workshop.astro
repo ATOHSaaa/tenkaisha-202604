@@ -47,8 +47,9 @@ const introLead = workshopPage.intro;
         </div>
 
         <aside class="ws-page-stack__sidebar">
-          <a class="ws-intro__cover-link" href={casebookHref}>
-            <figure class="ws-intro__cover">
+          <p class="ws-intro__cover-tag">＼5つの事例を掲載／</p>
+          <figure class="ws-intro__cover">
+            <a class="ws-intro__cover-link" href={casebookHref}>
               <img
                 src={withBase(workshopCasebookCover)}
                 alt="演劇ワークショップ事例集の表紙"
@@ -56,11 +57,14 @@ const introLead = workshopPage.intro;
                 height={1024}
                 loading="lazy"
               />
-              <figcaption class="ws-intro__cover-caption">
-                演劇ワークショップ事例集
-              </figcaption>
-            </figure>
-          </a>
+            </a>
+            <figcaption class="ws-intro__cover-caption">
+              『演劇ワークショップ事例集』
+            </figcaption>
+          </figure>
+          <p class="ws-intro__casebook-more-wrap">
+            <a class="ws-intro__casebook-more" href={casebookHref}>詳細を見る →</a>
+          </p>
         </aside>
 
         <div class="ws-page-stack__about-slot">

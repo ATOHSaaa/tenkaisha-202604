@@ -18,11 +18,16 @@ default:
 #   members        … 劇団員紹介 /members/
 #   school         … 学校公演 演目詳細 /education/school/*/
 #   requestDetail  … 法人向け等 RequestDetail レイアウト
+#   forOrganizations … 法人の方へ /for-organizations/
 placements:
   classes:
     lines:
       - 体験参加・見学のご相談もお気軽にどうぞ。
   education: {}
   members: {}
+  forOrganizations:
+    lines:
+      - 目的・日程・予算など、内容に合わせてご提案いたします。
+      - まずはお気軽にお問い合わせください。
   school: {}
   requestDetail: {}

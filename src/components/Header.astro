@@ -162,6 +162,94 @@ const currentPath = stripBasePath(Astro.url.pathname);
   /** ClientRouter の入れ替え中は pointerout でホバーを消さない */
   let navSwapSettled = true;
   let snapNavIndicatorToCurrent: (() => void) | null = null;
+  let headerCompactObserver: ResizeObserver | null = null;
+  let headerCompactResizeBound = false;
+
+  function siteHeaderRoot(): HTMLElement | null {
+    return document.querySelector('.site-header-root');
+  }
+
+  function isSiteHeaderInlineNav(): boolean {
+    const root = siteHeaderRoot();
+    return (
+      window.matchMedia('(min-width: 901px)').matches &&
+      !(root?.classList.contains('is-nav-compact') ?? false)
+    );
+  }
+
+  function closeSiteHeaderNavIfOpen(): void {
+    const root = siteHeaderRoot();
+    if (!root?.classList.contains('is-nav-open')) return;
+    root.dispatchEvent(new CustomEvent('site-header:force-close', { bubbles: true }));
+  }
+
+  function measureSiteHeaderNavCompact(): void {
+    const root = siteHeaderRoot();
+    const inner = root?.querySelector('.site-header__inner');
+    const start = root?.querySelector('.site-header__start');
+    const nav = document.getElementById('site-header-nav');
+    const list = nav?.querySelector('.site-header__nav-list');
+    if (!root || !inner || !start || !nav || !list) return;
+
+    const hadCompact = root.classList.contains('is-nav-compact');
+    if (hadCompact) root.classList.remove('is-nav-compact');
+
+    let compact = window.matchMedia('(max-width: 900px)').matches;
+    if (!compact) {
+      const startRect = start.getBoundingClientRect();
+      const navRect = nav.getBoundingClientRect();
+      const listRect = list.getBoundingClientRect();
+      const firstItem = list.querySelector('.site-header__nav-item');
+      const rowH = firstItem?.getBoundingClientRect().height ?? 40;
+      const wrapped = listRect.height > rowH * 1.6;
+      const overlap = navRect.left < startRect.right - 4;
+      const overflow = list.scrollWidth > nav.clientWidth + 2;
+      const itemHitsStart = [...list.querySelectorAll('.site-header__nav-item')].some(
+        (item) => {
+          const r = item.getBoundingClientRect();
+          return (
+            r.right > startRect.left + 4 &&
+            r.left < startRect.right - 2 &&
+            r.bottom > startRect.top + 2
+          );
+        },
+      );
+      const innerRect = inner.getBoundingClientRect();
+      const navRoom = innerRect.width - startRect.width - 16;
+      const notEnoughRoom = list.scrollWidth > navRoom + 1;
+      compact = wrapped || overlap || overflow || itemHitsStart || notEnoughRoom;
+    }
+
+    const wasCompact = hadCompact;
+    root.classList.toggle('is-nav-compact', compact);
+    if (wasCompact && !compact) {
+      closeSiteHeaderNavIfOpen();
+    }
+    snapNavIndicatorToCurrent?.();
+  }
+
+  function setupSiteHeaderCompactNav(): void {
+    const root = siteHeaderRoot();
+    const inner = root?.querySelector('.site-header__inner');
+    const nav = document.getElementById('site-header-nav');
+    const list = nav?.querySelector('.site-header__nav-list');
+    if (!root || !inner || !list) return;
+
+    headerCompactObserver?.disconnect();
+    headerCompactObserver = new ResizeObserver(() => {
+      measureSiteHeaderNavCompact();
+    });
+    headerCompactObserver.observe(inner);
+    headerCompactObserver.observe(list);
+
+    if (!headerCompactResizeBound) {
+      headerCompactResizeBound = true;
+      window.addEventListener('resize', measureSiteHeaderNavCompact, { passive: true });
+      window.matchMedia('(max-width: 900px)').addEventListener('change', measureSiteHeaderNavCompact);
+    }
+
+    measureSiteHeaderNavCompact();
+  }
 
   function navLinkFromEvent(event: Event): HTMLAnchorElement | null {
     const target = event.target;
@@ -192,7 +280,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
     if (document.documentElement.hasAttribute('data-header-hover-hold')) return;
     document.documentElement.setAttribute('data-header-hover-hold', '');
 
-    const desktop = () => window.matchMedia('(min-width: 901px)').matches;
+    const desktop = () => isSiteHeaderInlineNav();
 
     document.addEventListener('pointerover', (event) => {
       if (!desktop()) return;
@@ -255,7 +343,15 @@ const currentPath = stripBasePath(Astro.url.pathname);
     if (!root || !toggle || !nav || !backdrop || root.hasAttribute('data-nav-bound')) return;
     root.setAttribute('data-nav-bound', '');
 
-    const isMobileNav = () => window.matchMedia('(max-width: 900px)').matches;
+    const isMobileNav = () => {
+      const root = siteHeaderRoot();
+      return (
+        window.matchMedia('(max-width: 900px)').matches ||
+        (root?.classList.contains('is-nav-compact') ?? false)
+      );
+    };
+
+    root.addEventListener('site-header:force-close', () => setOpen(false));
 
     let menuScrollLockY = 0;
 
@@ -326,7 +422,8 @@ const currentPath = stripBasePath(Astro.url.pathname);
     });
 
     window.matchMedia('(min-width: 901px)').addEventListener('change', (event) => {
-      if (event.matches) setOpen(false);
+      measureSiteHeaderNavCompact();
+      if (event.matches && !siteHeaderRoot()?.classList.contains('is-nav-compact')) setOpen(false);
     });
   }
 
@@ -343,6 +440,8 @@ const currentPath = stripBasePath(Astro.url.pathname);
     nav.setAttribute('data-indicator-bound', '');
 
     const desktopMq = window.matchMedia('(min-width: 901px)');
+    const isDesktopNavLayout = (): boolean =>
+      desktopMq.matches && !(nav.closest('.site-header-root')?.classList.contains('is-nav-compact') ?? false);
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const links = () => [...list.querySelectorAll<HTMLAnchorElement>('.site-header__link')];
 
@@ -389,7 +488,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
       list.querySelector<HTMLAnchorElement>(`.site-header__link.${HOVER_HOLD_CLASS}`);
 
     const moveTo = (link: HTMLAnchorElement, forceInstant = false): void => {
-      if (!desktopMq.matches) return;
+      if (!isDesktopNavLayout()) return;
       cancelScheduledHide();
       const navRect = nav.getBoundingClientRect();
       const linkRect = link.getBoundingClientRect();
@@ -412,7 +511,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
     links().forEach((link) => {
       link.addEventListener('mouseenter', () => moveTo(link));
       link.addEventListener('mouseleave', () => {
-        if (!desktopMq.matches) return;
+        if (!isDesktopNavLayout()) return;
         requestAnimationFrame(() => {
           if (activeHoverLink()) return;
           scheduleHide();
@@ -423,20 +522,20 @@ const currentPath = stripBasePath(Astro.url.pathname);
 
     list.addEventListener('mouseleave', scheduleHide);
     nav.addEventListener('mouseleave', (event) => {
-      if (!desktopMq.matches) return;
+      if (!isDesktopNavLayout()) return;
       const next = event.relatedTarget;
       if (next instanceof Node && nav.contains(next)) return;
       scheduleHide();
     });
     nav.addEventListener('focusout', (event) => {
-      if (!desktopMq.matches) return;
+      if (!isDesktopNavLayout()) return;
       const next = event.relatedTarget;
       if (next instanceof Node && nav.contains(next)) return;
       scheduleHide();
     });
 
     const onLayoutChange = (): void => {
-      if (!desktopMq.matches) {
+      if (!isDesktopNavLayout()) {
         hideNow();
         return;
       }
@@ -449,7 +548,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
     };
 
     snapNavIndicatorToCurrent = (): void => {
-      if (!desktopMq.matches) return;
+      if (!isDesktopNavLayout()) return;
       const hovered = activeHoverLink();
       if (hovered) {
         moveTo(hovered, true);
@@ -504,6 +603,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
     update();
   }
 
+  setupSiteHeaderCompactNav();
   setupSiteHeaderMenu();
   syncSiteHeaderNavCurrent();
   setupSiteHeaderNavIndicator();
@@ -513,6 +613,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
   if (!document.documentElement.hasAttribute('data-header-page-load')) {
     document.documentElement.setAttribute('data-header-page-load', '');
     document.addEventListener('astro:page-load', () => {
+      setupSiteHeaderCompactNav();
       setupSiteHeaderMenu();
       syncSiteHeaderNavCurrent();
       setupSiteHeaderNavIndicator();

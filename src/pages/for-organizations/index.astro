@@ -1,25 +1,114 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
-import Card from '../../components/Card.astro';
-import { organizationPrograms } from '../../data/site';
+import PageContactCta from '../../components/PageContactCta.astro';
+import { getMemberProfile } from '../../data/member-profiles';
+import {
+  getMemberBySlug,
+  isMemberNameplate,
+  memberHref,
+} from '../../utils/members-content';
+import { withBase } from '../../utils/path';
+
+const team = [
+  { slug: 'komatsuno-nozomi', roleLabel: 'プロデューサー' },
+  { slug: 'kamei-juntaro', roleLabel: 'メインディレクター' },
+  { slug: 'sakaguchi-kanoko', roleLabel: '講師' },
+  { slug: 'fujino-minami', roleLabel: '講師' },
+] as const;
+
+const leads = team.map(({ slug, roleLabel }) => {
+  const member = getMemberBySlug(slug)!;
+  return {
+    member,
+    roleLabel,
+    bio: getMemberProfile(slug)?.bio ?? member.bio ?? '',
+  };
+});
+
+const offerPoints = [
+  '公演・イベントの企画・制作（オリジナルミュージカル、学校公演など）',
+  '企業研修・チームビルディング・地域活性化向けの演劇ワークショップ',
+  '講師・ファシリテーターの派遣（1時間の体験から継続プログラムまで）',
+];
 ---
 
-<Base title="法人の方へ" description="企業・自治体向けの演劇ワークショップのご案内。">
-  <PageHeader
-    jp="法人の方へ"
-    lead="企業・自治体・学校など、法人・団体向けの演劇プログラムをご用意しています。"
-  />
+<Base
+  title="法人の方へ"
+  description="企業・自治体・学校向けの演劇プログラム。小松野希海、亀井純太郎、坂口佳乃子、藤野未波ほかがご提案・講師を担当します。"
+>
+  <PageHeader jp="法人の方へ" />
 
-  <section class="section">
+  <section class="section for-org">
     <div class="container">
-      <div class="grid grid--2">
-        {
-          organizationPrograms.map((p) => (
-            <Card href={p.path} title={p.name} body={p.summary} />
-          ))
-        }
+      <h2 class="for-org__page-title">「企業向け演劇ワークショップ」のご案内</h2>
+
+      <div class="prose for-org__intro">
+        <p>
+          転回社は、熊本を拠点に舞台制作と演劇教育を行う一般社団法人です。企業・自治体・学校・福祉施設など、法人・団体向けに公演、演劇ワークショップ、講師派遣をご用意しています。目的・対象・時間に合わせて内容を設計しますので、まずはお気軽にご相談ください。
+        </p>
+        <h2>ご提供できること</h2>
+        <ul>
+          {offerPoints.map((point) => (
+            <li>{point}</li>
+          ))}
+        </ul>
       </div>
+
+      <div class="for-org__team">
+        <h2 class="for-org__team-heading heading-section">担当</h2>
+        <div class="for-org__leads">
+          {
+            leads.map(({ member, roleLabel, bio }) => (
+              <article class="for-org-lead">
+                <a class="for-org-lead__head" href={memberHref(member.slug)}>
+                  <div class="for-org-lead__photo-wrap">
+                    <div
+                      class:list={[
+                        'for-org-lead__photo-frame',
+                        isMemberNameplate(member) && 'for-org-lead__photo-frame--monogram',
+                      ]}
+                    >
+                      {member.photoMonogram ? (
+                        <div class="for-org-lead__photo for-org-lead__photo--monogram" aria-hidden="true">
+                          <span class="member__monogram-label">{member.photoMonogram}</span>
+                        </div>
+                      ) : (
+                        <img
+                          class:list={[
+                            'for-org-lead__photo',
+                            member.slug === 'komatsuno-nozomi' && 'member__photo--komatsuno',
+                            member.slug === 'sakaguchi-kanoko' && 'member__photo--sakaguchi',
+                          ]}
+                          src={withBase(member.photo!)}
+                          alt=""
+                          loading="lazy"
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div class="for-org-lead__identity">
+                    <p class="for-org-lead__role">{roleLabel}</p>
+                    <h3 class="for-org-lead__name">{member.name}</h3>
+                  </div>
+                </a>
+                <div class="for-org-lead__body prose">
+                  {bio.split('\n\n').filter(Boolean).map((paragraph) => (
+                    <p>{paragraph}</p>
+                  ))}
+                </div>
+                <p class="for-org-lead__more">
+                  <a class="for-org-lead__more-link" href={memberHref(member.slug)}>
+                    プロフィールを見る →
+                  </a>
+                </p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+
+      <PageContactCta placement="forOrganizations" />
     </div>
   </section>
 </Base>

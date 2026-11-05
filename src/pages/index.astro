@@ -272,4 +272,11 @@ const heroMarqueeItems = currentPerformances
     </div>
   </section>
   </div>
+
+  <script>
+    import { initHomeClassesHangLight } from '../scripts/home-classes-hang-light';
+
+    initHomeClassesHangLight();
+    document.addEventListener('astro:page-load', initHomeClassesHangLight);
+  </script>
 </Base>
