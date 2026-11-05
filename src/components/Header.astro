@@ -1,4 +1,5 @@
 ---
+import HeaderBrandCube from './HeaderBrandCube.astro';
 import { siteHeaderNav, isSiteNavCurrent } from '../data/site-nav';
 import { withBase, stripBasePath } from '../utils/path';
 import { THEME_USER_CHOICE_ENABLED } from '../scripts/theme';
@@ -11,6 +12,7 @@ const currentPath = stripBasePath(Astro.url.pathname);
   <div class="site-header__inner container">
     <div class="site-header__start">
       <a class="site-header__brand" href={withBase('/')} aria-label="転回社 トップへ">
+        <HeaderBrandCube />
         <span class="site-header__logo">転回社</span>
       </a>
       <div class="site-header__scroll-progress-wrap">
