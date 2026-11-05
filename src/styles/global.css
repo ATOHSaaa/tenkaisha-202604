@@ -323,10 +323,6 @@ h1.heading-section {
     font-weight: 500;
     line-height: 1.65;
     color: var(--fg);
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
-    overflow: hidden;
   }
 
   .events-page
@@ -1177,6 +1173,7 @@ a.card:focus-visible {
 @media (min-width: 961px) {
   .grid-events.grid-events--pair {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
   }
 
   .grid-events.grid-events--pair .card--sidebar,
@@ -1184,9 +1181,9 @@ a.card:focus-visible {
     --event-card-flyer-col: clamp(150px, 52%, 380px);
     --event-card-flyer-frame-min-h: clamp(180px, 22vw, 320px);
     --card-pad-effective: var(--space-5);
-    align-self: stretch;
-    height: 100%;
-    grid-template-rows: minmax(0, 1fr);
+    align-self: start;
+    height: auto;
+    grid-template-rows: auto;
     align-content: start;
     padding: var(--space-5) var(--space-5) var(--space-6);
     box-sizing: border-box;
@@ -1196,8 +1193,8 @@ a.card:focus-visible {
   .grid-long-run.grid-events--pair .card--sidebar .card__visual--sidebar {
     display: grid;
     grid-template-columns: var(--event-card-flyer-col) minmax(0, 1fr);
-    align-self: stretch;
-    height: 100%;
+    align-self: start;
+    height: auto;
     min-height: 0;
   }
 
@@ -1242,15 +1239,19 @@ a.card:focus-visible {
     font-weight: 500;
     line-height: 1.65;
     color: var(--fg);
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
-    overflow: hidden;
   }
 
   .grid-events.grid-events--pair .card--sidebar .card__meta .card__body + .card__next,
   .grid-long-run.grid-events--pair .card--sidebar .card__meta .card__body + .card__next {
     margin-top: var(--space-2);
+  }
+
+  /* 2列カード: あらすじ全文（織田信長など末尾の固有名）が切れないよう高さ固定を使わない */
+  .grid-events.grid-events--pair > .card.card--sidebar,
+  .grid-long-run.grid-events--pair > .card.card--sidebar {
+    height: auto;
+    min-height: 0;
+    grid-template-rows: auto;
   }
 }
 
@@ -1258,9 +1259,10 @@ a.card:focus-visible {
   .grid-events.grid-events--pair .card--sidebar,
   .grid-long-run.grid-events--pair .card--sidebar {
     --card-pad-effective: var(--space-4);
-    align-self: stretch;
-    height: 100%;
-    grid-template-rows: minmax(0, 1fr);
+    align-self: start;
+    height: auto;
+    min-height: 0;
+    grid-template-rows: auto;
     padding: var(--space-4) var(--space-5) var(--space-5);
     box-sizing: border-box;
   }
@@ -1393,6 +1395,13 @@ a.card:focus-visible {
     transform var(--dur-float) var(--ease-float),
     box-shadow var(--dur-float) var(--ease-float),
     background-color var(--dur-float) var(--ease-float);
+}
+
+.grid-long-run.grid-events--pair > .card.card--sidebar,
+.grid-events.grid-events--pair > .card.card--sidebar {
+  height: auto;
+  min-height: 0;
+  grid-template-rows: auto;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -2139,7 +2148,7 @@ a.card:focus-visible {
   margin-top: 0.35em;
 }
 
-.prose a:not(.btn):not(.ws-intro__cover-link):not(.school-repertoire__body) {
+.prose a:not(.btn):not(.ws-intro__cover-link):not(.school-repertoire__body):not(.school-repertoire-card) {
   border-bottom: 1px solid currentColor;
 }
 
@@ -2151,17 +2160,16 @@ a.card:focus-visible {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .prose
-    html[data-scroll-motion="on"] a:not(.btn):not(.ws-intro__cover-link):not(.school-repertoire__body):hover {
+  html[data-scroll-motion="on"]
+    .prose
+    a:not(.btn):not(.ws-intro__cover-link):not(.school-repertoire__body):not(.school-repertoire-card):hover {
     color: var(--bg);
     background: var(--fg);
   }
 }
 
 .prose
-  a:not(.btn):not(.ws-intro__cover-link):not(
-    .school-repertoire__body
-  ):focus-visible {
+  a:not(.btn):not(.ws-intro__cover-link):not(.school-repertoire__body):not(.school-repertoire-card):focus-visible {
   color: var(--bg);
   background: var(--fg);
 }
@@ -2358,8 +2366,200 @@ a.card:focus-visible {
 }
 
 /* 学校公演：演目一覧（prose の table スタイルとは独立） */
-.prose > h2 + .school-repertoire {
+.prose > h2 + .school-repertoire-shell {
   margin-top: clamp(16px, 2.5vw, 28px);
+}
+
+.school-repertoire-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-bottom: clamp(32px, 5vw, 56px);
+}
+
+.school-repertoire-shell__hint {
+  display: none;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.school-repertoire-shell__hint-icon {
+  font-family: var(--font-en);
+  font-size: 1.05em;
+  letter-spacing: 0.02em;
+}
+
+.school-repertoire-shell--scrollable .school-repertoire-shell__hint {
+  display: flex;
+}
+
+.school-repertoire-cards {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--card-grid-gap);
+}
+
+.prose ul.school-repertoire-cards {
+  list-style: none;
+  padding-left: 0;
+}
+
+.school-repertoire-cards__item {
+  margin: 0;
+  list-style: none;
+}
+
+.school-repertoire-card {
+  display: block;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg-alt);
+  padding: var(--space-4);
+  box-sizing: border-box;
+  color: inherit;
+  text-decoration: none;
+  position: relative;
+  transform: translate3d(0, 0, 0);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--dur-float) var(--ease-float),
+    box-shadow var(--dur-float) var(--ease-float),
+    background-color var(--dur-float) var(--ease-float);
+  backface-visibility: hidden;
+}
+
+.school-repertoire-card__work {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(16px, 4.2vw, 18px);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+
+.school-repertoire-card .school-repertoire__work {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.school-repertoire-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.school-repertoire-card__row {
+  display: grid;
+  grid-template-columns: 4.25em minmax(0, 1fr);
+  column-gap: var(--space-2);
+  row-gap: var(--space-1);
+  align-items: start;
+  margin: 0;
+}
+
+.school-repertoire-card__label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.school-repertoire-card__value {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+  min-width: 0;
+}
+
+.school-repertoire-table-view {
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html[data-scroll-motion="on"] a.school-repertoire-card:hover {
+    background: var(--accent);
+    transform: translate3d(0, var(--lift-y), 0);
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+a.school-repertoire-card:focus-visible {
+  background: var(--accent);
+  transform: translate3d(0, var(--lift-y), 0);
+  box-shadow: var(--shadow-card-hover);
+  outline: 2px solid var(--line);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .school-repertoire-shell__hint,
+  .school-repertoire-shell--scrollable .school-repertoire-shell__hint {
+    display: none;
+  }
+
+  .school-repertoire-table-view {
+    display: none;
+  }
+
+  .school-repertoire-cards {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.school-repertoire-scroll {
+  position: relative;
+  max-width: 100%;
+}
+
+.school-repertoire-shell--scrollable:not(.school-repertoire-shell--at-end) .school-repertoire-scroll::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  width: clamp(2rem, 12vw, 3.25rem);
+  pointer-events: none;
+  border-radius: 0 calc(var(--radius-card) - 1px) calc(var(--radius-card) - 1px) 0;
+  background: linear-gradient(
+    to left,
+    color-mix(in srgb, var(--bg) 94%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 55%, transparent) 45%,
+    transparent 100%
+  );
+  z-index: 3;
+}
+
+.school-repertoire-shell--scrollable:not(.school-repertoire-shell--at-start) .school-repertoire-scroll::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  bottom: 1px;
+  width: clamp(1.25rem, 6vw, 2rem);
+  pointer-events: none;
+  border-radius: calc(var(--radius-card) - 1px) 0 0 calc(var(--radius-card) - 1px);
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--bg) 88%, transparent) 0%,
+    transparent 100%
+  );
+  z-index: 3;
 }
 
 .school-repertoire {
@@ -2369,7 +2569,7 @@ a.card:focus-visible {
   width: 100%;
   max-width: 100%;
   margin-top: 0;
-  margin-bottom: clamp(32px, 5vw, 56px);
+  margin-bottom: 0;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   border: 1px solid var(--line);
@@ -2428,6 +2628,8 @@ a.card:focus-visible {
   font-weight: 500;
   line-height: 1.65;
   letter-spacing: 0.02em;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .school-repertoire__cell:first-child {
@@ -2437,6 +2639,7 @@ a.card:focus-visible {
   border-right-color: var(--line);
   background: inherit;
   white-space: nowrap;
+  box-shadow: 1px 0 0 color-mix(in srgb, var(--line) 65%, transparent);
 }
 
 .school-repertoire__body .school-repertoire__cell:first-child {
@@ -2463,6 +2666,14 @@ a.card:focus-visible {
 
 .school-repertoire__head .school-repertoire__cell:first-child {
   z-index: 2;
+}
+
+.school-repertoire__work {
+  display: inline;
+}
+
+.school-repertoire__work-line {
+  display: inline;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -2501,7 +2712,57 @@ a.card:focus-visible {
 
 @media (max-width: 900px) {
   .school-repertoire__grid {
+    width: max-content;
     min-width: 44rem;
+    grid-template-columns:
+    minmax(7.5rem, max-content)
+    minmax(13.5rem, max-content)
+      var(--school-targets-col)
+      minmax(4.5rem, max-content);
+  }
+
+  .school-repertoire__row {
+    min-width: 0;
+  }
+
+  .school-repertoire__cell {
+    min-width: auto;
+    max-width: 100%;
+  }
+
+  .school-repertoire__cell:nth-child(3) {
+    min-width: var(--school-targets-col);
+    max-width: var(--school-targets-col);
+  }
+
+  .school-repertoire__cell:first-child,
+  .school-repertoire__cell--work {
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  .school-repertoire__cell:first-child {
+    min-width: 7.5rem;
+  }
+
+  .school-repertoire__work {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .school-repertoire__cell:nth-child(2) {
+    min-width: 13.5rem;
+  }
+
+  .school-repertoire__cell:last-child {
+    min-width: 4.5rem;
   }
 }
 
@@ -4531,11 +4792,15 @@ html[data-scroll-motion="off"] .page-header__eyecatch-char.page-header__eyecatch
 
 .page-header__intro-panel {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin: 0 0 clamp(16px, 3vw, 28px);
   padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 40px);
   background: var(--bg-alt);
   border-radius: var(--radius-card);
   text-align: center;
+  box-sizing: border-box;
+  overflow-x: clip;
 }
 
 .page-header--intro-panel.page-header--compact .page-header__jp {
@@ -4544,16 +4809,18 @@ html[data-scroll-motion="off"] .page-header__eyecatch-char.page-header__eyecatch
 
 .page-header__intro-panel .page-header__eyecatch {
   margin: 0 0 clamp(24px, 4vw, 40px);
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .page-header__intro-panel .page-header__lead--intro-panel {
   margin: 0 auto;
-  width: auto;
+  width: 100%;
   max-width: min(100%, 40rem);
   text-align: center;
   line-break: strict;
   word-break: keep-all;
-  overflow-wrap: normal;
+  overflow-wrap: anywhere;
 }
 
 .page-header__intro-panel
@@ -7143,6 +7410,92 @@ a.perf-history__date--link {
   pointer-events: none;
 }
 
+/* 「これまで」カード: タグ → チラシ → タイトル */
+.events-archive .grid-events .card.card--archive {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: auto;
+  min-height: 0;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  box-sizing: border-box;
+}
+
+.events-archive .grid-events .card.card--archive .card__badges {
+  width: 100%;
+  margin: 0;
+  justify-content: flex-start;
+  align-self: flex-start;
+}
+
+.events-archive .grid-events .card.card--archive .card__badges .card__badge {
+  align-self: flex-start;
+  margin-inline: 0;
+  text-align: left;
+}
+
+.events-archive .grid-events .card.card--archive .card__visual--archive {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 0;
+}
+
+.events-archive .grid-events .card.card--archive .card__visual--archive .card__thumb-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: clamp(120px, 36vw, 200px);
+  min-height: clamp(120px, 36vw, 200px);
+  max-height: clamp(120px, 36vw, 200px);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.events-archive .grid-events .card.card--archive .card__visual--archive .card__thumb {
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  margin-inline: auto;
+  border: none;
+}
+
+.events-archive .grid-events .card.card--archive .card__visual--archive .card__title {
+  min-height: 0;
+  display: block;
+  text-align: left;
+  align-self: stretch;
+  font-size: clamp(14px, 3.8vw, 16px);
+  line-height: 1.45;
+  margin-block-start: var(--space-3);
+  margin-block-end: var(--space-1);
+}
+
+.events-archive .grid-events .card.card--archive .card__next {
+  align-self: stretch;
+  justify-content: flex-start;
+  text-align: left;
+  white-space: normal;
+}
+
+@media (max-width: 560px) {
+  .events-archive .grid-events .card.card--archive {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .events-archive .grid-events .card.card--archive .card__visual--archive {
+    display: flex;
+  }
+}
+
 /* ---------- 団体向け ---------- */
 .section {
   padding-bottom: clamp(40px, 8vw, 96px);
@@ -7647,8 +8000,9 @@ html[data-scroll-motion="off"] .home-side-marquee__col-track {
     --home-main-guide-line-top: -2px;
   }
 
-  .home .home-hero {
-    margin-top: var(--site-header-gap);
+  /* margin だと親へ抜けて縦線の起点も下がる。padding なら線はヘッダー下端から通る */
+  .home .home-main-guide {
+    padding-top: var(--site-header-gap);
   }
 }
 
@@ -9520,15 +9874,241 @@ html[data-theme="dark"] .member-detail__photo-wrap--monogram::after {
 .member-detail {
   padding-bottom: clamp(48px, 8vw, 96px);
 }
+.member-detail--profile-shell {
+  padding-top: var(--heading-area-pt);
+}
 .page-header--compact + .member-detail {
   padding-top: clamp(16px, 2.5vw, 28px);
 }
 .page-header--compact:has(+ .member-detail) .page-header__lead {
   margin: 0;
 }
+.member-detail__name {
+  margin: 0;
+  font-size: var(--member-detail-name-size, clamp(20px, 2.8vw, var(--heading-section-size)));
+  letter-spacing: var(--heading-section-tracking);
+  line-height: var(--heading-section-lh);
+}
+
+.member-detail__name--vertical {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-family: var(--font-jp);
+  font-weight: var(--font-weight-heading);
+  letter-spacing: 0.12em;
+  line-height: 1.45;
+  word-break: keep-all;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.2em;
+}
+
+.member-detail__name-part {
+  display: block;
+}
+
+.member-detail__role {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--fg);
+  word-break: keep-all;
+}
+
+.member-detail__role--vertical {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-family: var(--font-jp);
+  font-size: clamp(13px, 1.75vw, 16px);
+  font-weight: 600;
+  line-height: 1.5;
+  flex-shrink: 0;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.25em;
+  letter-spacing: 0;
+}
+
+.member-detail__role-part {
+  letter-spacing: 0.14em;
+}
+
+.member-detail__role--vertical .member-detail__role-slash {
+  letter-spacing: 0;
+}
+
+.member-detail__name-cluster {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.member-detail__name-cluster .member-detail__role--vertical {
+  position: absolute;
+  left: calc(100% + clamp(6px, 1vw, 12px));
+  top: 0;
+  margin: 0;
+}
+
+.member-detail__byline {
+  display: flex;
+  justify-content: center;
+  width: var(--member-detail-photo-size, min(100%, 200px));
+  max-width: 100%;
+  margin-top: var(--space-2);
+}
+
 .member-detail__inner {
   padding-top: 0;
 }
+
+.member-detail__shell {
+  --member-detail-name-size: clamp(20px, 2.8vw, var(--heading-section-size));
+  --member-detail-photo-size: min(100%, 200px);
+  --member-detail-identity-width: max(
+    200px,
+    calc(5 * var(--member-detail-name-size) * 1.12 + var(--space-6))
+  );
+  display: grid;
+  grid-template-columns: minmax(0, var(--member-detail-identity-width)) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+.member-detail__shell--hi-res {
+  --member-detail-photo-size: min(100%, 360px);
+  --member-detail-identity-width: max(
+    360px,
+    calc(5 * var(--member-detail-name-size) * 1.12 + var(--space-6))
+  );
+}
+
+.member-detail__identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+  width: 100%;
+}
+
+.member-detail__identity .member-detail__photo-wrap {
+  width: var(--member-detail-photo-size, min(100%, 200px));
+  max-width: 100%;
+}
+
+.member-detail__shell > .member-detail__main {
+  min-width: 0;
+}
+
+@media (min-width: 901px) {
+  .member-detail__identity {
+    position: sticky;
+    top: var(--sticky-sidebar-top);
+    align-self: start;
+    max-height: calc(100vh - var(--sticky-sidebar-top) - var(--space-4));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .member-detail__main-lead {
+    margin: 0;
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.85;
+  }
+
+  .member-detail__main-lead p {
+    margin: 0;
+  }
+
+  .member-detail__main-lead p + p {
+    margin-top: 0.85em;
+  }
+}
+
+.member-detail__body--sidebar {
+  width: 100%;
+  max-width: none;
+  padding-top: 0;
+  font-size: clamp(15px, 1.6vw, 17px);
+  line-height: 1.85;
+}
+
+.member-detail__body--sidebar p {
+  margin: 0;
+}
+
+.member-detail__main {
+  min-width: 0;
+  max-width: none;
+}
+
+.member-detail__main h2 {
+  margin-top: 0;
+  margin-bottom: var(--space-4);
+  font-size: clamp(18px, 2.2vw, 22px);
+  letter-spacing: 0.08em;
+}
+
+.member-detail__main-lead {
+  font-weight: 600;
+}
+
+.member-detail__main .member-profile__subhead {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-jp);
+  font-size: clamp(15px, 1.7vw, 17px);
+  font-weight: var(--font-weight-heading);
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  color: var(--fg);
+}
+
+.member-detail__main .member-profile__group + .member-profile__group {
+  margin-top: var(--space-5);
+}
+
+/* .prose > * + * の 1em より優先してセクション間を空ける */
+.member-detail__main.prose > .member-profile__block + .member-profile__block {
+  margin-top: clamp(36px, 5vw, 56px);
+}
+
+.member-profile__list {
+  list-style: disc;
+  margin: 0;
+  padding: 0 0 0 1.65em;
+  font-size: clamp(15px, 1.6vw, 17px);
+  line-height: 1.75;
+}
+
+.member-profile__item {
+  margin: 0;
+  padding: 0.2em 0;
+}
+
+.member-profile__when {
+  font-family: var(--font-en);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.member-profile__when::after {
+  content: '\00a0';
+}
+
+.member-profile__footer {
+  margin: var(--space-4) 0 0;
+  font-size: clamp(14px, 1.5vw, 16px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-align: right;
+  color: var(--fg-soft);
+}
+
 .member-detail__layout {
   display: grid;
   gap: clamp(32px, 5vw, 64px);
@@ -9639,12 +10219,29 @@ html[data-theme="dark"] .member-detail__photo-wrap--monogram::after {
   font-size: 17px;
   padding-top: var(--space-2);
 }
+
 .member-detail__back {
   margin: var(--space-8) 0 0;
   padding-top: var(--space-5);
   border-top: 1px solid var(--line);
 }
 @media (max-width: 900px) {
+  .member-detail__shell,
+  .member-detail__shell--hi-res {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .member-detail__identity {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .member-detail__shell > .member-detail__main {
+    padding-top: 0;
+  }
+
   .member-detail__layout,
   .member-detail__layout--hi-res {
     grid-template-columns: 1fr;
@@ -9680,6 +10277,125 @@ html[data-theme="dark"] .member-detail__photo-wrap--monogram::after {
     width: 100%;
     max-width: 36rem;
     padding-top: 0;
+  }
+
+  .member-detail__body--sidebar {
+    max-width: 36rem;
+    margin-inline: auto;
+  }
+
+  .member-detail__main {
+    width: 100%;
+    max-width: 36rem;
+    margin-inline: auto;
+    padding-top: 0;
+  }
+
+  .member-detail__main-lead {
+    margin-bottom: var(--space-5);
+  }
+
+  .member-detail .member-detail__main.prose,
+  .member-detail .member-detail__body.prose {
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .member-detail .member-detail__main.prose p + p,
+  .member-detail .member-detail__body.prose p + p {
+    margin-top: 1.35em;
+  }
+
+  .member-detail .member-detail__main-lead {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .member-detail .member-detail__main .member-profile__subhead {
+    font-size: 14px;
+  }
+
+  .member-detail .member-profile__list {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  /* プロフィール詳細: 写真左・横書きの名前＋肩書き */
+  .member-detail--profile-shell .member-detail__identity {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+  }
+
+  .member-detail--profile-shell .member-detail__identity .member-detail__photo-wrap {
+    width: clamp(76px, 24vw, 104px);
+    max-width: none;
+    flex-shrink: 0;
+    justify-content: flex-start;
+    order: 0;
+  }
+
+  .member-detail--profile-shell .member-detail__photo-wrap--clip,
+  .member-detail--profile-shell .member-detail__photo-wrap--monogram {
+    width: clamp(76px, 24vw, 104px);
+  }
+
+  .member-detail--profile-shell
+    .member-detail__photo:not(.member-detail__photo--monogram):not(.member-detail__photo--nameplate),
+  .member-detail--profile-shell .member-detail__photo--hi-res {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+  }
+
+  .member-detail--profile-shell .member-detail__byline {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+    margin-top: 0;
+    justify-content: flex-start;
+  }
+
+  .member-detail--profile-shell .member-detail__name-cluster {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+    max-width: 100%;
+  }
+
+  .member-detail--profile-shell .member-detail__name--vertical {
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    display: block;
+    font-size: clamp(18px, 4.8vw, 22px);
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+    gap: 0;
+  }
+
+  .member-detail--profile-shell .member-detail__name-part {
+    display: inline;
+  }
+
+  .member-detail--profile-shell .member-detail__name-part + .member-detail__name-part::before {
+    content: ' ';
+  }
+
+  .member-detail--profile-shell .member-detail__name-cluster .member-detail__role--vertical {
+    position: static;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25em;
+    font-size: clamp(12px, 3.2vw, 14px);
+    line-height: 1.45;
   }
 }
 
@@ -9863,19 +10579,46 @@ html[data-theme="dark"] .member-detail__photo-wrap--monogram::after {
   transition: none;
 }
 
-/* トップ開講クラス: カード上端揃え */
+/* トップ開講クラス: 行内でカード高さを揃える */
 .home .section--classes .home-classes-grid {
-  align-items: start;
+  align-items: stretch;
 }
 
 .home .section--classes .home-classes-grid__cell {
   display: flex;
   min-width: 0;
+  align-items: stretch;
 }
 
 .home .section--classes .home-classes-grid__cell > .card {
   flex: 1 1 auto;
   width: 100%;
+  height: 100%;
+}
+
+.home .section--classes .home-classes-grid__cell > .card.card--class-flyer {
+  display: flex;
+  flex-direction: column;
+}
+
+.home
+  .section--classes
+  .home-classes-grid__cell
+  > .card.card--class-flyer
+  .card__class-stack {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.home
+  .section--classes
+  .home-classes-grid__cell
+  > .card.card--class-flyer
+  .card__class-stack
+  > .card__body {
+  flex: 1 1 auto;
 }
 
 /* トップ: ご案内（下に全幅黒線） */

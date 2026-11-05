@@ -28,7 +28,8 @@ interface Props {
   imageAspect?: string;
   /** ニュースサイドバー: チラシ左・タイトル＋日付を右に縦並び */
   /** 開講クラス: PCは縦積み、狭い幅でチラシ左・テキスト右 */
-  layout?: 'default' | 'sidebar' | 'classFlyer';
+  /** 公演アーカイブ: タグ → チラシ → タイトルの縦積み */
+  layout?: 'default' | 'sidebar' | 'classFlyer' | 'archive';
 }
 
 const {
@@ -73,6 +74,7 @@ function nextDateDatetime() {
 
 const sidebarLayout = layout === 'sidebar' && Boolean(image);
 const classFlyerLayout = layout === 'classFlyer' && Boolean(image);
+const archiveLayout = layout === 'archive' && Boolean(image);
 
 function resolveHref(raw?: string) {
   if (!raw) return undefined;
@@ -85,7 +87,12 @@ const linkHref = resolveHref(href);
 ---
 
 <Tag
-  class:list={['card', sidebarLayout && 'card--sidebar', classFlyerLayout && 'card--class-flyer']}
+  class:list={[
+    'card',
+    sidebarLayout && 'card--sidebar',
+    classFlyerLayout && 'card--class-flyer',
+    archiveLayout && 'card--archive',
+  ]}
   href={linkHref}
   {...extAttrs}
 >
@@ -124,6 +131,31 @@ const linkHref = resolveHref(href);
           }
         </h3>
         {body && <p class="card__body">{body}</p>}
+      </div>
+    ) : archiveLayout ? (
+      <div class="card__visual card__visual--archive">
+        <div class="card__thumb-frame">
+          <img
+            class="card__thumb"
+            src={imageSrc}
+            alt=""
+            loading="lazy"
+            style={imageAspect ? `aspect-ratio:${imageAspect}` : undefined}
+          />
+        </div>
+        <h3 class="card__title">
+          {
+            titleParts ? (
+              <>
+                {titleParts.lead}
+                <wbr />
+                {titleParts.work}
+              </>
+            ) : (
+              displayTitle
+            )
+          }
+        </h3>
       </div>
     ) : sidebarLayout ? (
       <div class="card__visual card__visual--sidebar">
@@ -222,6 +254,7 @@ const linkHref = resolveHref(href);
   {
     !sidebarLayout &&
       !classFlyerLayout &&
+      !archiveLayout &&
       (nextPerformanceDate ? (
         <p class="card__next">
           <span class="card__next-label">{nextDateLabel}</span>
@@ -237,6 +270,8 @@ const linkHref = resolveHref(href);
         label && <span class="card__label">{label}</span>
       ))
   }
-  {body && !classFlyerLayout && !sidebarLayout && <p class="card__body">{body}</p>}
+  {body && !classFlyerLayout && !sidebarLayout && !archiveLayout && (
+    <p class="card__body">{body}</p>
+  )}
   <slot />
 </Tag>

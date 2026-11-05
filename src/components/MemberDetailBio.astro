@@ -1,0 +1,26 @@
+---
+import { memberBioParagraphs } from '../utils/member-bio';
+
+interface Props {
+  bio: string;
+  /** メイン列のリード（profile shell） */
+  lead?: boolean;
+}
+
+const { bio, lead = false } = Astro.props;
+const paragraphs = memberBioParagraphs(bio);
+---
+
+{
+  lead ? (
+    <div class="member-profile__block member-detail__bio-block">
+      <div class="member-detail__main-lead">
+        {paragraphs.map((text) => (
+          <p>{text}</p>
+        ))}
+      </div>
+    </div>
+  ) : (
+    paragraphs.map((text) => <p>{text}</p>)
+  )
+}

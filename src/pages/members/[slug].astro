@@ -2,7 +2,17 @@
 import NotFoundPage from '../../components/NotFoundPage.astro';
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
-import { getMemberBySlug, getMembers, isMemberNameplate } from '../../utils/members-content';
+import MemberProfileSections from '../../components/MemberProfileSections.astro';
+import MemberDetailBio from '../../components/MemberDetailBio.astro';
+import { getMemberProfile } from '../../data/member-profiles';
+import {
+  getMemberBySlug,
+  getMembers,
+  isMemberNameplate,
+  splitMemberDetailRole,
+  splitMemberDisplayName,
+} from '../../utils/members-content';
+import { memberBioPlainText } from '../../utils/member-bio';
 import { withBase } from '../../utils/path';
 
 export function getStaticPaths() {
@@ -15,7 +25,14 @@ export const prerender = true;
 
 const slug = Astro.params.slug ?? '';
 const member = getMemberBySlug(slug);
+const memberProfile = slug ? getMemberProfile(slug) : undefined;
+const profileSections = memberProfile?.sections;
+const profileBio = memberProfile?.bio ?? member?.bio ?? '';
+const profileBioDescription = memberBioPlainText(profileBio);
+const hasProfileShell = Boolean(profileSections?.length);
 const notFound = !member;
+const displayNameParts = member ? splitMemberDisplayName(member.name) : [''] as const;
+const detailRoleParts = member ? splitMemberDetailRole(member.role) : [];
 
 if (notFound) {
   Astro.response.status = 404;
@@ -26,57 +43,141 @@ if (notFound) {
   notFound ? (
     <NotFoundPage />
   ) : (
-    <Base title={member!.name} description={`${member!.role}。${member!.bio}`} scrollReveal={false}>
-      <PageHeader jp={member!.name} lead={member!.role} compact />
+    <Base title={member!.name} description={`${member!.role}。${profileBioDescription}`} scrollReveal={false}>
+      {!hasProfileShell && <PageHeader jp={member!.name} lead={member!.role} compact />}
 
-      <section class="member-detail">
+      <section class:list={['member-detail', hasProfileShell && 'member-detail--profile-shell']}>
         <div class="container member-detail__inner">
-          <div
-            class:list={[
-              'member-detail__layout',
-              member!.photoDetail && 'member-detail__layout--hi-res',
-            ]}
-          >
-            <div
-              class:list={[
-                'member-detail__photo-wrap',
-                isMemberNameplate(member!) &&
-                  !member!.photoDetail &&
-                  'member-detail__photo-wrap--monogram',
-                !member!.photoMonogram &&
-                  !member!.photoDetail &&
-                  'member-detail__photo-wrap--clip',
-              ]}
-            >
-              {member!.photoMonogram ? (
-                <div
-                  class="member-detail__photo member-detail__photo--monogram"
-                  aria-hidden="true"
-                >
-                  <span class="member__monogram-label">{member!.photoMonogram}</span>
+          {
+            profileSections && profileSections.length > 0 ? (
+              <div
+                class:list={[
+                  'member-detail__shell',
+                  member!.photoDetail && 'member-detail__shell--hi-res',
+                ]}
+              >
+                <div class="member-detail__identity">
+                  <div
+                    class:list={[
+                      'member-detail__photo-wrap',
+                      isMemberNameplate(member!) &&
+                        !member!.photoDetail &&
+                        'member-detail__photo-wrap--monogram',
+                      !member!.photoMonogram &&
+                        !member!.photoDetail &&
+                        'member-detail__photo-wrap--clip',
+                    ]}
+                  >
+                    {member!.photoMonogram ? (
+                      <div
+                        class="member-detail__photo member-detail__photo--monogram"
+                        aria-hidden="true"
+                      >
+                        <span class="member__monogram-label">{member!.photoMonogram}</span>
+                      </div>
+                    ) : (
+                      <img
+                        class:list={[
+                          'member-detail__photo',
+                          member!.photoDetail && 'member-detail__photo--hi-res',
+                          member!.photo?.endsWith('.svg') && 'member-detail__photo--nameplate',
+                          member!.slug === 'komatsuno-nozomi' && 'member__photo--komatsuno',
+                          member!.slug === 'sakaguchi-kanoko' && 'member__photo--sakaguchi',
+                        ]}
+                        src={withBase(member!.photoDetail ?? member!.photo!)}
+                        alt=""
+                        width={member!.photoDetail ? 360 : 200}
+                        height={member!.photoDetail ? 360 : 300}
+                        loading="eager"
+                        decoding="async"
+                      />
+                    )}
+                  </div>
+                  <div class="member-detail__byline">
+                    <div class="member-detail__name-cluster">
+                      <h1 class="member-detail__name member-detail__name--vertical heading-section">
+                        {
+                          displayNameParts.length === 2 ? (
+                            <>
+                              <span class="member-detail__name-part">{displayNameParts[0]}</span>
+                              <span class="member-detail__name-part">{displayNameParts[1]}</span>
+                            </>
+                          ) : (
+                            displayNameParts[0]
+                          )
+                        }
+                      </h1>
+                      <p class="member-detail__role member-detail__role--vertical">
+                        {
+                          detailRoleParts.map((part, index) => (
+                            <>
+                              {index > 0 && (
+                                <span class="member-detail__role-slash" aria-hidden="true">
+                                  ／
+                                </span>
+                              )}
+                              <span class="member-detail__role-part">{part}</span>
+                            </>
+                          ))
+                        }
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                <img
+                <div class="member-detail__main prose">
+                  <MemberDetailBio bio={profileBio} lead />
+                  <MemberProfileSections sections={profileSections} />
+                </div>
+              </div>
+            ) : (
+              <div
+                class:list={[
+                  'member-detail__layout',
+                  member!.photoDetail && 'member-detail__layout--hi-res',
+                ]}
+              >
+                <div
                   class:list={[
-                    'member-detail__photo',
-                    member!.photoDetail && 'member-detail__photo--hi-res',
-                    member!.photo?.endsWith('.svg') && 'member-detail__photo--nameplate',
-                    member!.slug === 'komatsuno-nozomi' && 'member__photo--komatsuno',
-                    member!.slug === 'sakaguchi-kanoko' && 'member__photo--sakaguchi',
+                    'member-detail__photo-wrap',
+                    isMemberNameplate(member!) &&
+                      !member!.photoDetail &&
+                      'member-detail__photo-wrap--monogram',
+                    !member!.photoMonogram &&
+                      !member!.photoDetail &&
+                      'member-detail__photo-wrap--clip',
                   ]}
-                  src={withBase(member!.photoDetail ?? member!.photo!)}
-                  alt=""
-                  width={member!.photoDetail ? 360 : 200}
-                  height={member!.photoDetail ? 360 : 300}
-                  loading="eager"
-                  decoding="async"
-                />
-              )}
-            </div>
-            <div class="member-detail__body prose">
-              <p>{member!.bio}</p>
-            </div>
-          </div>
+                >
+                  {member!.photoMonogram ? (
+                    <div
+                      class="member-detail__photo member-detail__photo--monogram"
+                      aria-hidden="true"
+                    >
+                      <span class="member__monogram-label">{member!.photoMonogram}</span>
+                    </div>
+                  ) : (
+                    <img
+                      class:list={[
+                        'member-detail__photo',
+                        member!.photoDetail && 'member-detail__photo--hi-res',
+                        member!.photo?.endsWith('.svg') && 'member-detail__photo--nameplate',
+                        member!.slug === 'komatsuno-nozomi' && 'member__photo--komatsuno',
+                        member!.slug === 'sakaguchi-kanoko' && 'member__photo--sakaguchi',
+                      ]}
+                      src={withBase(member!.photoDetail ?? member!.photo!)}
+                      alt=""
+                      width={member!.photoDetail ? 360 : 200}
+                      height={member!.photoDetail ? 360 : 300}
+                      loading="eager"
+                      decoding="async"
+                    />
+                  )}
+                </div>
+                <div class="member-detail__body prose">
+                  <MemberDetailBio bio={member!.bio} />
+                </div>
+              </div>
+            )
+          }
         </div>
       </section>
     </Base>

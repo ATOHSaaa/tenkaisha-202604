@@ -4,6 +4,7 @@ import {
   schoolEntryHasPage,
   schoolPieceHref,
 } from '../utils/school-content';
+import SchoolRepertoireWork from './SchoolRepertoireWork.astro';
 import SchoolTargetPills from './SchoolTargetPills.astro';
 
 const entries = await getSchoolEntries();
@@ -11,45 +12,107 @@ const entries = await getSchoolEntries();
 
 <h2 id="school-repertoire-heading">演目一覧</h2>
 
-<div class="school-repertoire" aria-labelledby="school-repertoire-heading">
-  <div class="school-repertoire__grid">
-    <div class="school-repertoire__row school-repertoire__head">
-      <div class="school-repertoire__cell">演目</div>
-      <div class="school-repertoire__cell">概要</div>
-      <div class="school-repertoire__cell">対象</div>
-      <div class="school-repertoire__cell">公演時間</div>
-    </div>
+<div class="school-repertoire-shell" data-school-repertoire-shell>
+  <p class="school-repertoire-shell__hint">
+    <span class="school-repertoire-shell__hint-icon" aria-hidden="true">↔</span>
+    表は横にスクロールできます
+  </p>
+
+  <ul class="school-repertoire-cards">
     {
       entries.map((entry) => {
         const { work, overview, targets, duration } = entry.data;
         const hasPage = schoolEntryHasPage(entry);
-        return hasPage ? (
-          <a class="school-repertoire__row school-repertoire__body" href={schoolPieceHref(entry)}>
-            <span class="school-repertoire__cell">{work}</span>
-            <span class="school-repertoire__cell">{overview}</span>
-            <span class="school-repertoire__cell">
-              <SchoolTargetPills targets={targets} />
-            </span>
-            <span class="school-repertoire__cell">{duration}</span>
-          </a>
-        ) : (
-          <div class="school-repertoire__row school-repertoire__body">
-            <span class="school-repertoire__cell">{work}</span>
-            <span class="school-repertoire__cell">{overview}</span>
-            <span class="school-repertoire__cell">
-              <SchoolTargetPills targets={targets} />
-            </span>
-            <span class="school-repertoire__cell">{duration}</span>
-          </div>
+        const cardInner = (
+          <>
+            <p class="school-repertoire-card__work">
+              <SchoolRepertoireWork work={work} />
+            </p>
+            <dl class="school-repertoire-card__meta">
+              <div class="school-repertoire-card__row">
+                <dt class="school-repertoire-card__label">概要</dt>
+                <dd class="school-repertoire-card__value">{overview}</dd>
+              </div>
+              <div class="school-repertoire-card__row">
+                <dt class="school-repertoire-card__label">対象</dt>
+                <dd class="school-repertoire-card__value">
+                  <SchoolTargetPills targets={targets} />
+                </dd>
+              </div>
+              <div class="school-repertoire-card__row">
+                <dt class="school-repertoire-card__label">公演時間</dt>
+                <dd class="school-repertoire-card__value">{duration}</dd>
+              </div>
+            </dl>
+          </>
+        );
+        return (
+          <li class="school-repertoire-cards__item">
+            {hasPage ? (
+              <a class="school-repertoire-card" href={schoolPieceHref(entry)}>
+                {cardInner}
+              </a>
+            ) : (
+              <div class="school-repertoire-card">{cardInner}</div>
+            )}
+          </li>
         );
       })
     }
+  </ul>
+
+  <div class="school-repertoire-table-view">
+    <div class="school-repertoire-scroll">
+      <div class="school-repertoire" aria-labelledby="school-repertoire-heading">
+        <div class="school-repertoire__grid">
+          <div class="school-repertoire__row school-repertoire__head">
+            <div class="school-repertoire__cell">演目</div>
+            <div class="school-repertoire__cell">概要</div>
+            <div class="school-repertoire__cell">対象</div>
+            <div class="school-repertoire__cell">公演時間</div>
+          </div>
+          {
+            entries.map((entry) => {
+              const { work, overview, targets, duration } = entry.data;
+              const hasPage = schoolEntryHasPage(entry);
+              return hasPage ? (
+                <a class="school-repertoire__row school-repertoire__body" href={schoolPieceHref(entry)}>
+                  <span class="school-repertoire__cell school-repertoire__cell--work">
+                    <SchoolRepertoireWork work={work} />
+                  </span>
+                  <span class="school-repertoire__cell">{overview}</span>
+                  <span class="school-repertoire__cell">
+                    <SchoolTargetPills targets={targets} />
+                  </span>
+                  <span class="school-repertoire__cell">{duration}</span>
+                </a>
+              ) : (
+                <div class="school-repertoire__row school-repertoire__body">
+                  <span class="school-repertoire__cell school-repertoire__cell--work">
+                    <SchoolRepertoireWork work={work} />
+                  </span>
+                  <span class="school-repertoire__cell">{overview}</span>
+                  <span class="school-repertoire__cell">
+                    <SchoolTargetPills targets={targets} />
+                  </span>
+                  <span class="school-repertoire__cell">{duration}</span>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-  import { initSchoolRepertoireEnter } from '../scripts/school-repertoire-enter';
+  import { initSchoolRepertoireEnter, initSchoolRepertoireScrollShell } from '../scripts/school-repertoire-enter';
 
   initSchoolRepertoireEnter();
-  document.addEventListener('astro:page-load', initSchoolRepertoireEnter);
+  initSchoolRepertoireScrollShell();
+  document.addEventListener('astro:page-load', () => {
+    initSchoolRepertoireEnter();
+    initSchoolRepertoireScrollShell();
+  });
 </script>

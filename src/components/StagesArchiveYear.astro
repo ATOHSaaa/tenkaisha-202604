@@ -21,6 +21,7 @@ const { group } = Astro.props;
     {
       group.entries.map((entry) => (
         <Card
+          layout="archive"
           href={`/stages/${entry.id}/`}
           image={entry.data.cover}
           title={entry.data.title}

@@ -50,10 +50,10 @@ export async function getHomeNews(): Promise<NewsListItem[]> {
   return all.slice(0, HOME_NEWS_MAX);
 }
 
-/** マーキー用：Markdown 本文を1行のプレーンテキストに */
+/** マーキー用：Markdown 本文を1行のプレーンテキストに（画像は alt ごと除去） */
 export function newsBodyToPlainText(body: string): string {
   return body
-    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
     .replace(/[*_#>`~]/g, '')
     .replace(/\n+/g, ' ')

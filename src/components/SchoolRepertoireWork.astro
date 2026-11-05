@@ -1,0 +1,21 @@
+---
+import { schoolRepertoireWorkSegments } from '../utils/school-content';
+
+interface Props {
+  work: string;
+}
+
+const { work } = Astro.props;
+const parts = schoolRepertoireWorkSegments(work);
+---
+
+{
+  parts.length === 1 ? (
+    work
+  ) : (
+    <span class="school-repertoire__work">
+      <span class="school-repertoire__work-line">{parts[0]}</span>
+      <span class="school-repertoire__work-line">{parts[1]}</span>
+    </span>
+  )
+}

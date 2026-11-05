@@ -1,0 +1,68 @@
+---
+import type { MemberProfileRow } from '../data/member-profiles-types';
+
+interface Props {
+  rows: MemberProfileRow[];
+}
+
+const { rows } = Astro.props;
+
+function formatWhen(row: MemberProfileRow): string {
+  const { year, month } = row;
+  if (month === '年度') return `${year}年度`;
+  if (/月/.test(month)) return `${year}年${month}`;
+  if (/～/.test(month)) return `${year}年${month.replace(/～/, '月～')}`;
+  return `${year}年${month}月`;
+}
+
+type ProfileRowBodyPart =
+  | { type: 'plain'; text: string }
+  | { type: 'all-link'; text: string; href: string }
+  | { type: 'partial-link'; before: string; label: string; after: string; href: string };
+
+function profileRowBodyParts(row: MemberProfileRow): ProfileRowBodyPart {
+  if (!row.href) return { type: 'plain', text: row.body };
+  const label = row.linkText ?? row.body;
+  const index = row.body.indexOf(label);
+  if (index === -1) return { type: 'all-link', text: row.body, href: row.href };
+  return {
+    type: 'partial-link',
+    before: row.body.slice(0, index),
+    label,
+    after: row.body.slice(index + label.length),
+    href: row.href,
+  };
+}
+---
+
+<ul class="member-profile__list">
+  {
+    rows.map((row) => (
+      <li class="member-profile__item">
+        <span class="member-profile__when">{formatWhen(row)}</span>
+        {
+          (() => {
+            const body = profileRowBodyParts(row);
+            if (body.type === 'plain') return body.text;
+            if (body.type === 'all-link') {
+              return (
+                <a href={body.href} target="_blank" rel="noopener noreferrer">
+                  {body.text}
+                </a>
+              );
+            }
+            return (
+              <>
+                {body.before}
+                <a href={body.href} target="_blank" rel="noopener noreferrer">
+                  {body.label}
+                </a>
+                {body.after}
+              </>
+            );
+          })()
+        }
+      </li>
+    ))
+  }
+</ul>

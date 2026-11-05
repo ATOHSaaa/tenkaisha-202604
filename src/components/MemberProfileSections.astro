@@ -1,0 +1,78 @@
+---
+import MemberProfileRowList from './MemberProfileRowList.astro';
+import type { MemberProfileRow, MemberProfileSection } from '../data/member-profiles-types';
+
+interface Props {
+  sections: MemberProfileSection[];
+}
+
+const { sections } = Astro.props;
+
+function monthSortKey(month: string): number {
+  if (month === '年度') return 4;
+  const match = month.match(/^(\d{1,2})/);
+  return match ? Number(match[1]) : 0;
+}
+
+function sortProfileRowsNewestFirst(rows: MemberProfileRow[]): MemberProfileRow[] {
+  return [...rows].sort((a, b) => {
+    const yearDiff = Number(b.year) - Number(a.year);
+    if (yearDiff !== 0) return yearDiff;
+    return monthSortKey(b.month) - monthSortKey(a.month);
+  });
+}
+
+const ONGOING_SPLIT_SECTIONS = new Set(['メディア出演', '教育・講師']);
+
+function isOngoingRow(row: MemberProfileRow): boolean {
+  return /～/.test(row.month);
+}
+
+function splitOngoingAndPast(section: MemberProfileSection): {
+  ongoing: MemberProfileRow[];
+  past: MemberProfileRow[];
+} {
+  return {
+    ongoing: sortProfileRowsNewestFirst(section.rows.filter(isOngoingRow)),
+    past: sortProfileRowsNewestFirst(section.rows.filter((row) => !isOngoingRow(row))),
+  };
+}
+---
+
+{
+  sections.map((section) => {
+    const useSplit = ONGOING_SPLIT_SECTIONS.has(section.heading);
+    const { ongoing, past } = useSplit
+      ? splitOngoingAndPast(section)
+      : { ongoing: [] as MemberProfileRow[], past: sortProfileRowsNewestFirst(section.rows) };
+
+    return (
+      <div class="member-profile__block">
+        <h2>{section.heading}</h2>
+        {useSplit ? (
+          <>
+            {ongoing.length > 0 && (
+              <div class="member-profile__group">
+                <h3 class="member-profile__subhead">継続</h3>
+                <MemberProfileRowList rows={ongoing} />
+              </div>
+            )}
+            {past.length > 0 && (
+              <div class="member-profile__group">
+                <h3 class="member-profile__subhead">過去</h3>
+                <MemberProfileRowList rows={past} />
+              </div>
+            )}
+          </>
+        ) : (
+          <MemberProfileRowList rows={past} />
+        )}
+        {
+          section.footerNote && (
+            <p class="member-profile__footer">{section.footerNote}</p>
+          )
+        }
+      </div>
+    );
+  })
+}

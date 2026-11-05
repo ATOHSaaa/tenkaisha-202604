@@ -102,3 +102,11 @@ export async function getSchoolEntry(id: string): Promise<SchoolEntry | undefine
 export function schoolEntrySynopsis(entry: SchoolEntry): string {
   return entry.data.synopsis ?? '';
 }
+
+/** 演目一覧：スマホ幅で「玄奘」の直前で改行できるよう分割 */
+export function schoolRepertoireWorkSegments(work: string): readonly [string] | readonly [string, string] {
+  const breakBefore = '玄奘';
+  const index = work.indexOf(breakBefore);
+  if (index <= 0) return [work];
+  return [work.slice(0, index), work.slice(index)];
+}
