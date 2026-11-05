@@ -20,7 +20,9 @@ const leadLines =
 
 <header class:list={['section-head', scrollReveal && 'section-head--scroll-reveal']}>
   <div class="section-head__title-row">
+    <slot name="mark-start" />
     <h2 class:list={['section-head__jp', 'heading-section', headingClass]}>{jp}</h2>
+    <slot name="mark" />
     {note && <span class="section-head__note">{note}</span>}
   </div>
   {

@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
 import NewsList from '../components/NewsList.astro';
+import HomeNewsSpeaker from '../components/HomeNewsSpeaker.astro';
 import HomeNewsMarquee from '../components/HomeNewsMarquee.astro';
 import Card from '../components/Card.astro';
 import BannerLink from '../components/BannerLink.astro';
@@ -9,6 +10,9 @@ import StudioMapLink from '../components/StudioMapLink.astro';
 import { getHomeNews, getLatestNewsMarquee } from '../utils/news';
 import { getCollection } from 'astro:content';
 import { studios, homeBanners, corporateBanner, friendsIntro, homeActivities } from '../data/site';
+import HomeActivitiesStack from '../components/HomeActivitiesStack.astro';
+import HomeActivitiesKeyboard from '../components/HomeActivitiesKeyboard.astro';
+import HomeClassesHangLight from '../components/HomeClassesHangLight.astro';
 import HomeActivityCard from '../components/HomeActivityCard.astro';
 import HomeFriendsIntro from '../components/HomeFriendsIntro.astro';
 import { classDetailHref, getHomeClassEntries } from '../utils/classes-content';
@@ -27,6 +31,7 @@ import { withBase } from '../utils/path';
 import HomeHero from '../components/HomeHero.astro';
 import HomeSideMarquees from '../components/HomeSideMarquees.astro';
 import BadgeMoreLink from '../components/BadgeMoreLink.astro';
+import HomeStagesFlyer from '../components/HomeStagesFlyer.astro';
 
 // トップのおしらせ（最大5件）
 const news = await getHomeNews();
@@ -69,7 +74,9 @@ const heroMarqueeItems = currentPerformances
       {
         !hasCurrent ? (
           <>
-            <SectionHead jp="公演・イベント" />
+            <SectionHead jp="公演・イベント">
+              <HomeStagesFlyer slot="mark" />
+            </SectionHead>
             <div class="subsection">
               <p class="empty">現在、公演・イベントの情報はありません。</p>
             </div>
@@ -77,7 +84,9 @@ const heroMarqueeItems = currentPerformances
         ) : (
           <div class="home-stages">
             <div class="home-stages__legend">
-              <SectionHead jp="公演・イベント" />
+              <SectionHead jp="公演・イベント">
+                <HomeStagesFlyer slot="mark" />
+              </SectionHead>
             </div>
             <div class="home-stages__frame">
               <div
@@ -128,6 +137,7 @@ const heroMarqueeItems = currentPerformances
       <div class="home-news">
         <header class="home-news__head">
           <h2 class="home-news__title heading-section">おしらせ</h2>
+          <HomeNewsSpeaker />
         </header>
         <div class="home-news__main">
           {
@@ -164,7 +174,10 @@ const heroMarqueeItems = currentPerformances
         headingClass="section-head__jp--home-activities"
         scrollReveal
         lead="演劇活動をベースに、|さまざまな活動を行っています。"
-      />
+      >
+        <HomeActivitiesKeyboard slot="mark-start" />
+        <HomeActivitiesStack slot="mark" />
+      </SectionHead>
       <div class="home-activities">
         {homeActivities.map((activity) => (
           <HomeActivityCard activity={activity} />
@@ -183,7 +196,10 @@ const heroMarqueeItems = currentPerformances
   {/* 開講クラス */}
   <section class="section section--classes scroll-reveal-bg">
     <div class="container">
-      <SectionHead jp="開講クラス" scrollReveal lead="体験参加のお問い合わせもお気軽に！" />
+      <SectionHead jp="開講クラス" scrollReveal lead="体験参加のお問い合わせもお気軽に！">
+        <HomeClassesHangLight slot="mark-start" position="start" />
+        <HomeClassesHangLight slot="mark" mirror position="end" />
+      </SectionHead>
       <div class="grid-center grid-center--3 home-classes-grid">
         {
           homeClasses.map((entry) => {

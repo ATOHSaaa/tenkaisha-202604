@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="230" height="345" viewBox="0 0 230 345" fill="#FFEC23" stroke="#333" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<polygon points="110.0,330.0 14.4,277.2 14.4,87.2 110.0,140.0"/>
+<polygon points="110.0,330.0 217.6,270.6 217.6,80.6 110.0,140.0"/>
+<polygon points="110.0,140.0 217.6,80.6 122.0,27.8 14.4,87.2"/>
+<polygon points="118.4,318.4 209.2,268.2 209.2,92.2 118.4,142.4" fill="none"/>
+<ellipse cx="0.450" cy="0.660" rx="0.340" ry="0.464" transform="matrix(119.5,-66,0,-100,110.0,330.0)" vector-effect="non-scaling-stroke"/>
+<ellipse cx="0.450" cy="0.660" rx="0.200" ry="0.273" transform="matrix(119.5,-66,0,-100,110.0,330.0)" vector-effect="non-scaling-stroke"/>
+<ellipse cx="0.450" cy="0.660" rx="0.070" ry="0.096" transform="matrix(119.5,-66,0,-100,110.0,330.0)" vector-effect="non-scaling-stroke"/>
+<ellipse cx="0.450" cy="1.500" rx="0.150" ry="0.205" transform="matrix(119.5,-66,0,-100,110.0,330.0)" vector-effect="non-scaling-stroke"/>
+<ellipse cx="0.450" cy="1.500" rx="0.060" ry="0.082" transform="matrix(119.5,-66,0,-100,110.0,330.0)" vector-effect="non-scaling-stroke"/>
+<rect x="0.250" y="0.150" width="0.400" height="0.100" rx="0.02" transform="matrix(119.5,-66,0,-100,110.0,330.0)" vector-effect="non-scaling-stroke"/>
+<rect x="0.250" y="1.250" width="0.300" height="0.160" rx="0.04" transform="matrix(-119.5,-66,0,-100,110.0,330.0)" vector-effect="non-scaling-stroke"/>
+</svg>

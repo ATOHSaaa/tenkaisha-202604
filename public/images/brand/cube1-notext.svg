@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="363" height="306" viewBox="0 0 363 306" fill="#fff" stroke="#333" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<!-- 溝の底 -->
+<polygon points="289.3,189.6 313.2,176.4 74.2,44.4 50.3,57.6" fill="#333" stroke="none"/>
+<polygon points="289.3,175.6 313.2,162.4 74.2,44.4 50.3,57.6" fill="#333" stroke="none"/>
+<!-- 手前の端の壁の上面（厚み） -->
+<polygon points="289.3,189.6 313.2,176.4 301.2,169.8 277.3,183" stroke-width="2.5"/>
+<!-- 溝の内側の壁 -->
+<polygon points="313.2,162.4 74.2,30.4 74.2,44.4 313.2,176.4" stroke-width="3"/>
+<!-- 奥の端の壁 -->
+<path d="M50.3,43.6 L50.3,57.6 L74.2,44.4 L74.2,31.4" fill="none" stroke-linecap="butt"/>
+<!-- 奥の端の壁の上面（厚み） -->
+<polygon points="50.3,57.6 74.2,44.4 83.2,49.4 59.3,62.6" stroke-width="2.5"/>
+<!-- 長い側面（左） -->
+<polygon points="2.5,70 241.5,202 241.5,302 2.5,170"/>
+<!-- 短い側面（右）：上辺の中央に切り欠き -->
+<polygon points="361,136 313.2,162.4 313.2,176.4 289.3,189.6 289.3,175.6 241.5,202 241.5,302 361,236"/>
+<!-- 板の厚み（側面の上端から14下に線） -->
+<polyline points="2.5,84 241.5,216 289.3,189.6" fill="none" stroke-width="3"/>
+<polyline points="313.2,176.4 361,150" fill="none" stroke-width="3"/>
+<!-- 上面：溝で左右2枚に分かれる -->
+<polygon points="241.5,202 289.3,175.6 50.3,43.6 2.5,70"/>
+<polygon points="313.2,162.4 361,136 122,4 74.2,30.4"/></svg>

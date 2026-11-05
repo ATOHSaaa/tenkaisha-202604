@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="373" height="388" viewBox="-5 -2 373 388" fill="#FFEC23" stroke="#333" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<polygon points="2.5,226 241.5,358 241.5,384 2.5,252"/>
+<polygon points="241.5,358 361,292 361,318 241.5,384"/>
+<polygon points="286.9,358.9 286.9,349.9 315.6,334.1 315.6,343.1" fill="#333" stroke-width="3"/>
+<text transform="translate(2.5,226) matrix(1,0.5523,0,1,0,0)" x="119.5" y="17.5" text-anchor="middle" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans CJK JP',sans-serif" font-weight="700" font-size="12" fill="#333" stroke="none">転回社</text>
+<polygon points="2.5,200 241.5,332 241.5,358 2.5,226"/>
+<polygon points="241.5,332 361,266 361,292 241.5,358"/>
+<polygon points="286.9,332.9 286.9,323.9 315.6,308.1 315.6,317.1" fill="#333" stroke-width="3"/>
+<text transform="translate(2.5,200) matrix(1,0.5523,0,1,0,0)" x="119.5" y="17.5" text-anchor="middle" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans CJK JP',sans-serif" font-weight="700" font-size="12" fill="#333" stroke="none">転回社</text>
+<polygon points="2.5,174 241.5,306 241.5,332 2.5,200"/>
+<polygon points="241.5,306 361,240 361,266 241.5,332"/>
+<polygon points="286.9,306.9 286.9,297.9 315.6,282.1 315.6,291.1" fill="#333" stroke-width="3"/>
+<text transform="translate(2.5,174) matrix(1,0.5523,0,1,0,0)" x="119.5" y="17.5" text-anchor="middle" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans CJK JP',sans-serif" font-weight="700" font-size="12" fill="#333" stroke="none">転回社</text>
+<polygon points="2.5,148 241.5,280 241.5,306 2.5,174"/>
+<polygon points="241.5,280 361,214 361,240 241.5,306"/>
+<polygon points="286.9,280.9 286.9,271.9 315.6,256.1 315.6,265.1" fill="#333" stroke-width="3"/>
+<text transform="translate(2.5,148) matrix(1,0.5523,0,1,0,0)" x="119.5" y="17.5" text-anchor="middle" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans CJK JP',sans-serif" font-weight="700" font-size="12" fill="#333" stroke="none">転回社</text>
+<polygon points="2.5,122 241.5,254 241.5,280 2.5,148"/>
+<polygon points="241.5,254 361,188 361,214 241.5,280"/>
+<polygon points="286.9,254.9 286.9,245.9 315.6,230.1 315.6,239.1" fill="#333" stroke-width="3"/>
+<text transform="translate(2.5,122) matrix(1,0.5523,0,1,0,0)" x="119.5" y="17.5" text-anchor="middle" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans CJK JP',sans-serif" font-weight="700" font-size="12" fill="#333" stroke="none">転回社</text>
+<polygon points="2.5,96 241.5,228 241.5,254 2.5,122"/>
+<polygon points="241.5,228 361,162 361,188 241.5,254"/>
+<polygon points="286.9,228.9 286.9,219.9 315.6,204.1 315.6,213.1" fill="#333" stroke-width="3"/>
+<text transform="translate(2.5,96) matrix(1,0.5523,0,1,0,0)" x="119.5" y="17.5" text-anchor="middle" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans CJK JP',sans-serif" font-weight="700" font-size="12" fill="#333" stroke="none">転回社</text>
+<polygon points="2.5,70 241.5,202 241.5,228 2.5,96"/>
+<polygon points="241.5,202 361,136 361,162 241.5,228"/>
+<polygon points="286.9,202.9 286.9,193.9 315.6,178.1 315.6,187.1" fill="#333" stroke-width="3"/>
+<text transform="translate(2.5,70) matrix(1,0.5523,0,1,0,0)" x="119.5" y="17.5" text-anchor="middle" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans CJK JP',sans-serif" font-weight="700" font-size="12" fill="#333" stroke="none">転回社</text>
+<polygon points="2.5,70 241.5,202 361,136 122,4"/>
+</svg>

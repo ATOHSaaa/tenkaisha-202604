@@ -1,4 +1,5 @@
 ---
+import FooterBrandCube from './FooterBrandCube.astro';
 import { withBase } from '../utils/path';
 
 // フッター。SNSリンク先はダミー。後ほど URL 差し替えてください。
@@ -62,6 +63,11 @@ const nav: { heading: string; items: { label: string; href: string }[] }[] = [
             </div>
           ))
         }
+        <div class="site-footer__nav-decor">
+          <a class="site-footer__brand-link" href={withBase('/about/')} aria-label="転回社について">
+            <FooterBrandCube />
+          </a>
+        </div>
       </nav>
     </div>
 

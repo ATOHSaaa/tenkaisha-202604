@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="373" height="232" viewBox="-5 -2 373 232" fill="#fff" stroke="#333" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<!-- 長い側面 -->
+<polygon points="2.5,70 241.5,202 241.5,220 2.5,88"/>
+<!-- 短い側面 -->
+<polygon points="241.5,202 361,136 361,154 241.5,220"/>
+<!-- 表面の合板の層 -->
+<polyline points="2.5,76 241.5,208 361,142" fill="none"/>
+<!-- 天板 -->
+<polygon points="2.5,70 241.5,202 361,136 122,4"/>
+</svg>

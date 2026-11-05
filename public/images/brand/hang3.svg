@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="380" viewBox="0 0 440 380" fill="#fff" stroke="#333" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<!-- バトン -->
+<rect x="40" y="22" width="360" height="16" rx="8"/>
+<!-- ヨーク（奥側・上のフック部分）：棒に引っかける -->
+<path d="M196,52 V20 Q196,7 209,7 H227 Q240,7 240,20 V150 H229 V22 Q229,18 225,18 H211 Q207,18 207,22 V52 Z"/>
+<g transform="translate(0,-50) rotate(26 201 210)">
+<g fill="none">
+<line x1="318" y1="170" x2="410" y2="112"/>
+<line x1="324" y1="212" x2="420" y2="212"/>
+<line x1="318" y1="254" x2="410" y2="312"/>
+</g>
+<path d="M96,176 Q76,176 76,196 V228 Q76,248 96,248 H132 V176 Z"/>
+<rect x="132" y="170" width="120" height="84"/>
+<line x1="150" y1="170" x2="150" y2="254"/>
+<line x1="164" y1="170" x2="164" y2="254"/>
+<rect x="252" y="164" width="16" height="96" rx="3"/>
+<polygon points="268,166 288,150 288,274 268,258"/>
+<polygon points="288,150 310,140 310,152 288,164"/>
+<polygon points="288,274 310,284 310,272 288,260"/>
+</g>
+<!-- ヨーク手前のアーム -->
+<polygon points="196,40 207,40 207,160 196,160"/>
+<circle cx="201" cy="160" r="11"/>
+<circle cx="201" cy="160" r="4"/>
+</svg>

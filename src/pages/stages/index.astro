@@ -24,11 +24,6 @@ const hasArchiveYears = archiveYearGroups.length > 0;
 const archiveSummary = summarizeArchiveYearGroups(archiveYearGroups);
 const badgeFilterIdsJson = JSON.stringify(BADGE_FILTER_IDS);
 const stagesFilterBase = withBase('/stages/filter/');
-
-/** 初回 HTML に含める「これまで」の年数（以降はスクロールで追加） */
-const INITIAL_ARCHIVE_YEARS = 2;
-const initialArchiveGroups = archiveYearGroups.slice(0, INITIAL_ARCHIVE_YEARS);
-const deferredArchiveGroups = archiveYearGroups.slice(INITIAL_ARCHIVE_YEARS);
 ---
 
 <Base
@@ -89,27 +84,11 @@ const deferredArchiveGroups = archiveYearGroups.slice(INITIAL_ARCHIVE_YEARS);
                         Stages
                       </span>
                     </h2>
-                    <div class="events-archive" data-stages-archive>
-                      {initialArchiveGroups.map((group) => (
+                    <div class="events-archive">
+                      {archiveYearGroups.map((group) => (
                         <StagesArchiveYear group={group} />
                       ))}
                     </div>
-                    {
-                      deferredArchiveGroups.length > 0 && (
-                        <>
-                          <div
-                            class="events-archive__sentinel"
-                            data-stages-archive-sentinel
-                            aria-hidden="true"
-                          />
-                          {deferredArchiveGroups.map((group) => (
-                            <template data-stages-archive-year>
-                              <StagesArchiveYear group={group} />
-                            </template>
-                          ))}
-                        </>
-                      )
-                    }
                   </>
                 )
               }
@@ -129,9 +108,9 @@ const deferredArchiveGroups = archiveYearGroups.slice(INITIAL_ARCHIVE_YEARS);
     })();
   </script>
   <script>
-    import { initStagesArchiveLazyLoad } from '../../scripts/stages-archive-lazy';
+    import { initEventsPageDeferImages } from '../../scripts/events-page-defer-images';
 
-    initStagesArchiveLazyLoad();
-    document.addEventListener('astro:page-load', initStagesArchiveLazyLoad);
+    initEventsPageDeferImages();
+    document.addEventListener('astro:page-load', initEventsPageDeferImages);
   </script>
 </Base>

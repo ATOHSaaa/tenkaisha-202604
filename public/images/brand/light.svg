@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="330" viewBox="0 0 360 330" fill="#fff" stroke="#333" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<!-- バトン（パイプ） -->
+<rect x="20" y="16" width="320" height="16" rx="8"/>
+<!-- クランプ -->
+<rect x="164" y="32" width="32" height="14" rx="3"/>
+<path d="M172,46 V60 H188 V46" />
+<!-- ヨーク -->
+<rect x="172" y="60" width="16" height="96" rx="4"/>
+<g transform="rotate(32 180 160)">
+<!-- ビーム -->
+<g fill="none">
+<line x1="250" y1="124" x2="340" y2="86"/>
+<line x1="252" y1="160" x2="344" y2="160"/>
+<line x1="250" y1="196" x2="340" y2="234"/>
+</g>
+<!-- 本体 -->
+<path d="M110,128 Q96,128 96,142 V178 Q96,192 110,192 H128 V128 Z"/>
+<rect x="128" y="124" width="84" height="72"/>
+<line x1="144" y1="124" x2="144" y2="196"/>
+<line x1="158" y1="124" x2="158" y2="196"/>
+<rect x="212" y="118" width="14" height="84" rx="3"/>
+<path d="M226,128 H244 V192 H226"/>
+<!-- バーンドア -->
+<polygon points="244,128 262,114 262,126 244,136" />
+<polygon points="244,192 262,206 262,194 244,184" />
+</g>
+<circle cx="180" cy="160" r="9"/>
+</svg>
