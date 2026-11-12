@@ -89,6 +89,7 @@ if (notFound) {
                         width={member!.photoDetail ? 360 : 200}
                         height={member!.photoDetail ? 360 : 300}
                         loading="eager"
+                        fetchpriority="high"
                         decoding="async"
                       />
                     )}
@@ -168,6 +169,7 @@ if (notFound) {
                       width={member!.photoDetail ? 360 : 200}
                       height={member!.photoDetail ? 360 : 300}
                       loading="eager"
+                      fetchpriority="high"
                       decoding="async"
                     />
                   )}
