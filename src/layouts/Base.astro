@@ -63,6 +63,7 @@ const breadcrumbJsonLd =
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <script is:inline define:vars={{ scrollMotionKey: 'tenkaisha-scroll-motion' }}>
       (function () {
         try {
@@ -120,6 +121,7 @@ const breadcrumbJsonLd =
       )
     }
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
@@ -153,7 +155,7 @@ const breadcrumbJsonLd =
   <body class:list={[isHome && 'page-home']} data-scroll-reveal={scrollReveal ? 'on' : 'off'}>
     <a class="skip-link" href="#main">本文へスキップ</a>
     <Header />
-    <main id="main">
+    <main id="main" tabindex="-1">
       <div class:list={['breadcrumb-bar', isHome && 'breadcrumb-bar--home']}>
         <div class="container breadcrumb-bar__inner">
           <Breadcrumbs items={breadcrumbItems} />

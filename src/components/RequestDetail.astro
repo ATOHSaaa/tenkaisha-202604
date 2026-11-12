@@ -60,7 +60,13 @@ const {
         </div>
 
         <aside class="rd__side">
-          <img class="rd__cover" src={withBase(info.image)} alt="" />
+          <img
+            class="rd__cover"
+            src={withBase(info.image)}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
           <a class="btn btn--pill" href={withBase('/contact/')}>お問い合わせ <span class="btn__arrow">→</span></a>
         </aside>
       </div>

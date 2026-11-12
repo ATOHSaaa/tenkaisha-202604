@@ -13,7 +13,7 @@ const imageSrc = withBase(program.image);
 
 <a class="edu-block" href={href}>
   <div class="edu-block__media">
-    <img class="edu-block__img" src={imageSrc} alt="" loading="lazy" />
+    <img class="edu-block__img" src={imageSrc} alt="" loading="lazy" decoding="async" />
   </div>
   <div class="edu-block__body">
     <p class="edu-block__en">{program.english}</p>
