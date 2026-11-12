@@ -40,7 +40,15 @@ const copy = schoolWorkshopCopy.casebookPage;
         </div>
 
         <aside class="pub__side">
-          <img class="pub__cover pub__cover--contain" src={coverSrc} alt="" width={724} height={1024} />
+          <img
+            class="pub__cover pub__cover--contain"
+            src={coverSrc}
+            alt=""
+            width={724}
+            height={1024}
+            loading="lazy"
+            decoding="async"
+          />
           <dl class="pub__spec">
             <div><dt>刊行</dt><dd>{p.year}年</dd></div>
             <div><dt>発行</dt><dd>{copy.sidebar.publisher}</dd></div>

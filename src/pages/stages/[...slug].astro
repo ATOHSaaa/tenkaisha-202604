@@ -62,7 +62,13 @@ if (entry && !isPerformance) {
             {
               entry!.data.cover && (
                 <aside class="event__side">
-                  <img class="event__cover" src={withBase(entry!.data.cover)} alt="" />
+                  <img
+                    class="event__cover"
+                    src={withBase(entry!.data.cover)}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </aside>
               )
             }

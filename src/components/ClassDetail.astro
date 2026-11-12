@@ -47,10 +47,22 @@ const coverSrc = c.image ? withBase(c.image) : undefined;
       {
         c.coverFit === 'contain' ? (
           <div class="cd__cover-wrap cd__cover-wrap--chira">
-            <img class="cd__cover cd__cover--contain" src={coverSrc} alt="" />
+            <img
+              class="cd__cover cd__cover--contain"
+              src={coverSrc}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         ) : (
-          <img class="cd__cover" src={coverSrc} alt="" />
+          <img
+            class="cd__cover"
+            src={coverSrc}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
         )
       }
       <dl class="cd__meta">

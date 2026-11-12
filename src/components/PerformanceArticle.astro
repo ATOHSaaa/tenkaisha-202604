@@ -56,7 +56,13 @@ const typeBadges = eventDetailBadges(entry.data);
         entry.data.cover && (
           <aside class="perf__side">
             <div class="perf__side-inner">
-              <img class="perf__cover" src={withBase(entry.data.cover)} alt="" />
+              <img
+                class="perf__cover"
+                src={withBase(entry.data.cover)}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
               {tickets && tickets.length > 0 && (
                 <PerformanceTickets tickets={tickets} variant="sidebar" />
               )}
